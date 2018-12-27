@@ -1,0 +1,207 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>列表</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="/Content/css/bootstrap.min14ed.css?v=3.3.6" rel="stylesheet">
+    <link href="/Content/css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet">
+    <link href="/Content/css/plugins/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
+    <link href="/Content/css/animate.min.css" rel="stylesheet">
+    <link href="/Content/css/style.min862f.css?v=4.1.0" rel="stylesheet">
+    <style>
+        .box-content {
+            padding: 10px 0;
+        }
+
+        .float-e-margins .btn {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInDown">
+        <!-- Panel Other -->
+        <div class="ibox float-e-margins">
+            <div class="ibox-content">
+                <div class="row row-lg">
+                    <div class="col-sm-12">
+                        <!-- Example Events -->
+                        <div class="example-wrap">
+                            <h4 class="example-title">
+                                列表
+                                <a class="btn btn-primary " style="float:right;" href="javascript:location.reload();" title="页面刷新"><i class="fa fa-refresh"></i> </a>
+                            </h4>
+                            <div class="example">
+                                <div class="box-content form-inline">
+                                    <div class="topbtnbar">
+                                        <input type="text" class="form-control" id="KeyWord" onkeyup="if (event.keyCode == '13') $('#btnSearch').click()" placeholder="关键字">
+                                        <button type="button" id="btnSearch" class="btn btn-success btn-sm " onclick="Search()">
+                                            查询
+                                        </button>
+                                        <button type="button" id="btnAdd" class="btn btn-info btn-sm" data-toggle="modal" data-target="#DivAdd">
+                                            新增
+                                        </button>
+                                    </div>
+                                </div>
+                                <table id="table"></table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Panel Other -->
+    </div>
+
+    <script src="/Content/js/jquery.min.js?v=2.1.4"></script>
+    <script src="/Content/js/bootstrap.min.js?v=3.3.6"></script>
+    <script src="/Content/js/content.min.js?v=1.0.0"></script>
+    <script src="/Content/js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+    <script src="/Content/js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+    <script src="/Content/js/plugins/layer/layer.min.js"></script>
+    <script src="/Content/js/config.js"></script>
+    <script src="/Content/js/ajax.js"></script>
+    <script src="/Content/js/My97DatePicker/WdatePicker.js"></script>
+    @Html.Partial("_CompanyUserAdd")
+</body>
+</html>
+<script>
+    $(function () {
+        $('#table').bootstrapTable({
+            method: 'POST',
+            url: "@Url.Action("CompanyUserList")",
+            height: 500,
+            pagination: true,
+            striped: true,
+            pageSize: 10,
+            pageNumber: 1,
+            pageList: [10, 25, 50, 100, 200],
+            queryParams: QueryParams,
+            contentType: "application/x-www-form-urlencoded",
+            sidePagination: "server",
+            //showColumns: true, // 开启自定义列显示功能
+            columns: [
+                {
+                    field: 'UserName',
+                    title: '登录名',
+                    align: 'center',
+                    valign: 'middle'
+                }, {
+                    field: 'Name',
+                    title: '姓名',
+                    align: 'center',
+                    valign: 'middle'
+                }, {
+                 field: 'Mobile',
+                 title: '手机号',
+                 align: 'center',
+                 valign: 'middle'
+             }, {
+                 field: 'Email',
+                 title: '邮箱',
+                 align: 'center',
+                 valign: 'middle'
+             }, {
+                 field: 'DepartName',
+                 title: '部门',
+                 align: 'center',
+                 valign: 'middle',
+                 formatter: function (value, row, index) {
+                     return value;
+                 }
+             }, {
+                 field: 'CreateDate',
+                 title: '创建时间',
+                 align: 'center',
+                 valign: 'middle',
+                 formatter: function (value, row, index) {
+                     return ChangeDt(value);
+                 }
+             }, {
+                 field: 'IsDeleted',
+                 title: '状态',
+                 align: 'center',
+                 valign: 'middle',
+                 formatter: function (value, row, index) {
+                     return value == 0 ? '<label class="label label-primary">启用<label>' : '<label class="label label-danger">禁用</label>';
+                 }
+             },
+            {
+                field: 'Id',
+                title: '操作',
+                align: 'center',
+                valign: 'middle',
+                formatter: function (value, row, index) {
+                    var operate = '';
+                    operate += '<a  class="edit" title="修改"><i class="fa fa-edit"></i> 修改</a> ';
+                    if (row.IsDeleted == 0) {
+                        operate += '<a class="label label-danger">禁用</a>';
+                    }
+                    else {
+                        operate += '<a class="label label-primary">启用</a>';
+                    }
+                    return operate;
+                },
+                events: operateEvents
+            }
+            ]
+        });
+    });
+    function QueryParams(parma) {
+        parma["name"] = $("#KeyWord").val();
+        offset = parma["offset"] = parma.offset;
+        limit = parma["limit"] = parma.limit;
+        return parma;
+    }
+    //查询按钮
+    function Search() {
+        $('#table').bootstrapTable("refresh");
+    }
+    //列事件
+    window.operateEvents = {
+        'click .edit': function (e, value, row, index) {
+            GetInfo(row);
+        },
+        'click .label': function (e, value, row, index) {
+            layer.confirm('确定' + (row.IsDeleted == 0 ? "禁用" : "启用") + '[' + row.UserName + ']？', {
+                btn: ['确定', '取消'] //按钮
+            }, function () {
+                var url = "@Url.Action("CompanyUserStatus")";
+                var Data = {};
+                Data.id = row.Id;
+                Data.isDelete = row.IsDeleted == 0 ? 1 : 0;
+                ajaxGet.post(Data, url, function (data) {
+                    layer.msg(data.Message, { icon: 1 }); Search(); 
+                }, function (data) { ExceptionDeal(data); })
+               // layer.msg('的确很重要', { icon: 1 });
+            }, function () {
+                
+            });
+        }
+    };
+    //修改
+    function GetInfo(json) {
+        $('#DivAdd').modal("show");
+        $("#hiddenId").val(json.Id);
+        $('#UserName').val(json.UserName);
+        $('#Name').val(json.Name);
+        $('#Mobile').val(json.Mobile);
+        $('#Email').val(json.Email);
+        $('#WeChatOpenId').val(json.WeChatOpenId);
+        $('#WeChatNickName').val(json.WeChatNickName);
+        $('#WeChatHeadUrl').val(json.WeChatHeadUrl);
+        $('#IsBindWeChat').val(json.IsBindWeChat);
+        $('#CompanyId').val(json.CompanyId);
+        $('#CompanyName').val(json.CompanyName); 
+        $('#DepartId').val(json.DepartId);
+        $('#CreateDate').val(json.CreateDate);
+        $('#IsDeleted').val(json.IsDeleted);
+        $('#RePassWord,#PasssWord').parent().hide();
+        $('#UserName').attr("disabled", "disabled");
+    }
+</script>

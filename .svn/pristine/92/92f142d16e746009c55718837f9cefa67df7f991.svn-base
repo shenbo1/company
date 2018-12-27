@@ -1,0 +1,41 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Company.Dto
+{
+    public enum ProjectPayWayEnum
+    {
+        [Description("年付")]
+        Year,
+        [Description("季付")]
+        Season,
+        [Description("月付")]
+        Month
+    }
+    public enum ProjectStatusEnum
+    {
+        [Description("进行中")]
+        Start,
+        [Description("维护中")]
+        Repair,
+        [Description("已完成")]
+        Finished,
+        [Description("已结束")]
+        End,
+        [Description("搁置中")]
+        Stop,
+    }
+    public enum CustomerCompanyStatusEnum {
+    
+        [Description("合作未开始")]
+        NotStart,
+        [Description("合作中")]
+        Start,
+        [Description("合作已结束")]
+        End
+    }
+}

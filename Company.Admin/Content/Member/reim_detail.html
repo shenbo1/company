@@ -1,0 +1,134 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>我的报销</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1,maximum-scale=1,user-scalable=no">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta content="telephone=no" name="format-detection">
+		<link rel="stylesheet" href="css/reset.css">
+        <link rel="stylesheet" href="css/layout.css?111">
+		<script type="text/javascript" src="http://apps.bdimg.com/libs/zepto/1.1.4/zepto.min.js"></script>
+        <script src="../js/plugins/layer/mobile/layer.js"></script>
+		<script type='text/javascript' src='vender/fastclick.js'></script>
+		<script type="text/javascript" src="js/js.js"></script>
+	</head>
+	<body>
+		<div class="g-page" id="main">
+			<!-- 主体 -->
+			<div class="reim-detail g-container">
+				<div class="top-part">
+					<div class="img-box j-img-ratio">
+                        <img :src="User.WeChatHeadUrl">
+					</div>
+					<div class="name u-one-line">{{User.Name}}</div>
+					<div class="right-txt u-ct">
+                        <span :class ="'status'+Detail.Status">
+                            {{ Detail.Status | StatusFilter(Detail.NextOperateName) }}
+                        </span>
+                       
+					
+					</div>
+				</div>
+				<div class="mid-part">
+					<ul class="input-list bor-bot">
+						<li class="item">
+							<div class="input-box">
+								<span class="u-ct title">所在部门：</span>
+                                <input class="txt" type="text" disabled value="" v-model="User.DepartName">
+							</div>
+						</li>
+						<li class="item">
+							<div class="input-box">
+								<span class="u-ct title">发起时间：</span>
+                                <span class="txt"> {{Detail.CreateDate |FormatDate}}</span>
+							</div>
+						</li>
+					</ul>
+					<div class="list-title">
+						<span class="txt">
+							报销明细
+						</span>
+					</div>
+					<ul class="input-list">
+						<li class="item">
+							<div class="input-box">
+								<span class="u-ct title">报销金额：</span>
+                                <input class="txt" type="text" disabled value="" v-model="Detail.Money+'元'">
+							</div>
+						</li>
+						<li class="item">
+							<div class="input-box">
+								<span class="u-ct title">报销类别：</span>
+								<input class="txt" type="text" disabled value="" v-model="Detail.ConfigName">
+							</div>
+						</li>
+						<li class="item">
+							<div class="input-box">
+								<span class="u-ct title">报销明细：</span>
+							</div>
+							<textarea disabled>{{Detail.Remark}}</textarea>
+						</li>
+						<li class="item">
+							<div class="input-box">
+								<span class="u-ct title">图片：</span>
+							</div>
+							<div class="img_group">
+                             
+								<!--<div class="img_box j-open-mask j-img-ratio">
+									<img class="cc" src="images/author_head.jpg">
+								</div>
+								<div class="img_box j-open-mask j-img-ratio">
+									<img class="cc" src="images/author_head.jpg">
+								</div>
+								<div class="img_box j-open-mask j-img-ratio">
+									<img class="cc" src="images/men1.jpg">
+								</div>
+								<div class="img_box j-open-mask j-img-ratio">
+									<img class="cc" src="images/author_head.jpg">
+								</div>-->
+							</div>
+						</li>
+					</ul>
+					<div class="list-title">
+						<span class="txt">
+							审批进度
+						</span>
+					</div>
+					<ul class="progress-list">
+                            <li class="item" v-for="json in Detail.DetailList">
+                                <div class="img-box u-ct">
+                                    <img :src="json.OperateHeadUrl">
+                                </div>
+                                <span class="left-txt">{{json.OperateName}}</span>
+                                <span class="mid-txt">{{json.Status | DetailStatus(json.Step)}}</span>
+                                <span class="right-txt">{{json.ModifyDate | FormatDate}}</span>
+                            </li>
+						<!--<
+						<li class="item">
+							<div class="img-box u-ct">
+								<img src="images/author_head.jpg">
+							</div>
+							<span class="left-txt">牛津成</span>   
+							<span class="mid-txt col-ora">审批中</span>
+							<span class="right-txt">2017.11.24 16:00</span>
+						</li>-->
+					</ul>
+				</div>
+			</div>
+			<div class="img-mask">
+				<div class="mask"></div>
+				<img class="u-cc" src="images/author_head.jpg">
+			</div>
+			<!-- 底部导航 -->
+			<!--<a class="m-footer-btn" href="new_reim.html">
+				新建报销
+			</a>-->
+		</div>
+	</body>
+</html>
+<script src="../js/plugins/vue/vue.min.js"></script>
+<script src="../js/font.js?222211"></script>
+<script src="../js/ajax.js?11"></script>
+<script type="text/javascript" src="js/reim_detail.js?22222"></script>

@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+	<meta charset="UTF-8">
+	<title>我的报销</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta content="telephone=no" name="format-detection">
+	<link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/layout.css?2222">
+	<script type="text/javascript" src="http://apps.bdimg.com/libs/zepto/1.1.4/zepto.min.js"></script>
+	<script type='text/javascript' src='vender/fastclick.js'></script>
+	<script type="text/javascript" src="js/js.js"></script>
+	</head>
+	<body>
+        <div class="g-page" id="main">
+            <!-- 主体 -->
+            <div class="reim g-container">
+                <div class="top-part">
+                    <div class="img-box j-img-ratio">
+                        <img :src="User.WeChatHeadUrl">
+                    </div>
+                    <div class="name u-one-line">{{User.Name}}</div>
+                </div>
+                <div class="m-nothing none" v-if="nothing">
+                    <p>暂无报销</p>
+                </div>
+                <ul class="list" v-else>
+                    <template v-for="json in List">
+                        <li class="item">
+                            <a class="item-link" :href=" 'reim_detail.html?Id='+json.Id">
+                                <h2 class="u-two-line">{{json.Remark}}</h2>
+                                <ul class="sm-list">
+                                    <li class="sm-item u-one-line">
+                                        <em>报销金额：</em>
+                                        <span>{{json.Money}}</span>
+                                    </li>
+                                    <li class="sm-item u-one-line">
+                                        <span :class="'status'+json.Status">{{ json.Status | FormatStatus(json.NextOperateName) }}</span>
+                                    </li>
+                                    <li class="sm-item u-one-line">
+                                        <em>报销类别：</em>
+                                        <span>{{json.ConfigName}}</span>
+                                    </li>
+                                    <li class="sm-item u-one-line">
+                                        <em>提交时间：</em>
+                                        <span>{{json.CreateDate | FormatDate(json.CreateDate)}}</span>
+                                    </li>
+                                </ul>
+                            </a>
+                        </li>
+                    </template>
+                  
+                </ul>
+            </div>
+            <!-- 底部导航 -->
+            <a class="m-footer-btn" href="new_reim.html">
+                新建报销
+            </a>
+        </div>
+	</body>
+</html>
+<script src="../js/plugins/vue/vue.min.js"></script>
+<script src="../js/ajax.js?2222"></script>
+<script src="../js/font.js?2222"></script>
+<script src="js/reim.js?111"></script>

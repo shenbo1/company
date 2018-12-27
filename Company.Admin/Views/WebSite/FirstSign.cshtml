@@ -1,0 +1,365 @@
+﻿
+@{
+    ViewBag.Title = "项目立项";
+    Layout = "~/Layout/_LayoutWebSite.cshtml";
+    Page.Title = "项目立项";
+    Page.Key = "软件开发，技术支持，智能硬件，智能名宿";
+    Page.Desc = "微信开发，小程序开发，智能展厅，智能酒店，智能民宿，智能家居，智能办公, 技术孵化，技术合伙人，硬件开发，智能硬件";
+
+    Page.AccountName = ViewBag.AccountName;
+}
+<style>
+    .form-group {
+        height: 35px;
+    }
+</style>
+<div class="main-container container">
+    <ul class="breadcrumb">
+        <li><a href="#"><i class="fa fa-home"></i></a></li>
+        <li><a href="#">项目添加</a></li>
+        <li><a href="#" id="step">第一步</a></li>
+    </ul>
+    <div class="row">
+        <div class="producttab ">
+            <div class="tabsslider  vertical-tabs col-xs-12">
+                <ul class="nav nav-tabs col-lg-2 col-sm-3">
+                    <li class="active"><a data-toggle="tab" id="changetb1" href="#tab-1" data-title="第一步">项目基本信息</a></li>
+                    <li class="item_nonactive"><a data-toggle="tab" id="changetb2" href="#tab-2" data-title="第二步">项目现状</a></li>
+                    <li class="item_nonactive"><a data-toggle="tab" id="changetb3" href="#tab-3" data-title="第三步">项目需求</a></li>
+                    <li class="item_nonactive"><a data-toggle="tab" id="changetb4" href="#tab-4" data-title="第四步">智能硬件需求</a></li>
+                    <li class="item_nonactive"><a data-toggle="tab" id="changetb5" href="#tab-5" data-title="第五步">人员配置</a></li>
+                    @*<li class="item_nonactive"><a data-toggle="tab" href="#tab-5">账户信息</a></li>*@
+                </ul>
+                <div class="tab-content col-lg-10 col-sm-9 col-xs-12">
+                    <div id="tab-1" class="tab-pane fade active in">
+                        <h2 id="review-title">项目简介</h2>
+                        <div class="contacts-form">
+                            <div class="form-group required">
+                                <label class="col-sm-2 control-label" for="input-firstname">项目名称</label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="firstname" value="" placeholder="项目名称" id="projectname" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group required">
+                                <label class="col-sm-2 control-label" for="input-firstname">经营分类</label>
+                                <div class="col-sm-10">
+                                    <label style="margin-right:10px;"><input type="radio" name="OpereateType" checked="checked" value="1" class="OpereateType" /> 外包</label>
+                                    <label><input type="radio" class="OpereateType" name="OpereateType" value="2" /> 合伙</label>
+                                </div>
+                            </div>
+                            <div class="form-group required">
+                                <label class="col-sm-2 control-label" for="input-firstname">开发分类</label>
+                                <div class="col-sm-10">
+                                    <label style="margin-right:10px;"><input type="radio" class="DevType" checked="checked" value="1" name="DevType" /> 软件</label>
+                                    <label><input type="radio" class="DevType" name="DevType" value="2" /> 物联网</label>
+                                </div>
+                            </div>
+
+                            <div class="form-group required">
+                                <label class="col-sm-2 control-label" for="input-firstname">联系人姓名</label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="firstname" value="" placeholder="联系人姓名" id="input-firstname" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group required">
+                                <label class="col-sm-2 control-label" for="input-telephone">联系方式</label>
+                                <div class="col-sm-10">
+                                    <input type="tel" name="telephone" value="" placeholder="联系方式(手机号)" id="input-telephone" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group required">
+                                <label class="col-sm-2 control-label" for="input-password">密码</label>
+                                <div class="col-sm-10">
+                                    <input type="password" name="password" value="" placeholder="密码" id="input-password" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group required">
+                                <label class="col-sm-2 control-label" for="input-password">重复密码</label>
+                                <div class="col-sm-10">
+                                    <input type="password" name="password" value="" placeholder="重复密码" id="input-confirm" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group required">
+                                <label class="col-sm-2 control-label" for="input-telephone">联系地址</label>
+                                <div class="col-sm-10">
+                                    <input type="tel" name="telephone" value="" placeholder="联系地址" id="input-link-address" class="form-control">
+                                </div>
+                            </div>
+                            @*<div class="form-group">
+            <label class="col-sm-2 control-label" for="input-firstname">团队介绍</label>
+            <div class="col-sm-10">
+                <textarea placeholder="用一句话概括你的团队" id="TeamDesc" class="form-control"></textarea>
+            </div>
+        </div>*@
+                            <div class="form-group required">
+                                <label class="col-sm-2 control-label" for="input-info">项目介绍（300字）</label>
+                                <div class="col-sm-10">
+                                    <textarea placeholder="项目介绍" id="info" class="form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="tab-2" class="tab-pane fade">
+                        <h2 id="review-title">账户信息</h2>
+                        <div class="contacts-form">
+                            <div class="form-group required">
+                                <label class="col-sm-2 control-label" for="input-company">公司状态</label>
+                                <div class="col-sm-10">
+                                    @Html.DropDownList("input-company-status", (IEnumerable<SelectListItem>)ViewBag.CompanyStatus, new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="form-group required">
+                                <label class="col-sm-2 control-label" for="input-company">公司名称</label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="company" value="" placeholder="公司名称" id="input-company" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group required">
+                                <label class="col-sm-2 control-label" for="input-address-1">公司地址</label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="address_1" value="" placeholder="公司地址" id="input-address" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="input-firstname">合伙人简介</label>
+                                <div class="col-sm-10">
+                                    <textarea placeholder="合伙人简介" id="PartInfo" class="form-control"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-group required">
+                                <label class="col-sm-2 control-label" for="input-city">城市</label>
+                                <div class="col-sm-10">
+                                    <select name="country_id" id="input-city" class="form-control">
+                                        <option value="上海">上海</option>
+                                        <option value="北京">北京</option>
+                                        <option value="深圳">深圳</option>
+                                        <option value="香港">香港</option>
+                                        <option value="其他">其他</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group required">
+                                <label class="col-sm-2 control-label" for="input-company">项目现状</label>
+                                <div class="col-sm-10">
+                                    <select name="country_id" id="NowStatus" class="form-control">
+                                        <option value="1">规划中</option>
+                                        <option value="2">开发中</option>
+                                        <option value="3">已运营</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group required">
+                                <label class="col-sm-2 control-label" for="input-company">项目开发语言</label>
+                                <div class="col-sm-10">
+                                    <select name="country_id" id="DevLanguate" class="form-control">
+                                        <option value=".NET">.NET</option>
+                                        <option value="JAVA">JAVA</option>
+                                        <option value="PHP">PHP</option>
+                                        <option value="其他">其他</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="tab-3" class="tab-pane fade">
+                        @*<div class="form-group required">
+                            <label class="col-sm-2 control-label" for="input-info">项目介绍（300字）</label>
+                            <div class="col-sm-10">
+                                <textarea placeholder="项目介绍" id="info" class="form-control"></textarea>
+                            </div>
+                        </div>*@
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="input-info">市场前景</label>
+                            <div class="col-sm-10">
+                                <textarea placeholder="市场前景" id="MarketProspect" class="form-control"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="tab-4" class="tab-pane fade">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="input-info">智能硬件需求</label>
+                            <div class="col-sm-10">
+                                <textarea placeholder="智能硬件需求" id="Hardware" class="form-control"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="tab-5" class="tab-pane fade">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="input-info">人员配置</label>
+                            <div class="col-sm-10" id="PersonSetting">
+                              
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="input-info">时长</label>
+                            <div class="col-sm-10">
+                                <select id="Month" class="form-control">
+                                    <option value="1">1个月</option>
+                                    <option value="3">3个月</option>
+                                    <option value="6">6个月</option>
+                                    <option value="12">1年</option>
+                                    <option value="24">2年</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="input-info">预估</label>
+                            <div class="col-sm-10">
+                                <b id="Money" class="red"  style="color:#F4A137;" >0</b> Rmb
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @*<div class="button-group">
+                <button class="addToCart" type="button" data-toggle="tooltip" title="" onclick="cart.add('42', '1');" data-original-title="Add to Cart"><i class="fa fa-shopping-cart"></i> <span class="hidden-xs">Add to Cart</span></button>
+                <button class="wishlist" type="button" data-toggle="tooltip" title="" onclick="wishlist.add('42');" data-original-title="Add to Wish List"><i class="fa fa-heart"></i></button>
+                <button class="compare" type="button" data-toggle="tooltip" title="" onclick="compare.add('42');" data-original-title="Compare this Product"><i class="fa fa-exchange"></i></button>
+            </div>*@
+            </div>
+            <div class="buttons clearfix" style="text-align:right;">
+               <input class="box-checkbox" type="checkbox" name="agree" id="agree" value="1">
+               <label for="agree">
+                   我已阅读eeeYooo <a href="#" class="agree" style="color:#F4A137;"><b>协议条款</b></a>
+               </label>
+                <a id="btn" onclick="register()" class="btn buttonGray">完成并立项</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="/Template/HAdmin/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+
+<script>
+    function GetJobs() {
+        ajaxGet.post({}, "/website/GetJobList", function (data) {
+            console.log(data);
+            for (var i = 0; i < data.length; i++) {
+                var html = '  <div class="col-sm-6">';
+                html += '<ul>';
+                html += '<li><label for="" style="color:#F4A137;font-size:16px;" > <b>' + data[i].Name + '</b></label><li>';
+                if (!isNullOrEmpty(data[i].List)) {
+                    for (var j = 0; j < data[i].List.length; j++) {
+                        html += '<li><label> <input onclick="checkPrice(this,\'' + data[i].List[j].Price+'\')" data-price="'+data[i].List[j].Price+'" class="person" type="checkbox" data-id="' + data[i].List[j].Id+'" id="box' + data[i].List[j].Id + '" /> ' + data[i].List[j].Name + ' - (' + data[i].List[j].Price +' / 人 / 月) </label><li> ';
+                    }
+                }
+                html += '</ul>';
+                html += '</div> ';
+                $("#PersonSetting").append(html);
+            }
+        }, function (data) { })
+    }
+    function checkPrice(cur, price) {
+        var total = 0;
+        $('.person').each(function () {
+            var checked = $(this).prop("checked");
+            if (checked) {
+                total += Number($(this).attr('data-price'));
+            }
+        })
+        total = total * $("#Month").val();
+        $('#Money').text(total.toFixed(2));
+        //var checked = $(cur).prop("checked");
+        //console.log(checked + price);
+    }
+    setTimeout(function () {
+        GetJobs();
+        $('.nav-tabs li').click(function () {
+
+            var title = $(this).find('a').attr("data-title");
+            console.log(title);
+            $("#step").text(title);
+        });
+    }, 1000);
+
+
+    function register() {
+        if ($('#btn').text() != '完成并立项') { return; }
+
+        var Data = {};
+        var ProjectName = $("#projectname").val();//姓名
+        if (ProjectName == "") { layer.msg("请输入项目名称", { icon: 2 }); $("#changetb1").click(); return; }
+        Data.ProjectName = ProjectName;
+        Data.OpereateType = $('.OpereateType:checked').val();//经营分类
+        Data.DevType = $(".DevType:checked").val();//开发分类
+
+        var Name = $("#input-firstname").val();//姓名
+        if (Name == "") { layer.msg("请输入联系人姓名", { icon: 2 }); $("#changetb1").click(); return; }
+        if (Name.length > 10) { layer.msg("联系人姓名不超过10个", { icon: 2 }); $("#changetb1").click(); return; }
+        Data.Name = Name;
+        var Telephone = $("#input-telephone").val();//所在城市
+        if (Telephone == "") { layer.msg("请输入联系方式", { icon: 2 }); $("#changetb1").click(); return; }
+        if (!checkMobile(Telephone)) {
+            layer.msg("手机号格式错误", { icon: 2 }); $("#changetb2").click(); return;
+        }
+        Data.Telephone = Telephone;
+        //var Email = $("#input-email").val();//联系人邮箱
+        //if (Email == "") { layer.msg("请输入邮箱", { icon: 2 }); $("#changetb2").click(); return; }
+        //if (!isEmail(Email)) {
+        //    layer.msg("邮箱格式错误", { icon: 2 }); $("#changetb2").click(); return;
+        //}
+        //Data.Email = Email;
+        var pwd = $("#input-password").val();//密码
+        if (pwd == "") { layer.msg("请输入密码", { icon: 2 }); $("#changetb2").click(); return; }
+        if (pwd.length < 6) { layer.msg("密码至少为6位数", { icon: 2 }); $("#changetb2").click(); return; }
+        var repwd = $("#input-confirm").val();//密码
+        if (pwd != repwd) { layer.msg("两次密码不一致", { icon: 2 }); $("#changetb2").click(); return; }
+        Data.PassWord = pwd;
+        var MemberAddress = $("#input-link-address").val();//姓名
+        if (MemberAddress == "") { layer.msg("请输入联系地址", { icon: 2 }); $("#changetb1").click(); return; }
+        if (MemberAddress.length > 10) { layer.msg("联系地址不超过50个汉字", { icon: 2 }); $("#changetb1").click(); return; }
+        Data.MemberAddress = MemberAddress;
+        if ($("#TeamDesc").val().length > 100) { layer.msg("团队介绍不超过100个汉字", { icon: 2 }); $("#changetb1").click(); return; }
+        Data.TeamDesc = $("#TeamDesc").val();
+
+        var CompanyName = $("#input-company").val();//公司名
+        if (CompanyName == "") { layer.msg("请输入公司名", { icon: 2 }); $("#changetb2").click(); return; }
+        if (CompanyName.length > 20) { layer.msg("公司名最多20字", { icon: 2 }); $("#changetb2").click(); return; }
+        Data.CompanyName = CompanyName;
+        Data.CompanyStatus = $("#input-company-status").val();
+        Data.PartInfo = $("#PartInfo").val();
+
+        var CompanyAddress = $("#input-address").val();//公司地址
+        if (CompanyAddress == "") { layer.msg("请输入公司地址", { icon: 2 }); $("#changetb2").click(); return; }
+        if (CompanyAddress.length > 100) { layer.msg("公司地址最多100字", { icon: 2 }); $("#changetb2").click(); return; }
+        Data.CompanyAddress = CompanyAddress;
+
+        //var CompanyInfo = $("#input-info").val();//公司简介
+        //if (CompanyInfo == "") { layer.msg("请输入公司简介", { icon: 2 }); $("#changetb3").click(); return; }
+        //if (CompanyInfo.length > 200) { layer.msg("公司简介最多200字", { icon: 2 }); $("#changetb3").click(); return; }
+        //Data.CompanyInfo = CompanyInfo;
+        var Info = $("#info").val();//公司地址
+        if (Info == "") { layer.msg("请输入项目简介", { icon: 2 }); $("#changetb3").click(); return; }
+        if (Info.length > 200) { layer.msg("项目简介最多100字", { icon: 2 }); $("#changetb3").click(); return; }
+        Data.Info = Info;
+        if ($("#MarketProspect").val().length > 50) { layer.msg("前景最多50字", { icon: 2 }); $("#changetb3").click(); return; }
+        Data.MarketProspect = $("#MarketProspect").val();
+        if ($("#Hardware").val().length > 50) { layer.msg("硬件需求最多50字", { icon: 2 }); $("#changetb4").click(); return; }
+        Data.Hardware = $("#Hardware").val();
+        Data.City = $("#input-city").val();
+        Data.NowStatus = $("#NowStatus").val();//项目目前状态
+        Data.DevLanguate = $("#DevLanguate").val();//项目开发语言
+        Data.Role = 1;
+        var person = [];
+        $('.person').each(function () {
+            var checked = $(this).prop("checked");
+            if (checked) person.push($(this).attr('data-id'));
+        });
+        Data.RoleId = person.join(',');
+        Data.Month = $('#Month').val();
+        //console.log(Data);
+        var url = "/Account/AddProject";
+
+        $('#btn').text('提交中...')
+        ajaxGet.post(Data, url, function (data) { AddDataSuccess(data); }, function (data) { ExceptionDeal(data); })
+    }
+    function AddDataSuccess(json) {
+        $('#btn').text('完成并立项')
+        if (json.IsSuccess) {
+            layer.msg("立项成功,请登录到客户端", { icon: 1 });
+            location = "/WebSite/Login";
+        } else {
+            layer.msg(json.Message, { icon: 2 });
+        }
+    }
+</script>

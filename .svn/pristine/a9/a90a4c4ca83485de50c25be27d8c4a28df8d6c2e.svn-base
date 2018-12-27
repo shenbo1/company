@@ -1,0 +1,417 @@
+﻿@model Company.Dto.CompanyUser
+@using Company.Dto;
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+
+
+<!-- Mirrored from www.zi-han.net/theme/hplus/contacts.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 20 Jan 2016 14:18:21 GMT -->
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人中心</title>
+
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="/content/css/bootstrap.min14ed.css?v=3.3.6" rel="stylesheet">
+    <link href="/content/css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet">
+
+    <link href="/content/css/animate.min.css" rel="stylesheet">
+    <link href="/content/css/style.min862f.css?v=4.1.0" rel="stylesheet">
+
+</head>
+
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <a class="btn btn-primary " style="float:right;" href="javascript:location.reload();" title="页面刷新"><i class="fa fa-refresh"></i> </a>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="animated fadeInRight">
+                    <div class="ibox-title">
+                        <h5>个人资料</h5>
+                    </div>
+                    <div class="ibox-content form-horizontal">
+                        <div class="col-sm-4">
+                            <div class="text-center">
+                                <img alt="@Model.Name" class="img-circle m-t-xs img-responsive" src="@Model.WeChatHeadUrl">
+                                <div class="m-t-xs font-bold"><a id="upload" title="上传头像"><i class="fa fa-upload"></i> 上传头像</a></div>
+                                <input type="file" style="display:none;" name="file" id="file_upload" value="" accept="image/jpg,image/jpeg,image/png" />
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <h3><strong>@Model.Name</strong> <small>@Model.UsedName</small></h3>
+                            <p><i class="fa fa-user"></i> @Model.DepartName</p>
+                            <p><i class="fa fa-phone"></i> @Model.Mobile <a title="修改手机号" onclick="show('#e_mobile')"><i class="fa fa-edit"></i> 修改手机号</a></p>
+                            <p><i class="fa fa-envelope"></i> @Model.Email <a title="修改邮箱" onclick="show('#e_email')"><i class="fa fa-edit"></i> 修改邮箱</a></p>
+                            <p><i class="fa fa-lock"></i> ****** <a title="修改密码" onclick="show('#e_password')"><i class="fa fa-edit"></i> 修改密码</a> </p>
+                            <p><i class="fa fa-tag"></i> @Model.CardNo <a title="修改基本信息" onclick="show('#e_base')"><i class="fa fa-edit"></i> 修改基本信息</a></p>
+                            <p>
+                                <i class="fa fa-odnoklassniki"></i>
+                                @Model.SexTxt
+                                @Model.Nation
+                                @Model.PoliticalTxt
+                                <i class="fa fa-graduation-cap"></i> @Model.EducationTxt
+                            </p>
+                            <p><i class="fa fa-map-marker"></i> @Model.HomeAddress @Model.HomeAddressTypeTxt</p>
+                            <p><i class="fa fa-home"></i> @Model.Address </p>
+                            <p><i class="fa fa fa-chain"></i> @Model.SocialNo </p>
+                            <p><i class="fa fa-clock-o"></i> @Model.EnterDate.ToString("yyyy-MM-dd")</p>
+                            <p>
+                                <img style="max-width:100%;" id="CardFrontSrc" alt="身份证正面" src="@Model.CardFront.Replace("small","large")" />
+                                <div class="m-t-xs font-bold"><a id="upload2" title="上传身份证正面"><i class="fa fa-upload"></i> 上传身份证正面</a></div>
+                                <input type="file" style="display:none;" name="file" id="file_upload2" value="" accept="image/jpg,image/jpeg,image/png" />
+                            </p>
+                            <p>
+                                <img style="max-width:100%;" id="CardFontBehindSrc" alt="身份证反面" src="@Model.CardFontBehind.Replace("small","large")" />
+                                <div class="m-t-xs font-bold"><a id="upload3" title="上传身份证反面"><i class="fa fa-upload"></i> 上传身份证反面</a></div>
+                                <input type="file" style="display:none;" name="file" id="file_upload3" value="" accept="image/jpg,image/jpeg,image/png" />
+                            </p>
+                            <p>
+                                <img style="max-width:100%;" id="EducationPhotoSrc" alt="学历证明" src="@Model.EducationPhoto.Replace("small","large")" />
+                                <div class="m-t-xs font-bold"><a id="upload4" title="上传学历证明"><i class="fa fa-upload"></i> 上传学历证明</a></div>
+                                <input type="file" style="display:none;" name="file" id="file_upload4" value="" accept="image/jpg,image/jpeg,image/png" />
+                            </p>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6" id="e_base" style="display:none;">
+                <div class="animated fadeInRight">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>基本信息修改</h5>
+                            <button type="button" class="close" onclick="$('#e_base').hide();"><span>&times;</span></button>
+                        </div>
+                        <div class="ibox-content form-horizontal">
+                            <div class="form-group">
+                                <label for="SocialNo" class="col-sm-3 control-label"><span class="text-danger">*</span>社保编号：</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="SocialNo" value="@Model.SocialNo" placeholder="社保编号">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label"><span class="text-danger">*</span>身份证号：</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" onkeyup="OnlyNum(this)" value="@Model.CardNo" id="CardNo" placeholder="身份证号">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label"><span class="text-danger">*</span>性别：</label>
+                                <div class="col-sm-8">
+                                    @Html.DropDownList("Sex", (IEnumerable<SelectListItem>)ViewBag.Sex, new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="Nation" class="col-sm-3 control-label"><span class="text-danger">*</span>民族：</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" value="@Model.Nation" id="Nation" placeholder="民族">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="Political" class="col-sm-3 control-label"><span class="text-danger">*</span>政治面貌：</label>
+                                <div class="col-sm-8">
+                                    @Html.DropDownList("Political", (IEnumerable<SelectListItem>)ViewBag.Political, new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="HomeAddress" class="col-sm-3 control-label"><span class="text-danger">*</span>户籍地址：</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" value="@Model.HomeAddress" id="HomeAddress" placeholder="户籍地址">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="HomeAddressType" class="col-sm-3 control-label"><span class="text-danger">*</span>户籍类别：</label>
+                                <div class="col-sm-8">
+                                    @Html.DropDownList("HomeAddressType", (IEnumerable<SelectListItem>)ViewBag.HuKou, new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="Address" class="col-sm-3 control-label"><span class="text-danger">*</span>本市居住地址：</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="Address" value="@Model.Address" placeholder="本市居住地址">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="EnterDate" class="col-sm-3 control-label"><span class="text-danger">*</span>入职时间：</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="EnterDate" value="@Model.EnterDate.ToString("yyyy-MM-dd")" onfocus="WdatePicker()" placeholder="入职时间">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-3 col-sm-8">
+                                    <button class="btn btn-sm btn-primary" type="button" onclick="Modify('base')">修 改</button>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+            <div class="col-sm-6" id="e_password" style="display:none;">
+                <div class="animated fadeInRight">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>密码修改</h5>
+                            <button type="button" class="close" onclick="$('#e_password').hide();"><span>&times;</span></button>
+                        </div>
+                        <div class="ibox-content form-horizontal">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">旧密码：</label>
+                                <div class="col-sm-8">
+                                    <input type="password" placeholder="旧密码" id="old" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">新密码：</label>
+                                <div class="col-sm-8">
+                                    <input type="password" placeholder="新密码" id="pwd" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">重复密码：</label>
+                                <div class="col-sm-8">
+                                    <input type="password" placeholder="重复密码" id="repwd" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-3 col-sm-8">
+                                    <button class="btn btn-sm btn-primary" type="button" onclick="Modify('pwd')">修 改</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4" id="e_mobile" style="display:none;">
+                <div class="animated fadeInRight">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>手机号修改</h5>
+                            <button type="button" class="close" onclick="$('#e_mobile').hide();"><span>&times;</span></button>
+                        </div>
+                        <div class="ibox-content form-horizontal">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">新手机：</label>
+                                <div class="col-sm-8">
+                                    <input type="tel" maxlength="11" placeholder="手机号" id="mobile" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-offset-3 col-sm-8">
+                                    <button class="btn btn-sm btn-primary" type="button" onclick="Modify('mobile')">修 改</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4" id="e_email" style="display:none;">
+                <div class="animated fadeInRight">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>邮箱修改</h5>
+                            <button type="button" class="close" onclick="$('#e_email').hide();"><span>&times;</span></button>
+                        </div>
+                        <div class="ibox-content form-horizontal">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">新邮箱：</label>
+                                <div class="col-sm-8">
+                                    <input type="email" placeholder="邮箱地址" id="email" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-offset-3 col-sm-8">
+                                    <button class="btn btn-sm btn-primary" type="button" onclick="Modify('email')">修 改</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/content/js/jquery.min.js?v=2.1.4"></script>
+    <script src="/content/js/bootstrap.min.js?v=3.3.6"></script>
+    <script src="/content/js/content.min.js?v=1.0.0"></script>
+    <script src="/Content/js/ajax.js"></script>
+    <script src="/Content/js/font.js"></script>
+    <script src="~/Content/js/plugins/layer/layer.min.js"></script>
+    <script src="/Content/js/UploadJs/upload.js?@DateTime.Now"></script>
+    <script>
+        $('#Sex').val("@Model.Sex")
+        $('#Political').val("@Model.Political");
+        $('#HomeAddressType').val("@Model.HomeAddressType");
+        var id = '@Model.Id';
+        function show(id) { $(id).show(); }
+        var upload = new UploadImages();
+        upload.Success = function (src) {
+            //console.log(src + '');
+            upload.FileObj.siblings('img').attr('src', src);
+            var Data = {};
+            Data.Id = id;
+            Data.WeChatHeadUrl = src;
+             var url = "@Url.Action("CompanyUserAdd")";
+            ajaxGet.post(Data, url, function (json) {
+                if (json.IsSuccess) {
+                    layer.msg('头像修改成功', { icon: 1 });
+                } else {
+                    layer.msg(json.Message, { icon: 2 });
+                }
+
+            }, function (data) { ExceptionDeal(data); })
+
+        };
+        upload.Init();
+
+        var upload2 = new UploadImages();
+        upload2.FileObj = $('#file_upload2');
+        upload2.EditObj = $('#upload2');
+        upload2.Success = function (src) {
+           
+            //$('#EducationPhoto').val(src);
+            $('#CardFrontSrc').attr('src', src.replace('small', 'large'));
+            var Data = {};
+            Data.Id = id;
+            Data.CardFront = src;
+             var url = "@Url.Action("CompanyUserAdd")";
+            ajaxGet.post(Data, url, function (json) {
+                if (json.IsSuccess) {
+                    //layer.msg('头像修改成功', { icon: 1 });
+                    layer.msg("身份证正面上传成功", { icon: 1 });
+                } else {
+                    layer.msg(json.Message, { icon: 2 });
+                }
+
+            }, function (data) { ExceptionDeal(data); })
+
+            //upload2.EditObj.parent().find('input').val(src);
+        };
+        upload2.Init();
+        var upload3 = new UploadImages();
+        upload3.FileObj = $('#file_upload3');
+        upload3.EditObj = $('#upload3');
+        upload3.Success = function (src) {
+            $('#CardFontBehindSrc').attr('src',src.replace('small','large'));
+            //upload2.EditObj.parent().find('input').val(src);
+             var Data = {};
+            Data.Id = id;
+            Data.CardFontBehind = src;
+             var url = "@Url.Action("CompanyUserAdd")";
+            ajaxGet.post(Data, url, function (json) {
+                if (json.IsSuccess) {
+                    //layer.msg('头像修改成功', { icon: 1 });
+                    layer.msg("身份证反面上传成功", { icon: 1 });
+                } else {
+                    layer.msg(json.Message, { icon: 2 });
+                }
+
+            }, function (data) { ExceptionDeal(data); })
+        };
+        upload3.Init();
+        var upload4 = new UploadImages();
+        upload4.FileObj = $('#file_upload4');
+        upload4.EditObj = $('#upload4');
+        upload4.Success = function (src) {
+            $('#EducationPhotoSrc').attr('src',src.replace('small','large'));
+             var Data = {};
+            Data.Id = id;
+            Data.EducationPhoto = src;
+             var url = "@Url.Action("CompanyUserAdd")";
+            ajaxGet.post(Data, url, function (json) {
+                if (json.IsSuccess) {
+                    //layer.msg('头像修改成功', { icon: 1 });
+                    layer.msg("学历证明上传成功", { icon: 1 });
+                } else {
+                    layer.msg(json.Message, { icon: 2 });
+                }
+
+            }, function (data) { ExceptionDeal(data); })
+        
+            
+            //upload2.EditObj.parent().find('input').val(src);
+        };
+        upload4.Init();
+
+
+        function Modify(way) {
+            var Data = {};
+            Data.Id = id;
+            if (way == "email") {
+                var email = $("#email").val();
+                if (email == "") { layer.msg("请填写邮箱", { icon: 2 }); return; }
+                if (!isEmail(email)) {
+                    layer.msg("邮箱格式错误", { icon: 2 }); return;
+                }
+                Data.Email = email;
+            }
+            else if (way == "mobile") {
+                var mobile = $("#mobile").val();
+                if (mobile == "") { layer.msg("请填写手机号", { icon: 2 }); return; }
+                if (!checkMobile(mobile)) {
+                    layer.msg("手机号格式错误", { icon: 2 }); return;
+                }
+                Data.Mobile = mobile;
+            }
+            else if (way == 'pwd') {
+                var old = $("#old").val();
+                if (old == '') { layer.msg("请输入旧密码", { icon: 2 }); return; }
+                var pwd = $("#pwd").val();
+                if (pwd == '') { layer.msg("请输入新密码", { icon: 2 }); return; }
+                if (pwd.length < 6) { layer.msg("密码长度至少6位数", { icon: 2 }); return; }
+                if (pwd != $("#repwd").val()) { layer.msg("重复密码不一致", { icon: 2 }); return; }
+                Data.PassWord = old;
+                Data.ModifyBy = pwd;
+            }
+            else {
+                var SocialNo = $("#SocialNo").val();//社保编号
+                if (SocialNo == "") { layer.msg("请输入社保编号", { icon: 2 }); return; }
+                Data.SocialNo = SocialNo;
+                var CardNo = $("#CardNo").val();//身份证号
+                if (CardNo == "") { layer.msg("请输入身份证号", { icon: 2 }); return; }
+                Data.CardNo = CardNo;
+                var Sex = $("#Sex").val();//性别
+                if (Sex == "") { layer.msg("请输入性别", { icon: 2 }); return; }
+                Data.Sex = Sex;
+                var Nation = $("#Nation").val();//名族
+                if (Nation == "") { layer.msg("请输入民族", { icon: 2 }); return; }
+                Data.Nation = Nation;
+                var Political = $("#Political").val();//政治面貌
+                if (Political == "") { layer.msg("请输入政治面貌", { icon: 2 }); return; }
+                Data.Political = Political;
+                var Education = $("#Education").val();//学历
+                if (Education == "") { layer.msg("请输入学历", { icon: 2 }); return; }
+                Data.Education = Education;
+                var HomeAddress = $("#HomeAddress").val();//户籍地址
+                if (HomeAddress == "") { layer.msg("请输入户籍地址", { icon: 2 }); return; }
+                Data.HomeAddress = HomeAddress;
+                var HomeAddressType = $("#HomeAddressType").val();//户籍类别
+                if (HomeAddressType == "") { layer.msg("请输入户籍类别", { icon: 2 }); return; }
+                Data.HomeAddressType = HomeAddressType;
+                var Address = $("#Address").val();//本市居住地址
+                if (Address == "") { layer.msg("请输入本市居住地址", { icon: 2 }); return; }
+                Data.Address = Address;
+                var EnterDate = $("#EnterDate").val();//入职时间
+                if (EnterDate == "") { layer.msg("请选择入职时间", { icon: 2 }); return; }
+                Data.EnterDate = EnterDate;
+            }
+            var url = "@Url.Action("CompanyUserAdd")";
+            ajaxGet.post(Data, url, function (json) {
+                if (json.IsSuccess) {
+                    layer.msg('保存成功', { icon: 1 });
+                    setTimeout(function () { window.location.reload(); }, 1500)
+                } else {
+                    layer.msg(json.Message, { icon: 2 });
+                }
+            }, function (data) { ExceptionDeal(data); })
+        }
+    </script>
+</body>
+
+</html>

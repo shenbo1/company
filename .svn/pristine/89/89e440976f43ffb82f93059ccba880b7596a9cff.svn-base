@@ -1,0 +1,182 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Dapper;
+using System.Data.SqlClient;
+using System.Data;
+using Company.Dto;
+using Company.DAL;
+using Company.Dto.Model;
+using Company.DAL.Common;
+using Company.Util;
+using Dapper;
+
+namespace Company.DAL.Data
+{
+    public class UserMenuDBOperate
+    {
+        const string TableName = "UserMenu";
+
+
+        #region 添加
+        /// <summary>
+        /// 添加
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public static bool AddUserMenu(UserMenu model)
+        {
+            model.CreateDate = DateTime.Now;
+            string sql = string.Format(@"insert into {0}([Name],[Url],[MenuIcon],[PID],[OrderIndex],[IsLeft],[CreateDate]) 
+            values(@Name,@Url,@MenuIcon,@PID,@OrderIndex,@IsLeft,@CreateDate)", TableName);
+            return DBAccess.ExecuteSqlWithEntity(sql, model);
+        }
+        #endregion
+
+        #region 修改
+        /// <summary>
+        /// 修改
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public static bool UpdateUserMenu(UserMenu model)
+        {
+            model.ModifyDate = DateTime.Now;
+            string sql = string.Format(@"update {0} set Name=@Name,Url=@Url,MenuIcon=@MenuIcon,PID=@PID,OrderIndex=@OrderIndex,IsLeft=@IsLeft,ModifyDate=@ModifyDate 
+            where Id=@Id", TableName);
+            return DBAccess.ExecuteSqlWithEntity(sql, model);
+        }
+        #endregion
+
+        #region 获取单个对象
+        /// <summary>
+        /// 获取单个对象
+        /// </summary>
+        /// <param name="Id">编号</param>
+        /// <returns></returns>
+        public static UserMenu GetModelById(int Id)
+        {
+            string sql = string.Format(@"select [ID],[Name],[Url],[MenuIcon],[PID],[OrderIndex],[IsLeft],[CreateDate] from {0} (nolock) where Id=@Id", TableName);
+            return DBAccess.GetEntityById<UserMenu>(sql, Id);
+        }
+        #endregion
+
+        #region 获取所有数据
+        /// <summary>
+        /// 获取所有数据
+        /// </summary>
+        /// <returns></returns>
+        public static List<UserMenu> GetAllList()
+        {
+            string sql = string.Format(@"select [ID],[Name],[Url],[MenuIcon],[PID],[OrderIndex],[IsLeft],[CreateDate] from {0} (nolock) order by OrderIndex,CreateDate", TableName);
+            return DBAccess.GetEntityList<UserMenu>(sql, new { });
+        }
+        #endregion
+
+        #region 获取分页列表
+        /// <summary>
+        /// 获取分页列表
+        /// </summary>
+        /// <param name="pagesize">每页显示多少行</param>
+        /// <param name="offset">跳过行数</param>
+        /// <param name="key">关键词</param>
+        /// <param name="totalcount">输出行数</param>
+        /// <returns></returns>
+        public static List<UserMenu> GetPagerList(int pagesize, int offset, string name, out int totalcount)
+        {
+            totalcount = 0;
+            Pager pager = new Pager() { TableName = TableName, Offset = offset, PageSize = pagesize, ColName = "OrderIndex", Direction = Direction.ASC };
+            pager.Columns = "[ID],[Name],[Url],[MenuIcon],[PID],[OrderIndex],[IsLeft],[CreateDate]";
+            object param = null;
+            var list = PagerDBOperate<UserMenu>.Init.GetList(pager, param, out totalcount);
+            return list;
+        }
+        #endregion
+
+        #region 根据角色编号获取权限(多个角色)
+        /// <summary>
+        /// 根据角色编号获取权限(多个角色)
+        /// </summary>
+        /// <param name="RoleIds"></param>
+        /// <param name="OnlyLeft">只获取左侧菜单</param>
+        /// <returns></returns>
+        public static List<UserMenu> GetRoleMenuList(string RoleIds, bool OnlyLeft = true)
+        {
+            string sql = @"SELECT [ID],[Name],[Url],[MenuIcon],[PID],[OrderIndex],[IsLeft] 
+                FROM UserMenu WHERE ID IN(
+              select MENUID from [UserPermission] where RoleID IN(@RoleIds)";
+            if (OnlyLeft) { sql += " and IsLeft = 1"; }
+            sql += @") order by orderindex,createdate ";
+            return DBAccess.GetEntityList<UserMenu>(sql,new { });
+        }
+        #endregion
+
+        #region 根据角色编号获取权限(单个角色)
+        /// <summary>
+        /// 根据角色编号获取权限(单个角色)
+        /// </summary>
+        /// <param name="RoleIds"></param>
+        /// <returns></returns>
+        public static List<UserMenu> GetRoleMenuList(int RoleId)
+        {
+            string sql = @"SELECT [ID],[Url],[PID],[Name],[MenuIcon] FROM UserMenu WHERE ID IN(
+              select MENUID from [UserPermission] where RoleID =@RoleId
+              ) order by orderindex,createdate ";
+
+            return DBAccess.GetEntityList<UserMenu>(sql, new { RoleId = RoleId });
+        }
+        #endregion
+
+        #region 设置角色的菜单权限
+        public static bool SetRoleMenuList(int RoleId, string PermissionIds)
+        {
+            var param = new DynamicParameters();
+            param.Add("@RoleId", RoleId);
+            param.Add("@str", PermissionIds);
+            try
+            {
+                using (SqlConnection con = new SqlConnection(ConfigSetting.DataConnection))
+                {
+                    var model = con.Execute("UP_InsertPermission", param, null, null, CommandType.StoredProcedure);
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+        #endregion
+
+        #region 根据角色名和链接地址来判断是否有权限访问
+        /// <summary>
+        /// 根据角色名和链接地址来判断是否有权限访问
+        /// </summary>
+        /// <param name="RoleId">角色编号</param>
+        /// <param name="Path">链接地址</param>
+        /// <returns></returns>
+        public static bool HasPerMission(int RoleId, string Path)
+        {
+            string sql = @"SELECT COUNT(0) FROM UserPermission WHERE MenuID =
+(SELECT [ID] FROM [UserMenu] where Url=@Path)
+AND RoleID in(@RoleId)";
+            var param = new { Path = Path, RoleId = RoleId };
+            try
+            {
+                using (SqlConnection con = new SqlConnection(ConfigSetting.DataConnection))
+                {
+                    int count = con.Query<int>(sql, param).FirstOrDefault();
+                    return count > 0;
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+            return false;
+        }
+        #endregion
+
+    }
+}

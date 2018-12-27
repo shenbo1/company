@@ -1,0 +1,155 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>部门管理列表</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="/Content/css/bootstrap.min14ed.css?v=3.3.6" rel="stylesheet">
+    <link href="/Content/css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet">
+    <link href="/Content/css/plugins/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
+    <link href="/Content/css/animate.min.css" rel="stylesheet">
+    <link href="/Content/css/style.min862f.css?v=4.1.0" rel="stylesheet">
+    <link href="/Content/js/plugins/ztree/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
+    <style>
+        .box-content {
+            padding: 10px 0;
+        }
+
+        .float-e-margins .btn {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInDown">
+        <!-- Panel Other -->
+        <div class="ibox float-e-margins">
+            <div class="ibox-content">
+                <div class="row row-lg">
+                    <div class="col-sm-12">
+                        <!-- Example Events -->
+                        <div class="example-wrap">
+                            <h4 class="example-title">
+                                部门管理列表
+                                <a class="btn btn-primary " style="float:right;" href="javascript:location.reload();" title="页面刷新"><i class="fa fa-refresh"></i> </a>
+                            </h4>
+                            <div class="example">
+                                <div class="box-content form-inline">
+                                    <div class="topbtnbar">
+                                        @*<input type="text" class="form-control" id="KeyWord" onkeyup="if (event.keyCode == '13') $('#btnSearch').click()" placeholder="关键字">
+                                        <button type="button" id="btnSearch" class="btn btn-success btn-sm " onclick="Search()">
+                                            查询
+                                        </button>*@
+                                        <button type="button" id="btnAdd" class="btn btn-info btn-sm" data-toggle="modal" data-target="#DivAdd">
+                                            添加部门
+                                        </button>
+                                    </div>
+                                </div>
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>部门名称</th>
+                                            @*<th>链接地址</th>
+                                            <th>图标</th>
+                                            <th>排序</th>
+                                            <th>是否显示在左侧菜单</th>*@
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Panel Other -->
+    </div>
+
+    <script src="/Content/js/jquery.min.js?v=2.1.4"></script>
+    <script src="/Content/js/bootstrap.min.js?v=3.3.6"></script>
+    <script src="/Content/js/content.min.js?v=1.0.0"></script>
+    <script src="/Content/js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+    <script src="/Content/js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+    <script src="/Content/js/plugins/layer/layer.min.js"></script>
+    <script src="/Content/js/config.js"></script>
+    <script src="/Content/js/ajax.js"></script>
+    <script src="/Content/js/My97DatePicker/WdatePicker.js"></script>
+    <script src="/Content/js/plugins/ztree/js/jquery.ztree.core.min.js"></script>
+    <script src="/Content/js/plugins/ztree/js/jquery.ztree.excheck.js"></script>
+    <script src="/Content/js/MyTree.js?@DateTime.Now"></script>
+    @Html.Partial("_CompanyDepartMentAdd")
+    @*@Html.Partial("_AuditStepAdd")
+    @Html.Partial("_FinanceConfigSet")*@
+    @Html.Partial("_UserRolePermission")
+</body>
+</html>
+<script>
+    $(function () {
+        ajaxGet.post({}, '@Url.Action("CompanyDepartMentList")', function (data) {
+            var json = data.rows;
+
+            for (var i = 0; i < json.length; i++) {
+                var html = '';
+                html += '<tr class="alert alert-success">';
+                html += '<td >' + json[i].Name + ' (' + json[i].ChildList.length + ')' + '</td>';
+                html += '<td>';
+               if(json[i].CompanyId!=0)  html += '<a title="修改" onclick="GetInfo(\'' + json[i].Id + '\',\'' + json[i].Name + '\',\'' + json[i].PId + '\')">修改</a>';
+                html += ' <a title="添加子项" onclick="GetInfo(\'0\',\'\',\'' + json[i].Id + '\')">添加职位</a>';
+                html += '</td>';
+                html += "</tr>";
+                for (var j = 0; j < json[i].ChildList.length; j++) {
+                    html += '<tr class="alert alert-info">';
+                    html += '<td>' + json[i].ChildList[j].Name + '</td>';
+                    html += '<td>';
+                    if (json[i].ChildList[j].CompanyId != 0) html += '<a  title="修改" onclick="GetInfo(\'' + json[i].ChildList[j].Id + '\',\'' + json[i].ChildList[j].Name + '\',\'' + json[i].ChildList[j].PId + '\')"><i class="fa fa-edit"></i> 修改</a>';
+                    if (json[i].ChildList[j].CompanyId != 0) html += ' <a onclick="UserPermission(\'' + json[i].ChildList[j].Id + '\',\'' + json[i].ChildList[j].Name  + '\')" title="权限分配"><i class="fa fa-paper-plane-o"></i> 权限分配</a>';
+                    html += '</td>';
+                    html += "</tr>";
+                }
+                $("#tbody").append(html);
+            }
+
+        }, function (data) {
+            ExceptionDeal(data);
+        });     
+    });
+    function Search() {
+        location.reload();
+    }
+      //修改
+    function GetInfo(id,name,pid) {
+        $('#DivAdd').modal("show");
+        $("#hiddenId").val(id);
+        $('#Name').val(name);
+        $('#PId').val(pid);
+        if (pid== 0) {
+            document.getElementById("PId").options[0].selected = true;
+        }
+
+    }
+    function AuditInfo(json)
+    {
+        $("#hidDepartMent").val(json.Id);
+        $("#AuditStep .modal-title").text(json.PName + "/" + json.Name + "-审批人设置");
+        Audit.GetAudit()
+    }
+     /* 权限分配 */
+    function UserPermission(id, name) {
+        $("#PersissionRoleId").val(id);
+        $("#PermissionName").text(name + "--权限分配");
+        $('#DivPermission').modal("show");
+        var url = "@Url.Action("UserGetPermissionByRole")";
+        var Data = { RoleId: id };
+        ajaxGet.post(Data, url, function (data) { GetPermission(data); }, function (data) { ExceptionDeal(data); })
+    }
+    /* 数组 */
+    function GetPermission(data) {
+        if (data.IsSuccess) AssignCheck(data.Data);
+    }
+</script>

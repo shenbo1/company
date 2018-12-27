@@ -1,0 +1,239 @@
+﻿
+@{
+    Layout = null;
+}
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工单列表</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="/Content/css/bootstrap.min14ed.css?v=3.3.6" rel="stylesheet">
+    <link href="/Content/css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet">
+    <link href="/Content/css/plugins/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
+    <link href="/Content/css/animate.min.css" rel="stylesheet">
+    <link href="/Content/css/style.min862f.css?v=4.1.0" rel="stylesheet">
+    <style>
+        .box-content {
+            padding: 10px 0;
+        }
+
+        .float-e-margins .btn {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInDown">
+        <!-- Panel Other -->
+        <div class="ibox float-e-margins">
+            <div class="ibox-content">
+                <div class="row row-lg">
+                    <div class="col-sm-12">
+                        <!-- Example Events -->
+                        <div class="example-wrap">
+                            <h4 class="example-title">
+                                工单列表 <span id="gongdandetail"></span>
+                                <a class="btn btn-primary " style="float:right;" href="javascript:location.reload();" title="页面刷新"><i class="fa fa-refresh"></i> </a>
+
+                                <a class="btn btn-primary " style="float:right;margin-right:10px;" href="/admin/ProjectManageInfo" title="返回上一级"><i class="fa fa-arrow-left"></i> </a>
+
+                            </h4>
+                            <div class="example">
+                                <div class="box-content form-inline">
+                                    <div class="topbtnbar">
+                                        <input type="text" class="form-control" id="KeyWord" onkeyup="if (event.keyCode == '13') $('#btnSearch').click()" placeholder="关键字">
+                                        @Html.DropDownList("ProjectIdSel", (IEnumerable<SelectListItem>)ViewBag.Project, "全部", new { @class = "form-control" })
+                                        @Html.DropDownList("StatusSel", (IEnumerable<SelectListItem>)ViewBag.WorkListStatus, "全部", new { @class = "form-control" })
+                                        <button type="button" id="btnSearch" class="btn btn-success btn-sm " onclick="Search()">
+                                            查询
+                                        </button>
+                                        <button type="button" id="btnAdd" class="btn btn-info btn-sm" data-toggle="modal" data-target="#DivAdd">
+                                            新增
+                                        </button>
+                                    </div>
+                                </div>
+                                <table id="table"></table>
+                                <input type="hidden" id="hidPId" value="@ViewBag.ProjectId" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Panel Other -->
+    </div>
+
+    <script src="/Content/js/jquery.min.js?v=2.1.4"></script>
+    <script src="/Content/js/bootstrap.min.js?v=3.3.6"></script>
+    <script src="/Content/js/content.min.js?v=1.0.0"></script>
+    <script src="/Content/js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+    <script src="/Content/js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+    <script src="/Content/js/plugins/layer/layer.min.js"></script>
+    <script src="/Content/js/config.js"></script>
+    <script src="/Content/js/ajax.js"></script>
+    <script src="/Content/js/My97DatePicker/WdatePicker.js"></script>
+    @Html.Partial("_WorkListAdd")
+</body>
+</html>
+<script>
+    $(function () {
+        if ($("#hidPId").val() != 0) {
+            $("#ProjectIdSel,#ProjectId").val($("#hidPId").val());
+            $("#gongdandetail").html('<b class="text-danger">' + $('#ProjectIdSel option:selected').text()+'</b>')
+        }
+            
+        $('#table').bootstrapTable({
+            method: 'POST',
+            url: "@Url.Action("WorkListList")",
+            height: 500,
+            pagination: true,
+            striped: true,
+            pageSize: 10,
+            pageNumber: 1,
+            pageList: [10, 25, 50, 100, 200],
+            queryParams: QueryParams,
+            contentType: "application/x-www-form-urlencoded",
+            sidePagination: "server",
+            //showColumns: true, // 开启自定义列显示功能
+            columns: [
+            {
+                field: 'Status',
+                title: '项目状态',
+                align: 'center',
+                valign: 'middle',
+                class: 'project-status',
+                    formatter: function (value, row, index) {
+                        return '<span class="label ' + row.StatusClass + '">' + row.StatusTxt;  
+                }
+            },
+             {
+                field: 'ProjectName',
+                 title: '项目/客户名称',
+                align: 'center',
+                 valign: 'middle',
+                 formatter: function (value, row, index) {
+                     return value + '/' + row.CusMemberName;
+                 }
+            },
+            {
+                field: 'Name',
+                title: '工单名称',
+                align: 'left',
+                valign: 'middle',
+                class: 'project-title',
+                formatter: function (value, row, index) {
+                    var html = '';
+                    html += '<a href="#">'+value+'</a><br />'
+                    html += '<small>创建于 ' + ChangeDt(row.CreateDate) + '</small><br />';
+                    html += '<small>下单于 ' + ChangeDt(row.GetTime) + '</small><br />';
+                    html += '<small>需求分析于 ' + ChangeDt(row.DoTime) + '</small><br />';
+                    html += '<small>接单于 ' + ChangeDt(row.DoTime) + '</small>';
+                    return html;
+                }
+            },
+            {
+                field: 'Infos',
+                title: '工单内容',
+                align: 'center',
+                valign: 'middle',
+                formatter: function (value, row, index) {
+                    if (value.length > 10) {
+                        return '<a onclick="layer.alert(\'' + value + '\')">' + value.substr(0, 10) + '...' + '</a>';
+                    }
+                     return value;
+                 }
+            },  {
+                field: 'Users',
+                title: '参与人员',
+                align: 'center',
+                valign: 'middle',
+                class:'project-people',
+                formatter: function (value, row, index) {
+                    var html = '';
+                    //html += '<a href="#"><img alt="image" class="img-circle" src="/content/img/a1.jpg"></a>';
+                    //html += '<a href="#"><img alt="image" class="img-circle" src="/content/img/a3.jpg"></a>';
+                    html += '';
+                    return html;
+                }
+            }, {
+                field: 'Length',
+                title: '项目进度',
+                align: 'center',
+                valign: 'middle',
+                formatter: function (value, row, index) {
+                    var html = '';
+                    html += ' <small>当前进度： '+value+'%</small>';
+                    html += ' <div class="progress progress-mini" >';
+                    html += ' <div style="width: ' + value +'%;" class="progress-bar"></div>';
+                    html += ' </div >';
+                    return html;
+                }
+            }, 
+            {
+                field: 'Id',
+                title: '操作',
+                align: 'center',
+                valign: 'middle',
+                formatter: function (value, row, index) {
+                    var operate = '';
+                    operate += ' <a class="btn btn-info btn-sm look"><i class="fa fa-folder"></i> 查看 </a>';
+                    operate += ' <a class="btn btn-success btn-sm detail"><i class="fa fa-search"></i> 详细条目 </a>';
+                    operate += ' <a class="btn btn-white btn-sm edit"><i class="fa fa-pencil"></i> 编辑 </a>';
+                    return operate;
+                },
+                events: operateEvents
+            }
+            ]
+        });
+    });
+    function QueryParams(parma) {
+        parma["KeyWord"] = $("#KeyWord").val();
+        offset = parma["offset"] = parma.offset;
+        limit = parma["limit"] = parma.limit;
+        parma["ProjectId"] = $("#ProjectIdSel").val();
+        parma["Status"] = $('#StatusSel').val();
+        if ($("#ProjectIdSel").val() != 0) {
+            $("#gongdandetail").html('<b class="text-danger">' + $('#ProjectIdSel option:selected').text() + '</b>');
+            $('#ProjectId').val($("#ProjectIdSel").val())
+        }
+        else {
+            $("#gongdandetail").html('');
+        }
+
+        return parma;
+    }
+    //查询按钮
+    function Search() {
+        $('#table').bootstrapTable("refresh");
+    }
+     //列事件
+    window.operateEvents = {
+        'click .edit': function (e, value, row, index) {
+            GetInfo(row);
+        },
+        'click .look': function (e, value, row, index) {
+           // alert('功能未开放');
+            window.open('/admin/WorkListDetail?id=' + row.Id);
+        },
+        'click .detail': function (e, value, row, index) {
+            
+        }
+    };
+      //修改
+    function GetInfo(json) {
+        $('#DivAdd').modal("show");
+        $("#hiddenId").val(json.Id);
+        $('#CusMemberId').val(json.CusMemberId);
+        $('#Name').val(json.Name);
+        $('#Infos').val(json.Infos);
+        $('#GetTime').val(ChangeDt(json.GetTime));
+        $('#NeedTime').val(ChangeDt(json.NeedTime));
+        $('#DoTime').val(ChangeDt(json.DoTime));
+        $('#Status').val(json.Status);
+    }
+</script>

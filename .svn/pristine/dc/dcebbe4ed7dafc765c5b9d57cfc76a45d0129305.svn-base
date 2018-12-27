@@ -1,0 +1,104 @@
+﻿<div class="modal fade" id="DivAdd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none">
+    <form id="commentForm" class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="btnClose()"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">新增/修改信息</h4>
+            </div>
+            <div class="modal-body" style="overflow-y:auto;max-height:500px">
+                <span class="label label-warning" id="bErrorInfo" style="display:none;"></span>
+                <div class="form-group">
+                    <label for="CompanyName">简称</label>
+                    <input type="text" class="form-control" id="CompanyName" placeholder="简称">
+                </div>
+                <div class="form-group">
+                    <label for="CompanyFullName">全称</label>
+                    <input type="text" class="form-control" id="CompanyFullName" placeholder="全称">
+                </div>
+                <div class="form-group">
+                    <label for="Address">公司地址</label>
+                    <input type="text" class="form-control" id="Address" placeholder="公司地址">
+                </div>
+                <div class="form-group">
+                    <label for="Way">付费方式</label>
+                    <input type="text" class="form-control" id="Way" onkeyup="OnlyNum(this)" placeholder="付费方式">
+                </div>
+                <div class="form-group">
+                    <label for="Name">联系人姓名</label>
+                    <input type="text" class="form-control" id="Name" placeholder="联系人姓名">
+                </div>
+                <div class="form-group">
+                    <label for="Mobile">联系人手机</label>
+                    <input type="text" class="form-control" id="Mobile" placeholder="联系人手机">
+                </div>
+                <div class="form-group">
+                    <label for="EndTime">截止时间</label>
+                    <input type="text" class="form-control" id="EndTime" onfocus="WdatePicker({minDate:'%y-%M-%d'})" placeholder="截止时间">
+                </div>
+                <div class="form-group">
+                    <label for="LastPayTime">最近一次付费时间</label>
+                    <input type="text" class="form-control" id="LastPayTime" onfocus="WdatePicker({minDate:'%y-%M-%d'})" placeholder="最近一次付费时间">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="btnClose()">关闭</button>
+                <button type="button" class="btn btn-primary" id="btnComfirm" onclick="btnAddClick()">确定</button>
+            </div>
+        </div>
+    </form>
+</div>
+<input type="hidden" id="hiddenId" value="0" />
+<script>
+    function btnClose() {
+        $('#DivAdd').modal("hide");
+        $("#hiddenId").val('0');
+        $('#CompanyName').val('');
+  $('#CompanyFullName').val('');
+  $('#Address').val('');
+  $('#Way').val('');
+  $('#Name').val('');
+  $('#Mobile').val('');
+  $('#EndTime').val('');
+  $('#LastPayTime').val('');
+
+    }
+    function btnAddClick() {
+        var ID = $("#hiddenId").val();
+        var Data = {};
+        Data.Id = ID;
+
+        var CompanyName = $("#CompanyName").val();//简称
+        if (CompanyName == "") { layer.msg("请输入简称", { icon: 2 }); return; }
+        Data.CompanyName = CompanyName;
+        var CompanyFullName = $("#CompanyFullName").val();//全称
+        if (CompanyFullName == "") { layer.msg("请输入全称", { icon: 2 }); return; }
+        Data.CompanyFullName = CompanyFullName;
+        var Address = $("#Address").val();//公司地址
+        if (Address == "") { layer.msg("请输入公司地址", { icon: 2 }); return; }
+        Data.Address = Address;
+        var Way = $("#Way").val();//付费方式
+        if (Way == "") { layer.msg("请输入付费方式", { icon: 2 }); return; }
+        Data.Way = Way;
+        var Name = $("#Name").val();//联系人姓名
+        if (Name == "") { layer.msg("请输入联系人姓名", { icon: 2 }); return; }
+        Data.Name = Name;
+        var Mobile = $("#Mobile").val();//联系人手机
+        if (Mobile == "") { layer.msg("请输入联系人手机", { icon: 2 }); return; }
+        Data.Mobile = Mobile;
+        var EndTime = $("#EndTime").val();//截止时间
+        if (EndTime == "") { layer.msg("请输入截止时间", { icon: 2 }); return; }
+        Data.EndTime = EndTime;
+        var LastPayTime = $("#LastPayTime").val();//最近一次付费时间
+        if (LastPayTime == "") { layer.msg("请输入最近一次付费时间", { icon: 2 }); return; }
+        Data.LastPayTime = LastPayTime;
+        var url = "@Url.Action("CompanyInfoAdd")";
+        ajaxGet.post(Data, url, function (data) { AddDataSuccess(data); }, function (data) { ExceptionDeal(data); })
+    }
+    function AddDataSuccess(json) {
+        if (json.IsSuccess) {
+            layer.msg(json.Message, { icon: 1 });
+            btnClose();
+            Search();
+        }
+    }
+</script>

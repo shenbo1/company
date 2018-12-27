@@ -1,0 +1,503 @@
+/*---------   less    --------*/
+p,
+a,
+nav,
+span,
+div,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+input {
+  font-size: 0.32rem;
+  color: #282828;
+}
+textarea {
+  line-height: 0.32rem;
+}
+input:-ms-input-placeholder {
+  color: #acacac;
+}
+/* Internet Explorer 10+ */
+input::-webkit-input-placeholder {
+  color: #acacac;
+}
+/* WebKit browsers */
+input::-moz-placeholder {
+  color: #acacac;
+}
+/* Mozilla Firefox 4 to 18 */
+input:-moz-placeholder {
+  color: #acacac;
+}
+textarea::-webkit-input-placeholder {
+  color: #acacac;
+}
+textarea:-moz-placeholder {
+  color: #acacac;
+}
+input:disabled {
+  background-color: #fff;
+}
+/*---------   layui    --------*/
+.layui-m-layerbtn span[yes] {
+  color: #6eb3e9;
+}
+.layer-ui-title {
+  padding-bottom: 0.66666667rem;
+  font-size: 0.37333333rem;
+  color: #acacac;
+}
+.layer-ui-inp {
+  display: block;
+  width: 80%;
+  margin: 0 auto;
+  padding: 0.13333333rem;
+  font-size: 0.66666667rem;
+  font-weight: bold;
+  text-align: center;
+  border-bottom: 2px solid #000;
+}
+.layer-ui-textarea {
+  display: block;
+  height: 3.06666667rem;
+  width: 100%;
+  padding: 0.26666667rem;
+  line-height: 0.42666667rem;
+  border-color: #ececec;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+/*---------   公共样式    --------*/
+/*--------   显示1行文本   -------*/
+.u-one-line {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/*--------- 垂直、水平居中 ------*/
+.u-cc {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+/*--------- 水平居中  ---------*/
+.u-cl {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+/*--------- 垂直居中  ---------*/
+.u-ct {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+/*--------- 固定底部单个按钮 ------*/
+.m-footer-btn {
+  display: block;
+  z-index: 5;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1.30666667rem;
+  padding-top: 0;
+  font-size: 0.42666667rem;
+  line-height: 1.32rem;
+  color: #6eb3e9;
+  background-color: #fff;
+  border-right: none;
+  text-align: center;
+  border: 1px solid #6eb3e9;
+}
+/*--------- 无信息模块 ------*/
+.m-nothing {
+  width: 100%;
+  margin-top: 40%;
+  text-align: center;
+}
+.m-nothing img {
+  height: 3.06666667rem;
+}
+.m-nothing p {
+  padding-top: 0.66666667rem;
+  font-size: 0.42666667rem;
+  color: #acacac;
+}
+/*--------- 遮罩层 ------*/
+.m-mask {
+  z-index: 9;
+  display: none;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: 5s;
+}
+.g-page {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+.g-container {
+  height: 100%;
+  width: 100%;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
+}
+/*---------   主体    --------*/
+.reim {
+  padding-bottom: 1.30666667rem;
+}
+.reim .top-part {
+  position: relative;
+  height: 1.73333333rem;
+  padding: 0 0.53333333rem 0 1.73333333rem;
+  border-bottom: 1px solid #acacac;
+}
+.reim .top-part .img-box {
+  z-index: 2;
+  position: absolute;
+  top: 0.4rem;
+  left: 0.53333333rem;
+  height: 0.93333333rem;
+  width: 0.93333333rem;
+  background: url(../images/icon/no_photo.png) no-repeat;
+  background-size: cover;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid #f1f1f1;
+}
+.reim .top-part .img-box img {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  height: 100%;
+  transform: translateX(-50%);
+  margin-top: -0.45333333rem;
+}
+.reim .top-part .name {
+  display: inline-block;
+  height: 1.73333333rem;
+  width: 100%;
+  line-height: 1.74666667rem;
+  font-size: 0.42666667rem;
+  vertical-align: top;
+}
+.reim .item .item-link {
+  padding: 0.26666667rem 0.53333333rem 0.13333333rem;
+  border-bottom: 1px solid #ececec;
+}
+.reim .item h2 {
+  font-size: 0.37333333rem;
+  line-height: 0.42666667rem;
+}
+.reim .sm-list {
+  margin-top: 0.26666667rem;
+  font-size: 0;
+}
+.reim .sm-list .sm-item {
+  display: inline-block;
+  width: 50%;
+  line-height: 0.48rem;
+  color: #acacac;
+}
+.reim .sm-list .sm-item:nth-of-type(even) {
+  text-align: right;
+}
+.reim .sm-list .sm-item:nth-of-type(2) span {
+  font-size: 0.37333333rem;
+  color: #e89b63;
+}
+.reim .sm-list .sm-item:nth-of-type(2) span.status2 {
+   color: #e8637a;
+}
+.reim .sm-list .sm-item:nth-of-type(2) span.status3 {
+   color: #6eb3e9;
+}
+.status1 {
+     color: #e89b63;
+}
+.status2 {
+  color: #e8637a;
+}
+.status3 {
+       color: #6eb3e9;
+}
+.reim-detail {
+  padding-bottom: 2.10666667rem;
+}
+.reim-detail .top-part {
+  position: relative;
+  height: 1.73333333rem;
+  padding: 0 3.06666667rem 0 1.73333333rem;
+  border-bottom: 1px solid #acacac;
+}
+.reim-detail .top-part .img-box {
+  z-index: 2;
+  position: absolute;
+  top: 0.4rem;
+  left: 0.53333333rem;
+  height: 0.93333333rem;
+  width: 0.93333333rem;
+  background: url(../images/icon/no_photo.png) no-repeat;
+  background-size: cover;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid #f1f1f1;
+}
+.reim-detail .top-part .img-box img {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  height: 100%;
+  transform: translateX(-50%);
+  margin-top: -0.45333333rem;
+}
+.reim-detail .top-part .name {
+  display: inline-block;
+  height: 1.73333333rem;
+  width: 100%;
+  line-height: 1.74666667rem;
+  font-size: 0.42666667rem;
+  vertical-align: top;
+}
+.reim-detail .top-part .right-txt {
+  right: 0.53333333rem;
+  font-size: 0.37333333rem;
+  color: #e89b63;
+}
+.reim-detail .mid-part {
+  padding: 0 0.53333333rem;
+}
+.reim-detail .input-list {
+  padding: 0.26666667rem 0;
+}
+.reim-detail .input-list .item {
+  position: relative;
+}
+.reim-detail .input-list .input-box {
+  position: relative;
+  height: 0.66666667rem;
+  padding: 0.13333333rem 0 0.13333333rem 1.86666667rem;
+}
+.reim-detail .input-list .title {
+  left: 0;
+  color: #acacac;
+  font-size: 0.37333333rem;
+}
+.reim-detail .input-list .txt {
+  padding: 0 0.13333333rem;
+  width: 100%;
+  font-size: 0.37333333rem;
+}
+.reim-detail .input-list.bor-bot {
+  border-bottom: 1px solid #ececec;
+}
+.reim-detail .input-list textarea {
+  margin: 0.26666667rem 0 0.13333333rem;
+  width: 100%;
+  height: 3.73333333rem;
+  border-radius: 0.13333333rem;
+  border-color: #ececec;
+}
+.reim-detail .input-list textarea[disabled] {
+  background-color: #fff;
+}
+.reim-detail .list-title .txt {
+  display: inline-block;
+  padding: 0.29333333rem 0;
+  font-size: 0.37333333rem;
+  border-bottom: 1px solid #acacac;
+}
+.reim-detail .img_group {
+  padding: 0.13333333rem 0;
+  font-size: 0;
+}
+.reim-detail .img_group .img_box {
+  position: relative;
+  display: inline-block;
+  height: 2.13333333rem;
+  width: 24%;
+  margin-right: 1.333333333%;
+  vertical-align: top;
+  overflow: hidden;
+}
+.reim-detail .img_group .img_box:nth-of-type(4n) {
+  margin-right: 0;
+}
+.reim-detail .img_group .img_box img {
+  display: block;
+  height: 100%;
+}
+.reim-detail .progress-list .item {
+  position: relative;
+  padding: 0.2rem 0 0.2rem 1.6rem;
+  height: 1.73333333rem;
+  font-size: 0;
+}
+.reim-detail .progress-list .item .img-box {
+  z-index: 2;
+  left: 0;
+  height: 1.33333333rem;
+  border-radius: 50%;
+  overflow: hidden;
+}
+.reim-detail .progress-list .item .img-box img {
+  z-index: 1;
+  height: 100%;
+}
+.reim-detail .progress-list .item:before {
+  content: '';
+  position: absolute;
+  left: 0.66666667rem;
+  top: 1.53333333rem;
+  height: 0.4rem;
+  width: 0;
+  border-left: 1px dotted #acacac;
+}
+.reim-detail .progress-list .item:last-of-type:before {
+  border: none;
+}
+.reim-detail .progress-list .left-txt {
+  display: inline-block;
+  line-height: 1.33333333rem;
+  font-size: 0.37333333rem;
+}
+.reim-detail .progress-list .mid-txt {
+  display: inline-block;
+  padding-left: 0.13333333rem;
+  color: #acacac;
+  line-height: 1.33333333rem;
+  font-size: 0.32rem;
+  vertical-align: top;
+}
+.reim-detail .progress-list .right-txt {
+  float: right;
+  color: #acacac;
+  font-size: 0.32rem;
+  line-height: 1.33333333rem;
+}
+.reim-detail .progress-list .col-ora {
+  color: #e89b63;
+}
+.img-mask {
+  display: none;
+  z-index: 20;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
+.img-mask .mask {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+.img-mask img {
+  max-width: 100%;
+  max-height: 100%;
+}
+.new-reim {
+  padding-bottom: 2.4rem;
+}
+.new-reim .mid-part {
+  padding: 0 0.53333333rem;
+}
+.new-reim .top-title {
+  padding-top: 0.58666667rem;
+  font-size: 0.37333333rem;
+}
+.new-reim .input-list {
+  padding: 0.26666667rem 0;
+}
+.new-reim .input-list .item {
+  position: relative;
+  border-bottom: 1px solid #ececec;
+}
+.new-reim .input-list .item.no-bor {
+  border: none;
+}
+.new-reim .input-list .input-box {
+  position: relative;
+  height: 1.2rem;
+  padding: 0.13333333rem 0 0.13333333rem 1.86666667rem;
+}
+.new-reim .input-list .title {
+  left: 0;
+  color: #acacac;
+  font-size: 0.37333333rem;
+}
+.new-reim .input-list .txt {
+  padding: 0 0.13333333rem;
+  width: 100%;
+  height: 100%;
+  font-size: 0.37333333rem;
+}
+.new-reim .input-list textarea {
+  width: 100%;
+  height: 3.73333333rem;
+  border-radius: 0.13333333rem;
+  border-color: #ececec;
+}
+.new-reim .input-list textarea[disabled] {
+  background-color: #fff;
+}
+.new-reim .z_photo {
+  width: 100%;
+  min-height: 2.13333333rem;
+  margin: 0.13333333rem auto;
+  font-size: 0;
+}
+.new-reim .z_photo img {
+  height: 100%;
+  width: 2.13333333rem;
+}
+.new-reim .z_addImg {
+  display: inline-block;
+  margin: 0 1% 0.13333333rem 0;
+  height: 2.13333333rem;
+  vertical-align: top;
+}
+.new-reim .z_addImg.nth-of-type(4n+3),
+.new-reim .z_addImg.nth-of-type(3) {
+  margin-right: 0;
+}
+.new-reim .z_file {
+  display: inline-block;
+  width: 24%;
+  min-height: 2.13333333rem;
+  background: url(../images/icon/z_add.png) no-repeat;
+  background-size: 100% 100%;
+  margin: 0 1% 0.13333333rem 0;
+  vertical-align: top;
+}
+.new-reim .z_file input::-webkit-file-upload-button {
+  width: 1rem;
+  height: 1rem;
+  border: none;
+  position: absolute;
+  outline: 0;
+  opacity: 0;
+}
+.new-reim .z_file input#file {
+  display: none;
+  width: auto;
+  border: 0;
+  vertical-align: middle;
+}

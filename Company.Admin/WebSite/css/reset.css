@@ -1,0 +1,89 @@
+html,body {
+  /*height: 100%;*/
+  width: 100%;
+  /*color: #333;*/
+  line-height: 1;
+  font-weight: 500;
+  /*font-family: 'Arial','微软雅黑';*/
+}
+a {
+  /*font-family: 'Arial','微软雅黑';*/
+  text-decoration: none;
+  /*color: #333;*/
+  cursor:pointer;
+}
+
+a:link,a:visited,a:hover,a:active {
+  text-decoration: none;
+}
+
+/*手机端滚动条隐藏*/
+/* ::-webkit-scrollbar{width:0;height:0}   	 */
+img{  vertical-align: bottom;  }			/*img和其他元素之间间隙的去除*/
+input{  vertical-align: middle;  }			/*input文本垂直居中*/
+
+
+a,button,input{
+  border:none;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-tap-highlight-color:transparent;
+  outline:none;
+  text-decoration:none
+}
+
+/*p,a,nav,span,div,li,h1,h2,h3,h4,h5,h6,input{
+  font-size: .24rem;
+}*/
+
+input,button {
+  outline: none;
+  filter:chroma(color=#000000);
+}
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  vertical-align: baseline;
+  font-weight: 500;
+  font-style:normal;
+  box-sizing: border-box;
+}
+html {
+  line-height: 1.6;
+}
+ol, ul {
+  list-style: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+caption, th, td {
+  text-align: left;
+  font-weight: normal;
+  vertical-align: middle;
+}
+a img {
+  border: none;
+}
+article, aside, details, figcaption, figure, footer, header, hgroup, main, menu, nav, section, summary {
+  display: block;
+}
+*, *:before, *:after {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}

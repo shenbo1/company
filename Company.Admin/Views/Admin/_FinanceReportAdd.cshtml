@@ -1,0 +1,108 @@
+﻿<div class="modal fade" id="DivAdd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none">
+    <form id="commentForm" class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="btnClose()"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">新增/修改信息</h4>
+            </div>
+            <div class="modal-body" style="overflow-y:auto;max-height:500px">
+                <span class="label label-warning" id="bErrorInfo" style="display:none;"></span>
+                <div class="form-group">
+                    <label for="Object">科目</label>
+                    @Html.DropDownList("ReportTypeId", (IEnumerable<SelectListItem>)ViewBag.TypeList, new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    <label for="Abstract">摘要</label>
+                    <input type="text" class="form-control" id="Abstract" placeholder="摘要">
+                </div>
+                <div class="form-group">
+                    <label for="Blance">金额</label>
+                    <input type="text" class="form-control" id="Blance" placeholder="金额">
+                </div>
+                <div class="form-group">
+                    <label for="Type">费用类型</label>
+                    <select class="form-control" id="Type">
+                        <option value="1">收入</option>
+                        <option value="2">支出</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="Remark">备注</label>
+                    <input type="text" class="form-control" id="Remark" placeholder="备注">
+                </div>
+                <div class="form-group">
+                    <label for="DateTime">记录时间</label>
+                    <input type="text" class="form-control" id="DateTime" onfocus="WdatePicker()" placeholder="记录时间">
+                </div>
+                <div class="form-group">
+                    <label for="Operater">经办人</label>
+                    <input type="text" class="form-control" id="Operater" placeholder="操作人">
+                </div>
+                <div class="form-group">
+                    <label for="Payer">付款人</label>
+                    <input type="text" class="form-control" id="Payer" placeholder="付款人">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="btnClose()">关闭</button>
+                <button type="button" class="btn btn-primary" id="btnComfirm" onclick="btnAddClick()">确定</button>
+            </div>
+        </div>
+    </form>
+</div>
+<input type="hidden" id="hiddenId" value="0" />
+<script>
+    function btnClose() {
+        $('#DivAdd').modal("hide");
+        $("#hiddenId").val('0');
+        $('#Abstract').val('');
+        $('#Blance').val('');
+        $('#Remark').val('');
+        $('#DateTime').val('');
+        $('#Operater').val('');
+        $('#Payer').val('');
+
+    }
+    function btnAddClick() {
+        var ID = $("#hiddenId").val();
+        var Data = {};
+        Data.Id = ID;
+        
+        var ReportTypeId = $("#ReportTypeId").val();//科目
+        if (ReportTypeId == "") { layer.msg("请选择科目", { icon: 2 }); return; }
+        Data.ReportTypeId = ReportTypeId;
+        var RepName = $('#ReportTypeId option:selected').text();
+        Data.ReportTypeName = RepName.split(':')[1];
+        var Abstract = $("#Abstract").val();//摘要
+        if (Abstract == "") { layer.msg("请输入摘要", { icon: 2 }); return; }
+        Data.Abstract = Abstract;
+        var Blance = $("#Blance").val();//金额
+        if (Blance == "") { layer.msg("请输入金额", { icon: 2 }); return; }
+        Data.Blance = Blance;
+        var Type = $("#Type").val();//1.收入 2.支出
+      //  if (Type == "") { layer.msg("请输入1.收入 2.支出", { icon: 2 }); return; }
+        Data.Type = Type;
+        var Remark = $("#Remark").val();//备注
+        //if (Remark == "") { layer.msg("请输入备注", { icon: 2 }); return; }
+        Data.Remark = Remark;
+ 
+        var DateTime = $("#DateTime").val();//记录时间
+        if (DateTime == "") { layer.msg("请选择记录时间", { icon: 2 }); return; }
+        Data.DateTime = DateTime;
+        var Operater = $("#Operater").val();//操作人
+        //if (Operater == "") { layer.msg("请输入操作人", { icon: 2 }); return; }
+        Data.Operater = Operater;
+        var Payer = $("#Payer").val();//付款人
+        //if (Payer == "") { layer.msg("请输入付款人", { icon: 2 }); return; }
+        Data.Payer = Payer;
+        var url = "@Url.Action("FinanceReportAdd")";
+        ajaxGet.post(Data, url, function (data) { AddDataSuccess(data); }, function (data) { ExceptionDeal(data); })
+    }
+    function AddDataSuccess(json) {
+        if (json.IsSuccess) {
+            layer.msg(json.Message, { icon: 1 });
+            btnClose();
+            Search();
+        }
+    }
+</script>

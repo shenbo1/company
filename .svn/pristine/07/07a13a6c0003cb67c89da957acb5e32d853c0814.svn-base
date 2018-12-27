@@ -1,0 +1,119 @@
+﻿
+@{
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" Content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>后台登录</title>
+    <meta name="keywords" Content="">
+    <meta name="description" Content="">
+    <link href="/Content/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/Content/css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet">
+    <link href="/Content/css/animate.min.css" rel="stylesheet">
+    <link href="/Content/css/style.min.css" rel="stylesheet">
+    <link href="/Content/css/login.min.css" rel="stylesheet">
+    <style>
+        body.signin {
+            /*   background: url(http://ws-www.hantinghotels.com/hworld/NewWeb/img/banner3.jpg) no-repeat center; */
+        }
+    </style>
+    <!--[if lt IE 9]>
+    <meta http-equiv="refresh" Content="0;ie.html" />
+    <![endif]-->
+    <script>
+        if (window.top !== window.self) { window.top.location = window.location };
+    </script>
+
+</head>
+
+<body class="signin">
+    <div class="signinpanel">
+        <div class="row">
+            <div class="col-sm-7">
+                <div class="signin-info">
+                    <div class="logopanel m-b">
+                        <h1>[ 公司 ]</h1>
+                    </div>
+                    <div class="m-b"></div>
+                    <h4>欢迎使用 <strong> 后台管理</strong></h4>
+                    <ul class="m-b">
+                        @*<li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> 多集团的Portal管理</li>
+                        <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> 1.手机号+动态验证码</li>
+                        <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> 2.房间号+入住登记信息</li>
+                        <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> 3.微信一键连wifi</li>*@
+                    </ul>
+                    <strong>
+                        还没有账号？
+                    </strong>
+                </div>
+            </div>
+            <div class="col-sm-5 animated fadeInRight">
+                <form method="get" id="frmLogin">
+                    <h4 class="no-margins">登录：</h4>
+                    <p class="m-t-md">登录到公司后台管理</p>
+                    <div class="form-group">
+                        <input type="text" id="username" name="username" minlength="2" required="" aria-required="true" aria-invalid="false" class="form-control uname" placeholder="用户名" />
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="password" name="password" class="form-control pword m-b" minlength="2" required="" aria-required="true" aria-invalid="false" placeholder="密码" />
+                    </div>
+                    <a href="#">忘记密码了？</a>
+                    <input type="submit" value="登录" id="login" class="btn btn-success btn-block" />
+                </form>
+            </div>
+        </div>
+        <div class="signup-footer">
+            <div class="pull-left">
+                &copy; 沪ICP备0000000 | ©@DateTime.Now.Year eeeYooo All Rights reserved.
+                <a target="_blank" href="http://www.eeeyooo.com/">eeeYooo Group </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<script src="/Content/js/jquery.min.js?v=2.1.4"></script>
+<script src="/Content/js/bootstrap.min.js?v=3.3.6"></script>
+<script src="/Content/js/plugins/validate/jquery.validate.min.js"></script>
+<script src="/Content/js/plugins/validate/messages_zh.min.js"></script>
+<script src="/Content/js/plugins/layer/layer.js"></script>
+<script src="/Content/js/ajax.js" type="text/javascript"></script>
+<script>
+    $.validator.setDefaults({
+        submitHandler: function () {
+            if ($("#login").hasClass("disabled")) { return; }
+            $("#login").addClass("disabled").removeClass("btn-success");
+            $("#login").val("登录中...");
+            var Url = "@Url.Action("AdminLogin")";
+            var Data = { LoginId: $("#username").val(), Password: $("#password").val() };
+            ajaxGet.post(Data, Url, function (data) { AddSuccess(data); }, function (error) { ExceptionDeal(error); });
+        }
+    }), $().ready(function () {
+        var e = "<i class='fa fa-times-circle'></i> ";
+        $("#frmLogin").validate({
+            rules: {
+                username: { required: !0, minlength: 2 },
+                password: { required: !0, minlength: 5 },
+            },
+            messages: {
+                username: { required: e + "请输入您的用户名", minlength: e + "用户名必须两个字符以上" },
+                password: { required: e + "请输入您的密码", minlength: e + "密码必须5个字符以上" },
+            }
+        });
+    });
+    function AddSuccess(json) {
+        if (json.IsSuccess) {
+            location = "Index";
+        }
+        else {
+            layer.msg(json.Message);
+            $("#login").removeClass("disabled").addClass("btn-success");
+            $("#login").val("登录");
+        }
+    }
+</script>

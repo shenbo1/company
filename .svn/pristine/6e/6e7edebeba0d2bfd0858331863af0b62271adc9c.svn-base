@@ -1,0 +1,101 @@
+﻿using Company.DAL.Common;
+using Company.Dto;
+using Company.Dto.Model;
+using Dapper;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Company.DAL.Data
+{
+    public class CompanyUserDBOperate
+    {
+        const string TableName = "CompanyUser";
+
+        #region 添加
+        public static bool AddCompanyUser(CompanyUser model)
+        {
+
+            string sql = string.Format("insert into {0}(Name,Mobile,Email,WeChatOpenId,WeChatNickName,WeChatHeadUrl,IsBindWeChat,CompanyId,CompanyName,DepartId,CreateDate,IsDeleted)  values(@Name,@Mobile,@Email,@WeChatOpenId,@WeChatNickName,@WeChatHeadUrl,@IsBindWeChat,@CompanyId,@CompanyName,@DepartId,getdate(),0)", TableName);
+            return DBAccess.ExecuteSqlWithEntity(sql, model);
+        }
+        #endregion
+
+        #region 修改
+        public static bool ModifyCompanyUser(CompanyUser model)
+        {
+            string sql = string.Format(@"update {0} set [Name]=@Name,[Mobile]=@Mobile,[Email]=@Email,[WeChatOpenId]=@WeChatOpenId,[WeChatNickName]=@WeChatNickName,[WeChatHeadUrl]=@WeChatHeadUrl,[IsBindWeChat]=@IsBindWeChat,[CompanyId]=@CompanyId,[CompanyName]=@CompanyName,[DepartId]=@DepartId,[ModifyDate]=getdate(),[IsDeleted]=@IsDeleted
+            where Id=@Id", TableName);
+            return DBAccess.ExecuteSqlWithEntity(sql, model);
+        }
+        #endregion
+
+        #region 获取单个对象
+        public static CompanyUser GetModelById(int Id)
+        {
+            string sql = string.Format(@"select Id,Name,Mobile,Email,WeChatOpenId,WeChatNickName,WeChatHeadUrl,IsBindWeChat,CompanyId,CompanyName,DepartId,ModifyDate,IsDeleted from {0} (nolock) where Id=@Id", TableName);
+            return DBAccess.GetEntityById<CompanyUser>(sql, Id);
+        }
+        public static CompanyUser GetModelByMobile(string Mobile)
+        {
+            string sql = string.Format(@"select Id,Name,Mobile,Email,WeChatOpenId,WeChatNickName,WeChatHeadUrl,IsBindWeChat,CompanyId,CompanyName,DepartId,ModifyDate,IsDeleted from {0} (nolock) where Mobile=@Mobile", TableName);
+            return DBAccess.GetEntityFirstOrDefault<CompanyUser>(sql, new { Mobile = Mobile });
+        }
+        #endregion
+        
+        #region 获取所有数据
+        public static List<CompanyUser> GetComapnyList(int CompanyId)
+        {
+            string sql = @"
+select a.Id,a.Name,c.Name+'-'+ b.Name DepartName from CompanyUser(nolock) a
+left join CompanyDepartMent(nolock) b
+on a.DepartId = b.Id
+left join CompanyDepartMent(nolock) c
+on b.PId=c.Id
+where a.CompanyId=@CompanyId 
+Order By a.[Id] desc";  
+            return DBAccess.GetEntityList<CompanyUser>(sql, new { CompanyId = CompanyId });
+        }
+        #endregion
+
+        #region 获取分页列表
+        /// <summary>
+        /// 获取分页列表
+        /// </summary>
+        /// <param name="pagesize">每页显示多少行</param>
+        /// <param name="offset">跳过行数</param>
+        /// <param name="key">关键词</param>
+        /// <param name="totalcount">输出行数</param>
+        /// <param name="GroupId">输出行数</param>
+        /// <returns></returns>
+        public static List<CompanyUser> GetPagerList(int pagesize, int offset, string name,int companyId, out int totalcount)
+        {
+            var param = new DynamicParameters();
+            totalcount = 0;
+            Pager pager = new Pager() { TableName = TableName + " A", Offset = offset, PageSize = pagesize, ColName = "A.[ID]" };
+            pager.Columns = @"A.[Id],A.[Name],A.[Mobile],A.[Email],A.[CompanyName],A.[DepartId],A.[CreateDate],A.[IsDeleted]";
+            if (!string.IsNullOrEmpty(name))
+            {
+                pager.WhereStr += " and A.[Name] like @Name";
+                param.Add("Name", "%" + name + "%");
+            }
+            if (companyId != 0) {
+                pager.WhereStr += " and A.[CompanyId] = @CompanyId";
+                param.Add("CompanyId", companyId);
+            }
+            var list = PagerDBOperate<CompanyUser>.Init.GetList(pager, param, out totalcount);
+            return list;
+        }
+        #endregion
+
+        #region 根据Ids获取用户
+        public static  List<CompanyUser> GetUserByIds(int[] Ids)
+        {
+            string sql = string.Format(@"select Id,Name,Mobile,Email,WeChatOpenId,WeChatNickName,WeChatHeadUrl,IsBindWeChat,CompanyId,CompanyName,DepartId,ModifyDate,IsDeleted from {0} (nolock) where Id in @Ids", TableName);
+            return DBAccess.GetEntityList<CompanyUser>(sql, new { Ids = Ids });
+        }
+        #endregion
+    }
+}

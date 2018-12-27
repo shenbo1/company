@@ -1,0 +1,61 @@
+﻿<div class="modal fade" id="DivAdd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none">
+    <form id="commentForm" class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"     onclick="btnClose()"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">新增/修改信息</h4>
+            </div>
+            <div class="modal-body" style="overflow-y:auto;max-height:500px">
+                <span class="label label-warning" id="bErrorInfo" style="display:none;"></span>
+                <div class="form-group">
+                    <label for="Name">名称</label>
+                    <input type="text" class="form-control" id="Name" placeholder="名称">
+                </div>
+                <div class="form-group">
+                    <label for="PId">部门</label>
+                 
+                     @Html.DropDownList("PId", (IEnumerable<SelectListItem>)ViewBag.DepartMent,"顶级",new { @class = "form-control" })
+                 
+                    @*<input type="text" class="form-control" id="PId" onkeyup="OnlyNum(this)" placeholder="上级">*@
+                </div>
+               
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-close" data-dismiss="modal" onclick="btnClose()">关闭</button>
+                <button type="button" class="btn btn-primary" id="btnComfirm" onclick="btnAddClick()">确定</button>
+            </div>
+        </div>
+    </form>
+</div>
+<input type="hidden" id="hiddenId" value="0" />ss
+<script>
+    function btnClose() {
+        $('#DivAdd').modal("hide");
+        $("#hiddenId").val('0');
+        $('#Name').val('');
+        $('#PId').val('');
+    }
+    function btnAddClick() {
+        var ID = $("#hiddenId").val();
+        var Data ={};
+        Data.Id = ID;
+        var Name = $("#Name").val();//部门名称
+        if (Name == "") { layer.msg("请输入部门名称", { icon: 2 }); return; }
+        Data.Name=Name;
+        var PId = $("#PId").val();//上级
+        if (PId == "") { PId = 0;}
+        Data.PId=PId;
+        var url = "@Url.Action("CompanyDepartMentAdd")";
+        ajaxGet.post(Data, url, function (data) { AddDataSuccess(data); }, function (data) { ExceptionDeal(data); })
+    }
+    function AddDataSuccess(json) {
+        if (json.IsSuccess) {
+            layer.msg(json.Message, { icon: 1 });
+            setTimeout(function () {
+                btnClose();
+                Search();
+            }, 1500)
+          
+        }
+    }
+</script>

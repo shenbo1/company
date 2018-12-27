@@ -1,0 +1,299 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>财务列表</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="/Content/css/bootstrap.min14ed.css?v=3.3.6" rel="stylesheet">
+    <link href="/Content/css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet">
+    <link href="/Content/css/plugins/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
+    <link href="/Content/css/animate.min.css" rel="stylesheet">
+    <link href="/Content/css/style.min862f.css?v=4.1.0" rel="stylesheet">
+    <style>
+        .box-content {
+            padding: 10px 0;
+        }
+
+        .float-e-margins .btn {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInDown">
+        <!-- Panel Other -->
+        <div class="ibox float-e-margins">
+            <div class="ibox-content">
+                <div class="row row-lg">
+                    <div class="col-sm-12">
+                        <!-- Example Events -->
+                        <div class="example-wrap">
+                            <h4 class="example-title">
+                                财务列表
+                                <a class="btn btn-primary " style="float:right;" href="javascript:location.reload();" title="页面刷新"><i class="fa fa-refresh"></i> </a>
+                            </h4>
+                            <div class="example">
+                                <div class="box-content form-inline">
+                                    <div class="topbtnbar">
+                                        <input type="text" class="form-control" id="KeyWord" onkeyup="if (event.keyCode == '13') $('#btnSearch').click()" placeholder="关键字">
+                                        时间：<input type="text" class="form-control"  id="StartTime" onfocus="WdatePicker({ maxDate: '#F{$dp.$D(\'EndTime\')||\'%y-%M-%d\'}' })" /> -- <input type="text" class="form-control" id="EndTime" onfocus="    WdatePicker({ minDate: '#F{$dp.$D(\'StartTime\')}' })" />
+                                        类别:@Html.DropDownList("TypeId", (IEnumerable<SelectListItem>)ViewBag.TypeList, "全部", new { @class = "form-control" })
+                                    </div>
+                                    
+                                </div>
+                                <div class="box-content form-inline">
+                                    <div class="topbtnbar">
+                                        <button type="button" id="btnSearch" class="btn btn-success btn-sm " onclick="Search()">
+                                            查询
+                                        </button>
+                                        <button type="button" id="btnAdd" class="btn btn-info btn-sm" data-toggle="modal" data-target="#DivAdd">
+                                            新增
+                                        </button>
+                                        <button type="button" id="ImportExcel" onclick="$('#UploadUrl').click();" class="btn btn-warning btn-sm">
+                                            导入
+                                        </button>
+                                        <button type="button" id="ExportExcel" class="btn btn-danger btn-sm">
+                                            导出
+                                        </button>
+                                        <a href="/Upload/Template/FinanceReport.xlsx">Excel模板</a>
+
+                                        <label class="label label-success">合计:<span id="MoneyAll">0</span></label>
+                                        <label class="label label-info">收入:<span id="MoneyIn">0</span></label>
+                                        <label class="label label-warning">支出:<span id="MoneyOut">0</span></label>
+
+                                        <form style="display:none;" id="uploadForm" method="post" enctype="multipart/form-data">
+                                            <input type="file" name="upfile" id="UploadUrl" onchange="ImportExcel()" class="btn btn-info productInput" style="width: inherit" />
+                                        </form>
+                                    </div>
+                                </div>
+                                    <table id="table"></table>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Panel Other -->
+    </div>
+
+    <script src="/Content/js/jquery.min.js?v=2.1.4"></script>
+    <script src="/Content/js/jquery-migrate-1.1.0.js"></script>
+    <script src="/Content/js/jquery.form.js"></script>
+    <script src="/Content/js/bootstrap.min.js?v=3.3.6"></script>
+    <script src="/Content/js/content.min.js?v=1.0.0"></script>
+    <script src="/Content/js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+    <script src="/Content/js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+    <script src="/Content/js/plugins/layer/layer.min.js"></script>
+    <script src="/Content/js/config.js"></script>
+    <script src="/Content/js/ajax.js"></script>
+    <script src="/Content/js/My97DatePicker/WdatePicker.js"></script>
+    @Html.Partial("_FinanceReportAdd")
+</body>
+</html>
+<script>
+    $(function () {
+        $('#table').bootstrapTable({
+            method: 'POST',
+            url: "@Url.Action("FinanceReportList")",
+            height: 500,
+            pagination: true,
+            striped: true,
+            pageSize: 10,
+            pageNumber: 1,
+            pageList: [10, 25, 50, 100, 200],
+            queryParams: QueryParams,
+            contentType: "application/x-www-form-urlencoded",
+            sidePagination: "server",
+            //showColumns: true, // 开启自定义列显示功能
+            columns: [
+             {
+                 field: 'ReportTypeName',
+                 title: '科目',
+                 align: 'center',
+                 valign: 'middle'
+             }, {
+                 field: 'Abstract',
+                 title: '摘要',
+                 align: 'center',
+                 valign: 'middle'
+             }, {
+                 field: 'Blance',
+                 title: '金额',
+                 align: 'center',
+                 valign: 'middle'
+             }, {
+                 field: 'Type',
+                 title: '类型',
+                 align: 'center',
+                 valign: 'middle',
+                 formatter: function (value, row, index) {
+                     return value == 1 ? "收入" : "支出";
+                 }
+             }, {
+                 field: 'Remark',
+                 title: '备注',
+                 align: 'center',
+                 valign: 'middle'
+             }, {
+                 field: 'CreateBy',
+                 title: '录入人',
+                 align: 'center',
+                 valign: 'middle'
+             }, {
+                 field: 'DateTime',
+                 title: '时间',
+                 align: 'center',
+                 valign: 'middle',
+                 formatter: function (value, row, index) {
+                     return ChangeDt(value);
+                 }
+             }, {
+                 field: 'Operater',
+                 title: '经办人',
+                 align: 'center',
+                 valign: 'middle'
+             }, {
+                 field: 'Payer',
+                 title: '付款人',
+                 align: 'center',
+                 valign: 'middle'
+             }, {
+                 field: 'CreateDate',
+                 title: '录入时间',
+                 align: 'center',
+                 valign: 'middle',
+                 formatter: function (value, row, index) {
+                     return ChangeDt(value);
+                 }
+             },
+            {
+                field: 'Id',
+                title: '操作',
+                align: 'center',
+                valign: 'middle',
+                formatter: function (value, row, index) {
+                    var operate = '';
+                    operate += '<a  class="edit" title="修改"><i class="fa fa-edit"></i></a> ';
+                    operate += '<a  class="del" title="删除"><i class="fa fa-trash"></i></a>';
+                    return operate;
+                },
+                events: operateEvents
+            }
+            ]
+        });
+        GetReportData();
+    });
+    function QueryParams(parma) {
+        parma["KeyWord"] = $("#KeyWord").val();
+        parma["Offset"] = parma.offset;
+        parma["Limit"] = parma.limit;
+        parma["TypeId"] = $("#TypeId").val();
+        parma["StartTime"] = $("#StartTime").val();
+        parma["EndTime"] = $("#EndTime").val();
+        return parma;
+    }
+    //查询按钮
+    function Search() {
+        $('#table').bootstrapTable("refresh");
+        GetReportData();
+    }
+     //列事件
+    window.operateEvents = {
+        'click .edit': function (e, value, row, index) {
+            GetInfo(row);
+        },
+        'click .del': function (e, value, row, index) {
+            //询问框
+            layer.confirm('确定要删除[' + row.Abstract + ']？', {
+                btn: ['确定', '取消'] //按钮
+            }, function () {
+                var url = "@Url.Action("FinanceReportDel")";
+                var Data = {};
+                Data.Id = row.Id;
+                ajaxGet.post(Data, url, function (data) { DelSuccess(data); }, function (data) { ExceptionDeal(data); })
+               // layer.msg('的确很重要', { icon: 1 });
+            }, function () {
+                
+            });
+        }
+    };
+    function DelSuccess(data) { if (data.IsSuccess) { layer.msg(data.Message, { icon: 1 }); Search();} }
+      //修改
+    function GetInfo(json) {
+        $('#DivAdd').modal("show");
+        $("#hiddenId").val(json.Id);
+        $('#ReportTypeId').val(json.ReportTypeId);
+        $('#ReportTypeName').val(json.ReportTypeName);
+        $('#Object').val(json.Object);
+        $('#Abstract').val(json.Abstract);
+        $('#Blance').val(json.Blance);
+        $('#Type').val(json.Type);
+        $('#Remark').val(json.Remark);
+        $('#DateTime').val(ChangeDt(json.DateTime));
+        $('#Operater').val(json.Operater);
+        $('#Payer').val(json.Payer);
+    }
+    function ImportExcel() {
+        $("#uploadForm").ajaxSubmit({
+            type: "GET",
+            url: '@Url.Action("ImportFinanceReport")',
+            dataType: "json",
+            data: {  },
+            success: function (msg) {
+                var data = msg;
+                if (msg.IsSuccess) {
+                    alert("批量导入成功");
+                    Search();
+                } else {
+                    alert("批量导入失败!请按照模板批量导入");
+                    var obj = $("#UploadUrl");
+                    var o = obj.prop("outerHTML");
+                    obj.prop("outerHTML", o);
+                }
+            },
+            error: function (msg) {
+                alert("批量导入失败!请按照模板批量导入");
+                var obj = $("#UploadUrl");
+                var o = obj.prop("outerHTML");
+                obj.prop("outerHTML", o);
+            }
+        })
+    }
+    function GetReportData()
+    {
+        var url = "@Url.Action("FinanceReportData")";
+        var Data = {};
+        Data = QueryParams(Data);
+        ajaxGet.post(Data, url, function (data) { GetReportDataSuccess(data); }, function (data) { ExceptionDeal(data); })
+
+    }
+    function GetReportDataSuccess(data) {
+        if (data.IsSuccess) {
+            var Money = data.Message.split('|');
+            $("#MoneyIn").text(Money[0]);
+            $("#MoneyOut").text(Money[1]);
+            var All = Number(Money[0]) - Number(Money[1]);
+            $("#MoneyAll").text(All);
+            if (All < 0) { $("#MoneyAll").parent().addClass("label-danger "); } else { $("#MoneyAll").parent().removeClass("label-danger "); }
+        }
+    }
+    ExportFormModel.action = "@Url.Action("FinanceReportExport")";
+    ExportFormModel.params = ["KeyWord", "TypeId", "StartTime", "EndTime"];
+    ExportFormModel.exportBtnId = "ExportExcel";
+    ExportFormModel.init();
+
+        var Form = document.createElement("FORM");
+        document.body.appendChild(Form);
+        Form.method = "POST";
+        Form.action = url;
+        for (var item in Data) {
+            var element1 = $("<input name='" + item + "' type='hidden' />")[0];
+            element1.value = $("#" + item).val();
+            Form.appendChild(element1);
+        }
+        Form.submit();
+</script>

@@ -1,0 +1,48 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Company.Dto
+{
+    public enum WorkListStatusEnum {
+        [Description("工单未处理")]
+        NotStart,
+        [Description("处理工单中")]
+        Start,
+        [Description("工单完成")]
+        End
+    }
+    public enum WorkListDetailStatusEnum
+    {
+        [Description("确认需求中")]
+        XuQiuIng,
+        [Description("需求已确认")]
+        XuQiuOk,
+        [Description("UI设计中")]
+        UIIng,
+        [Description("UI设计完成")]
+        UIOk,
+        [Description("前端开发中")]
+        QianIng,
+        [Description("前端开发完成")]
+        QianOk,
+        [Description("后台开发中")]
+        HouIng,
+        [Description("后台开发完成")]
+        HouOk,
+        [Description("测试中")]
+        TestIng,
+        [Description("测试完成")]
+        TestOk,
+        [Description("客户确认中")]
+        KeHuIng,
+        [Description("客户已确认")]
+        KeHuOk,
+        [Description("已上线")]
+        End
+    }
+  
+}

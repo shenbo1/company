@@ -1,0 +1,560 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+
+
+<!-- Mirrored from www.zi-han.net/theme/hplus/clients.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 20 Jan 2016 14:19:44 GMT -->
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>客户管理</title>
+
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="/content/css/bootstrap.min14ed.css?v=3.3.6" rel="stylesheet">
+    <link href="/content/css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet">
+
+    <link href="/content/css/animate.min.css" rel="stylesheet">
+    <link href="/content/css/style.min862f.css?v=4.1.0" rel="stylesheet">
+
+</head>
+
+<body class="gray-bg">
+    <div class="wrapper wrapper-content  animated fadeInRight">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="ibox">
+                    <div class="ibox-content">
+                        <span class="text-muted small pull-right">当前时间：<i class="fa fa-clock-o"></i> @DateTime.Now</span>
+                        <h2>客户管理</h2>
+                        <p>
+                            @*所有客户必须通过邮件验证*@
+                        </p>
+                        <div class="input-group">
+                            <input type="text" placeholder="查找客户" id="KeyWord" onkeyup="if (event.keyCode == '13') getMember()" class="input form-control">
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn btn-primary" onclick="getMember()"> <i class="fa fa-search"></i> 搜索</button>
+                            </span>
+                        </div>
+                        <div class="clients-list">
+                            <ul class="nav nav-tabs">
+                                <span class="pull-right small text-muted"><b id="memberCount" class="text-danger">0</b> 个客户</span>
+                                <br />
+                                <span class="pull-right small text-muted"><b id="companyCount" class="text-navy">0</b>  个公司</span>
+
+                                <li class="active">
+                                    <a data-toggle="tab" href="#tab-2"><i class="fa fa-briefcase"></i> 公司</a>
+                                </li>
+                                <li class="">
+                                    <a data-toggle="tab" href="#tab-1"><i class="fa fa-user"></i> 联系人</a>
+                                </li>
+                                <li class="">
+                                    <a data-toggle="tab" href="#tab-4"><i class="fa fa-plus"></i> 添加/修改公司</a>
+                                </li>
+                                <li class="">
+                                    <a data-toggle="tab" href="#tab-3"><i class="fa fa-plus"></i> 添加/修改联系人</a>
+                                </li>
+
+                            </ul>
+                            <div class="tab-content">
+                                <div id="tab-1" class="tab-pane ">
+                                    <div class="full-height-scroll">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-hover">
+                                                <tbody>
+                                                    
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="tab-2" class="tab-pane active">
+                                    <div class="full-height-scroll">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-hover">
+                                                <tbody>
+                                                    @*<tr>
+                                                        <td>
+                                                            <a data-toggle="tab" href="#company-1" class="client-link">瑞安市海诚机械有限公司</a>
+                                                        </td>
+                                                        <td>广州</td>
+                                                        <td><i class="fa fa-flag"></i> 中国</td>
+                                                        <td class="client-status">
+                                                            <span class="label label-primary">已验证</span>
+                                                        </td>
+                                                    </tr>*@
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="tab-3" class="tab-pane">
+                                    <div class="ibox float-e-margins">
+                                        <div class="ibox-content">
+                                            <form class="form-horizontal" role="document">
+                                                <div class="form-group">
+
+                                                    <label class="col-sm-2 control-label">客户名字</label>
+                                                    <div class="col-sm-4">
+                                                        <input type="text" class="form-control" id="memberName" placeholder="客户名字">
+                                                    </div>
+                                                    <label class="col-sm-2 control-label">所在公司</label>
+                                                    <div class="col-sm-4">
+                                                        <select class="form-control" id="memberCusCompanyId"></select>
+                                                    </div>
+                                                </div>
+                                                <div class="hr-line-dashed"></div>
+                                                <div class="form-group">
+                                                    <label class="col-sm-2 control-label">客户手机号</label>
+                                                    <div class="col-sm-4">
+                                                        <input type="text" class="form-control" id="memberMobile" placeholder="客户手机号">
+                                                    </div>
+                                                    <label class="col-sm-2 control-label">客户邮箱</label>
+                                                    <div class="col-sm-4">
+                                                        <input type="text" class="form-control" id="memberEmail" placeholder="联系人邮箱">
+                                                    </div>
+                                                </div>
+                                                <div class="hr-line-dashed"></div>
+                                                <div class="form-group">
+                                                    <label class="col-sm-2 control-label">客户简介</label>
+                                                    <div class="col-sm-10">
+                                                        <textarea placeholder="客户简介" class="form-control" id="memberInfos"></textarea>
+                                                    </div>
+
+                                                </div>
+                                                <div class="hr-line-dashed"></div>
+                                                <div class="form-group">
+                                                    <div class="col-sm-4 col-sm-offset-2">
+                                                        <button class="btn btn-primary" type="button" onclick="addMember()">保存客户</button>
+                                                        <button class="btn btn-white" type="button" onclick="cancelMember()">取消</button>
+                                                        <input type="hidden" id="memberId" value="0" />
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="tab-4" class="tab-pane">
+                                    <div class="ibox float-e-margins">
+                                        <div class="ibox-content">
+                                            <form class="form-horizontal" role="document">
+                                                <div class="form-group">
+                                                    <label class="col-sm-2 control-label">公司名</label>
+                                                    <div class="col-sm-4">
+                                                        <input type="text" class="form-control" id="Name" placeholder="公司名">
+                                                    </div>
+                                                    <label class="col-sm-2 control-label">合作关系</label>
+                                                    <div class="col-sm-4">
+                                                        @Html.DropDownList("Status", (IEnumerable<SelectListItem>)ViewBag.Status, new { @class = "form-control" })
+                                                    </div>
+                                                </div>
+                                                <div class="hr-line-dashed"></div>
+                                                <div class="form-group">
+                                                    <label class="col-sm-2 control-label">所在城市</label>
+                                                    <div class="col-sm-4">
+                                                        <input type="text" class="form-control" id="City" placeholder="所在城市">
+                                                    </div>
+                                                    <label class="col-sm-2 control-label">具体地址</label>
+                                                    <div class="col-sm-4">
+                                                        <input type="text" class="form-control" id="Address" placeholder="具体地址">
+                                                    </div>
+                                                </div>
+                                                <div class="hr-line-dashed"></div>
+                                                <div class="form-group">
+                                                    <label class="col-sm-2 control-label">公司简介</label>
+                                                    <div class="col-sm-10">
+                                                        <textarea placeholder="公司简介" class="form-control" id="Infos"></textarea>
+                                                    </div>
+
+                                                </div>
+                                                <div class="hr-line-dashed"></div>
+                                                <div class="form-group">
+                                                    <div class="col-sm-4 col-sm-offset-2">
+                                                        <button class="btn btn-primary" type="button" onclick="addCompany()">保存公司</button>
+                                                        <button class="btn btn-white" type="button" onclick="cancelCompany()">取消</button>
+                                                        <input type="hidden" id="companyId" value="0" />
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4" style="display:none;">
+                <div class="ibox ">
+
+                    <div class="ibox-content">
+                        <div class="tab-content">
+                            <div id="contact-1" class="tab-pane active">
+                                <div class="row m-b-lg">
+                                    <div class="col-lg-4 text-center">
+                                        <h2>张有为</h2>
+
+                                        <div class="m-b-sm">
+                                            <img alt="image" class="img-circle" src="/content/img/a2.jpg" style="width: 62px">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-8">
+                                        <h3>
+                                            个人简介
+                                        </h3>
+
+                                        <p>
+                                            李彦宏，百度公司创始人、董事长兼首席执行官，全面负责百度公司的战略规划和运营管理。
+                                        </p>
+                                        <p>
+
+                                            1991年，李彦宏毕业于北京大学信息管理专业，随后前往美国布法罗纽约州立大学完成计算机科学硕士学位，先后担任道·琼斯公司高级顾问、《华尔街日报》网络版实时金融信息系统设计者，以及国际知名互联网企业——Infoseek公司资深工程师。李彦宏所持有的“超链分析”技术专利，是奠定整个现代搜索引擎发展趋势和方向的基础发明之一。
+                                        </p>
+                                        <br>
+                                        <button type="button" class="btn btn-primary btn-sm btn-block">
+                                            <i class="fa fa-envelope"></i> 发送消息
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="client-detail">
+                                    <div class="full-height-scroll">
+
+                                        <strong>当前动态</strong>
+
+                                        <ul class="list-group clear-list">
+                                            <li class="list-group-item fist-item">
+                                                <span class="pull-right"> 09:00</span> 请联系我
+                                            </li>
+                                            <li class="list-group-item">
+                                                <span class="pull-right"> 10:16 </span> 签合同
+                                            </li>
+                                            <li class="list-group-item">
+                                                <span class="pull-right"> 08:22 </span> 开新公司
+                                            </li>
+                                            <li class="list-group-item">
+                                                <span class="pull-right"> 11:06 </span> 打电话给李四
+                                            </li>
+                                        </ul>
+                                        <strong>备注</strong>
+                                        <p>
+                                            40亿影帝黄渤先生明明可以靠脸吃饭，可是他却偏偏靠才华，唱歌居然也这么好听！
+                                        </p>
+                                        <hr />
+                                        <strong>时间轴</strong>
+                                        <div id="vertical-timeline" class="vertical-container light-timeline">
+                                            <div class="vertical-timeline-block">
+                                                <div class="vertical-timeline-icon navy-bg">
+                                                    <i class="fa fa-briefcase"></i>
+                                                </div>
+
+                                                <div class="vertical-timeline-content">
+                                                    <h2>会议</h2>
+                                                    <p>
+                                                        上一年的销售业绩发布会。总结产品营销和销售趋势及销售的现状。
+                                                    </p>
+                                                    <a href="#" class="btn btn-sm btn-primary"> 更多信息</a>
+                                                    <span class="vertical-date">
+                                                        今天 <br>
+                                                        <small>2月3日</small>
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <div class="vertical-timeline-block">
+                                                <div class="vertical-timeline-icon blue-bg">
+                                                    <i class="fa fa-file-text"></i>
+                                                </div>
+
+                                                <div class="vertical-timeline-content">
+                                                    <h2>给张三发送文档</h2>
+                                                    <p>发送上年度《销售业绩报告》</p>
+                                                    <a href="#" class="btn btn-sm btn-success"> 下载文档 </a>
+                                                    <span class="vertical-date">
+                                                        今天 <br>
+                                                        <small>2月3日</small>
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <div class="vertical-timeline-block">
+                                                <div class="vertical-timeline-icon lazur-bg">
+                                                    <i class="fa fa-coffee"></i>
+                                                </div>
+
+                                                <div class="vertical-timeline-content">
+                                                    <h2>喝咖啡休息</h2>
+                                                    <p>喝咖啡啦，啦啦啦~~</p>
+                                                    <a href="#" class="btn btn-sm btn-info">更多</a>
+                                                    <span class="vertical-date"> 昨天 <br><small>2月2日</small></span>
+                                                </div>
+                                            </div>
+
+                                            <div class="vertical-timeline-block">
+                                                <div class="vertical-timeline-icon yellow-bg">
+                                                    <i class="fa fa-phone"></i>
+                                                </div>
+
+                                                <div class="vertical-timeline-content">
+                                                    <h2>给李四打电话</h2>
+                                                    <p>给李四打电话分配本月工作任务</p>
+                                                    <span class="vertical-date">昨天 <br><small>2月2日</small></span>
+                                                </div>
+                                            </div>
+
+                                            <div class="vertical-timeline-block">
+                                                <div class="vertical-timeline-icon lazur-bg">
+                                                    <i class="fa fa-user-md"></i>
+                                                </div>
+
+                                                <div class="vertical-timeline-content">
+                                                    <h2>公司年会</h2>
+                                                    <p>发年终奖啦，啦啦啦~~</p>
+                                                    <span class="vertical-date">前天 <br><small>2月1日</small></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/content/js/jquery.min.js?v=2.1.4"></script>
+    <script src="/content/js/bootstrap.min.js?v=3.3.6"></script>
+    <script src="/content/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+    <script src="/content/js/content.min.js?v=1.0.0"></script>
+    <script src="/Content/js/plugins/layer/layer.min.js"></script>
+    <script src="/Content/js/config.js"></script>
+    <script src="/Content/js/ajax.js"></script>
+    <script src="/Content/js/My97DatePicker/WdatePicker.js"></script>
+    <script>
+        $(function () {
+            getMember();
+            getCompany();
+            $(".full-height-scroll").slimScroll({ height: "100%" })
+        });
+        function cancelCompany() {
+            $("#companyId").val('0');
+            $('#Name').val('');
+            $('#City').val('');
+            $('#Address').val('');
+            $('#Infos').val('');
+        }
+        function addCompany() {
+            var ID = $("#companyId").val();
+            var Data = {};
+            Data.Id = ID;
+            var Name = $("#Name").val();//公司名
+            if (Name == "") { layer.msg("请输入公司名", { icon: 2 }); return; }
+            Data.Name = Name;
+            var City = $("#City").val();//所在城市
+            if (City == "") { layer.msg("请输入所在城市", { icon: 2 }); return; }
+            Data.City = City;
+            var Address = $("#Address").val();//具体地址
+            if (Address == "") { layer.msg("请输入具体地址", { icon: 2 }); return; }
+            Data.Address = Address;
+            var Status = $("#Status").val();//合作关系
+            if (Status == "") { layer.msg("请输入合作关系", { icon: 2 }); return; }
+            Data.Status = Status;
+            var Infos = $("#Infos").val();//公司简介
+            if (Infos == "") { layer.msg("请输入公司简介", { icon: 2 }); return; }
+            if (Infos.length>200) { layer.msg("公司简介最多200字", { icon: 2 }); return; }
+            Data.Infos = Infos;
+            var url = "@Url.Action("CustomerCompanyAdd")";
+            ajaxGet.post(Data, url, function (data) { AddDataSuccess(data); }, function (data) { ExceptionDeal(data); })
+        }
+        function AddDataSuccess(json) {
+            if (json.IsSuccess) {
+                layer.msg(json.Message, { icon: 1 });
+                cancelCompany();
+                getCompany();
+                $('.nav-tabs li:eq(0) a').click();
+            }
+        }
+        function getCompany() {
+            var Data = {};
+            Data.Limit = 10000;
+            Data.Offset = 0;
+            var url = "@Url.Action("CustomerCompanyList")";
+            ajaxGet.post(Data, url, function (data) {
+                var count = data.total;
+                $('#companyCount').text(count);
+                var json = data.rows;
+               // console.log(data);
+                $('#tab-2').find('table tbody').html('');
+                $('#memberCusCompanyId').html('');
+                for (var i = 0; i < json.length; i++) {
+                    var html = "";
+                    html += '<tr>';
+                    html += '< td class="client-avatar" ></td>    ';
+                    html += '<td><a data-toggle="tab" class="client-link">'+json[i].Name+'</a>';
+                    html += ' </td>';
+                    html += ' <td><i class="fa fa-map-marker"></i> ' + json[i].City +'</td>';
+                    html += ' <td><i class="fa fa-home"></i> ' + json[i].Address + '</td>';
+                    html += ' <td> ' + json[i].Infos + '</td>';
+                    html += '<td class="client-status">';
+                    var txt = '合作未开始';
+                    var status = 'label-info';
+                   // console.log(json[i].Status)
+                    if (json[i].Status == 'Start') {
+                        txt = '合作中'; status = 'label-primary';
+                    }
+                    else if (json[i].Status == 'End') {
+                        txt = '合作已结束'; status = 'label-danger';
+                    }
+                    html += '<span class="label ' + status + '"> ' + txt+'</span>';
+                    html += '</td>';
+                    html += ' <td><a onclick="ModifyCompany(\''+json[i].Id+'\')" class="btn btn-white btn-sm gongdan"><i class="fa fa-edit"></i> 修改</a></td>';
+                    html += '</tr>';
+                    $('#tab-2').find('table tbody').append(html);
+                    $('#memberCusCompanyId').append('<option value="' + json[i].Id + '">' + json[i].Name + '</option>');
+                }
+                //AddDataSuccess(data);
+            }, function (data) {
+                ExceptionDeal(data);
+            })
+        }
+        function ModifyCompany(id) {
+            $('.nav-tabs li:eq(2) a').click();
+            $("#companyId").val(id);
+            var Data = {};
+            Data.Id = id;
+            var url = "@Url.Action("CustomerCompanyGetOne")";
+            ajaxGet.post(Data, url, function (data) {
+                var json = data.Data;
+                $('#Name').val(json.Name);
+                $('#City').val(json.City);
+                $('#Address').val(json.Address);
+                $('#Status').val(json.Status);
+                $('#Infos').val(json.Infos);
+            }, function (data) {
+                ExceptionDeal(data);
+            })
+        }
+        //客户操作
+        function addMember() {
+            var ID = $("#memberId").val();
+            var Data = {};
+            Data.Id = ID;
+            var CusCompanyId = $("#memberCusCompanyId").val();//
+            if (CusCompanyId == "") { layer.msg("请输入", { icon: 2 }); return; }
+            Data.CusCompanyId = CusCompanyId;
+            var Name = $("#memberName").val();//联系人名字
+            if (Name == "") { layer.msg("请输入客户名字", { icon: 2 }); return; }
+            Data.Name = Name;
+            var ImgUrl = $("#memberImgUrl").val();//
+            if (ImgUrl == "") { layer.msg("请输入", { icon: 2 }); return; }
+            Data.ImgUrl = ImgUrl;
+            var Mobile = $("#memberMobile").val();//联系人手机号
+            if (Mobile == "") { layer.msg("请输入客户手机号", { icon: 2 }); return; }
+            if (!checkMobile(Mobile)) {
+                layer.msg("手机号格式错误", { icon: 2 }); return;
+            }
+            Data.Mobile = Mobile;
+            var Email = $("#memberEmail").val();//联系人邮箱
+            if (Email == "") { layer.msg("请输入客户邮箱", { icon: 2 }); return; }
+            if (!isEmail(Email)) {
+                layer.msg("邮箱格式错误", { icon: 2 }); return;
+            }
+            Data.Email = Email;
+            var Infos = $("#memberInfos").val();//
+            if (Infos == "") { layer.msg("请输入客户简介", { icon: 2 }); return; }
+            if (Infos.length>200) { layer.msg("客户简介最多200字", { icon: 2 }); return; }
+
+            Data.Infos = Infos;
+            var url = "@Url.Action("CustomerMemberAdd")";
+            ajaxGet.post(Data, url, function (data) { AddMemberDataSuccess(data); }, function (data) { ExceptionDeal(data); })
+        }
+        function cancelMember() {
+            $("#memberId").val('0');
+            $('#memberName').val('');
+            $('#memberMobile').val('');
+            $('#memberEmail').val('');
+            $('#memberInfos').val('');
+        }
+        function AddMemberDataSuccess(json) {
+            if (json.IsSuccess) {
+                layer.msg(json.Message, { icon: 1 });
+                cancelMember();
+                //Search();。
+                getMember();
+                $('.nav-tabs li:eq(1) a').click();
+            }
+        }
+        function getMember() {
+              var Data = {};
+            Data.Limit = 10000;
+            Data.Offset = 0;
+            Data.KeyWord = $("#KeyWord").val();
+            var url = "@Url.Action("CustomerMemberList")";
+            ajaxGet.post(Data, url, function (data) {
+                var count = data.total;
+                $('#memberCount').text(count);
+                var json = data.rows;
+       
+                $('#tab-1').find('table tbody').html('');
+                if (json.length == 0) {
+                    $('#tab-1').find('table tbody').html('<tr><td>查询不到客户信息</td></tr>');
+                }
+                for (var i = 0; i < json.length; i++) {
+                    var html = "";
+                    html += '<tr>';
+                    html += '< td class="client-avatar" ></td>    ';
+                    html += ' <td>    ';
+                    html += ' <a data-toggle="tab" href="#contact-1" class="client-link">'+json[i].Name+'</a>    ';
+                    html += ' </td>    ';
+                    html += ' <td> ' + json[i].CompanyName + '</td>    ';
+                    html += '<td class="contact-type">    ';
+                    html += ' <i class="fa fa-phone"> </i>    ';
+                    html += ' </td>    ';
+                    html += '<td> ' + json[i].Mobile + '</td>    ';
+                    html += '<td class="contact-type">    ';
+                    html += ' <i class="fa fa-envelope"> </i>    ';
+                    html += ' </td>    ';
+                    html += '<td> ' + json[i].Email + '</td>    ';
+                    html += '<td> ' + json[i].Infos + '</td>    ';
+                    html += '<td class="client-status">    ';
+                    html += ' <a onclick="ModifyMember(\'' + json[i].Id + '\')" class="btn btn-white btn-sm gongdan"><i class="fa fa-edit"></i> 修改</a>';
+                    html += ' </td>    ';
+                    html += '</tr>';
+                    $('#tab-1').find('table tbody').append(html);
+                }
+                //AddDataSuccess(data);
+            }, function (data) {
+                ExceptionDeal(data);
+            })
+        }
+        function ModifyMember(id) {
+             $('.nav-tabs li:eq(3) a').click();
+            $("#memberId").val(id);
+            var Data = {};
+            Data.Id = id;
+            var url = "@Url.Action("CustomerMemberGetOne")";
+            ajaxGet.post(Data, url, function (data) {
+                var json = data.Data;
+                $('#memberCusCompanyId').val(json.CusCompanyId);
+                $('#memberName').val(json.Name);
+                $('#memberMobile').val(json.Mobile);
+                $('#memberEmail').val(json.Email);
+                $('#memberInfos').val(json.Infos);
+            }, function (data) {
+                ExceptionDeal(data);
+            })
+        }
+    </script>
+
+</body>
+
+
+<!-- Mirrored from www.zi-han.net/theme/hplus/clients.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 20 Jan 2016 14:19:44 GMT -->
+</html>

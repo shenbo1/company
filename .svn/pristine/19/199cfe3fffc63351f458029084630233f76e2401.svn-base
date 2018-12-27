@@ -1,0 +1,133 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using Company.Util;
+using Company.Admin.Fliter;
+using Company.Dto.Model;
+using Company.BLL.Data;
+using Company.DAL.Data;
+using Company.Dto;
+namespace Company.Admin.Controllers
+{
+    [WeChatLoginFilter]
+    public class MemberController : BaseController
+    {
+        #region 路由
+        /// <summary>
+        /// 个人中心
+        /// </summary>
+        /// <param name="cid"></param>
+        /// <returns></returns>
+        public ActionResult Index(string cid)
+        {
+            ViewBag.Name = cid;
+            return Redirect("/Content/Member/reim.html" + Request.Url.Query);
+            return View();
+        }
+        /// <summary>
+        /// 登录
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Login() 
+        {
+            return View();
+        }
+        /// <summary>
+        /// 审核页面
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult AuditIndex() 
+        {
+         
+            return View();
+        }
+        #endregion
+
+        #region 接口
+        public JsonResult GetVerifyByMobile(string Mobile) 
+        {
+            ResultInfo info = new ResultInfo();
+            info = MemberBussiness.GetVerifyByMobile(Mobile);
+            return Json(info);
+        }
+        public JsonResult MemberLogin(string Mobile, string Code) 
+        {
+            ResultInfo info = new ResultInfo();
+            info = MemberBussiness.LoginByMobile(Mobile, Code);
+            return Json(info);
+        }
+        public JsonResult GetMemberInfo() 
+        {
+            var user = CookieOperate.MemberCookie;
+            ResultInfo<Dto.CompanyUser> result = new ResultInfo<Dto.CompanyUser>();
+            if (user != null) { result.IsSuccess = true; result.Data = user; }
+            return Json(result);
+        }
+        public JsonResult MemberList() 
+        {
+            var list = CompanyUserDBOperate.GetComapnyUserList(CookieOperate.MemberCookie.CompanyId);
+            ResultInfo<List<CompanyUser>> result = new ResultInfo<List<CompanyUser>>() { IsSuccess = true };
+            result.Data = list;
+            return Json(result);
+        }
+
+        #region 审核
+        /// <summary>
+        /// 发起审核
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public JsonResult AddAuditMain(AuditMain model) 
+        {
+            ResultInfo info = new ResultInfo();
+            string message = "";
+            if (model.Id == 0)
+            {
+                model.DepartId = CookieOperate.MemberCookie.DepartId;
+                model.CompanyId = CookieOperate.MemberCookie.CompanyId;
+                model.UserId = CookieOperate.MemberCookie.Id;
+                model.Status = 1;
+                model.OperateId = CookieOperate.MemberCookie.Id;
+                model.MainId = Guid.NewGuid().ToString().Replace("-", "");
+                info.IsSuccess = AuditBussiness.AddAudit(model,out message);
+                info.Code = message;
+            }
+            else { 
+                
+            }
+            return Json(info);
+        }
+
+        /// <summary>
+        /// 获取我发起的审核
+        /// </summary>
+        /// <returns></returns>
+        public JsonResult GetMyAuditMain() 
+        {
+            ResultInfo<List<AuditMain>> info = new ResultInfo<List<AuditMain>>(){ IsSuccess = true };
+            info.Data = AuditMainDBOperate.GetMyAuditMain(CookieOperate.MemberCookie.Id);
+            return Json(info);
+        }
+        public JsonResult GetAuditMainById(int id)
+        {
+            string message = "";
+            ResultInfo<AuditMain> info = new ResultInfo<AuditMain>() { IsSuccess = true };
+            info.Data = AuditBussiness.GetAuditMainById(id, out message);
+            if (message == "MainNull") { info.IsSuccess = false; info.Code = message; }
+            return Json(info);
+        }
+        public JsonResult GetFinanceConfig() 
+        {
+            ResultInfo<List<PickerSelect>> info = new ResultInfo<List<PickerSelect>>() { IsSuccess = false };
+            info.Data = FinanceConfigDBOperate.GetConfigDataByDepartId(CookieOperate.MemberCookie.DepartId);
+            if (info.Data != null && info.Data.Count > 0) { info.IsSuccess = true; }
+            return Json(info);
+        }
+        #endregion
+
+        #endregion
+
+    }
+}

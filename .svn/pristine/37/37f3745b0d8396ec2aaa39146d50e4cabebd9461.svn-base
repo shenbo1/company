@@ -1,0 +1,79 @@
+﻿using Company.DAL.Common;
+using Company.Dto;
+using Company.Dto.Model;
+using Dapper;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Company.DAL.Data
+{
+    public class AuditDetailDBOperate
+    {
+        const string TableName = "AuditDetail";
+
+        #region 添加
+        public static bool AddAuditDetail(AuditDetail model)
+        {
+
+            string sql = string.Format("insert into {0}([UserId],[AudtiMainId],[CompanyId],[Remark],[OperateBy],[Status],[CreateDate])  values(@UserId,@AudtiMainId,@CompanyId,@Remark,@OperateBy,@Status,getdate())", TableName);
+            return DBAccess.ExecuteSqlWithEntity(sql, model);
+        }
+        #endregion
+
+        #region 修改
+        public static bool ModifyAuditDetail(AuditDetail model)
+        {
+            string sql = string.Format(@"update {0} set [UserId]=@UserId,[AudtiMainId]=@AudtiMainId,[CompanyId]=@CompanyId,[Remark]=@Remark,[OperateBy]=@OperateBy,[Status]=@Status,[ModifyDate]=getdate()
+            where Id=@Id", TableName);
+            return DBAccess.ExecuteSqlWithEntity(sql, model);
+        }
+        #endregion
+
+        #region 获取单个对象
+        public static AuditDetail GetModelById(int Id)
+        {
+            string sql = string.Format(@"select [Id],[UserId],[AudtiMainId],[CompanyId],[Remark],[OperateBy],[Status],[CreateDate] from {0} (nolock) where Id=@Id", TableName);
+            return DBAccess.GetEntityById<AuditDetail>(sql, Id);
+        }
+        #endregion
+
+        #region 获取列表
+        public static List<AuditDetail> GetList()
+        {
+            string sql = string.Format(@"select [Id],[UserId],[AudtiMainId],[CompanyId],[Remark],[OperateBy],[Status],[CreateDate] from {0} (nolock) ", TableName);
+            return DBAccess.GetEntityList<AuditDetail>(sql, new { });
+        }
+        #endregion
+
+        #region 获取分页列表
+        /// <summary>
+        /// 获取分页列表
+        /// </summary>
+        /// <param name="pagesize">每页显示多少行</param>
+        /// <param name="offset">跳过行数</param>
+        /// <param name="key">关键词</param>
+        /// <param name="totalcount">输出行数</param>
+        /// <param name="GroupId">输出行数</param>
+        /// <returns></returns>
+        public static List<AuditDetail> GetPagerList(int pagesize, int offset, string name, out int totalcount)
+        {
+            var param = new DynamicParameters();
+            totalcount = 0;
+            Pager pager = new Pager() { TableName = TableName + " A", Offset = offset, PageSize = pagesize, ColName = "A.[ID]" };
+            pager.Columns = @"A.[Id],A.[UserId],A.[AudtiMainId],A.[CompanyId],A.[Remark],A.[OperateBy],A.[Status],A.[CreateDate]";
+            pager.WhereStr += " and A.[Deleted]=@Deleted";
+            param.Add("Deleted", 0);
+            if (!string.IsNullOrEmpty(name))
+            {
+                pager.WhereStr += " and A.[Name] like @Name";
+                param.Add("Name", "%" + name + "%");
+            }
+            var list = PagerDBOperate<AuditDetail>.Init.GetList(pager, param, out totalcount);
+            return list;
+        }
+        #endregion
+    }
+}

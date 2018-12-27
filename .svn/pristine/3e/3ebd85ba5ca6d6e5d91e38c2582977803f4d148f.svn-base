@@ -1,0 +1,66 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Data;
+using Company.Dto;
+using Company.DAL.Data;
+using System.Data.SqlClient;
+using Company.Util;
+
+
+namespace Company.BLL.Data
+{
+    public class WorkListBLL
+    {
+        public static bool ImportExcel(DataTable dt, CompanyUser user, int projectId,out string message)
+        {
+            message = string.Empty;
+            try
+            {
+                //工单名称
+                var workName = dt.Columns[1].ColumnName.Trim();
+                var project = ProjectManageDBOperate.GetModelById(projectId);
+                if (project == null) { message = "项目编号有误,请核实"; return false; }
+                var guid = Guid.NewGuid().ToString();
+                WorkList work = new WorkList()
+                {
+                    Name = workName,
+                    CreateBy = user.UserName,
+                    CreateDate = DateTime.Now,
+                    Length = 0,
+                    Status = WorkListStatusEnum.NotStart.ToString(),
+                    CompanyId = user.CompanyId,
+                    CompanyName = user.CompanyName,
+                    ProjectId = projectId,
+                    ProjectName = project.Name,
+                    CusCompanyId = project.CusCompanyId,
+                    CusMemberId = project.CusMemberId,
+                    Guid = guid,
+                };
+                var list = new List<WorkListDetail>();
+                for (int i = 1; i < dt.Rows.Count; i++)
+                {
+                    var dr = dt.Rows[i];
+                    var detail = new WorkListDetail()
+                    {
+                        Infos = dr[1].ToString().Trim(),
+                        RoleCode = dr[0].ToString() == "消费者" ? DetailRole.Customer.ToString() : DetailRole.Admin.ToString(),
+                        CreateBy = user.UserName,
+                        WorkId = guid,
+                        Index = i + 1
+                    };
+                    if (string.IsNullOrEmpty(detail.Infos)) { continue; }
+                    list.Add(detail);
+                }
+                return WorkListDBOperate.Import(work, list, out message);
+            }
+            catch (Exception ex)
+            {
+                message = ex.Message;
+            }
+            return false;
+        }
+    }
+}

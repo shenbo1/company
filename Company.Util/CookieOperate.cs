@@ -1,0 +1,132 @@
+﻿using Company.Dto;
+using Company.Util;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace Company.Util
+{
+    public class CookieOperate
+    {
+
+        private const string AdminCookieKey = "Company_admin";
+        private const string MemberCookieKey = "Company_Member";
+        private const string CompanyWeChatCookieKey = "Company_CompanyWeChat";
+        private const string CompanyAccountCookieKey = "Company_account";
+
+        #region AdminCookie
+        /// <summary>
+        /// AdminCookie
+        /// </summary>
+        public static AdminInfo UserAdminCookie
+        {
+            get
+            {
+                HttpCookie cookie = HttpContext.Current.Request.Cookies[AdminCookieKey];
+                AdminInfo admin = null;
+                if (cookie != null)
+                {
+                    string userCookie = CommonMethod.AESDecrypt(cookie["User"]);
+                    admin = CommonMethod.ScriptDeserialize<AdminInfo>(userCookie);
+                }
+                return admin;
+            }
+            set
+            {
+                AdminInfo admin = value;
+               
+                HttpCookie cookie = new HttpCookie(AdminCookieKey);
+                cookie["User"] = CommonMethod.AESEncrypt(CommonMethod.ToJson(admin));
+                cookie["Time"] = CommonMethod.AESEncrypt(DateTime.Now.ToString());
+                cookie.Expires = DateTime.Now.AddHours(1);
+                HttpContext.Current.Response.Cookies.Add(cookie);
+            }
+        }
+        #endregion
+
+        #region UserCookie
+        public static CompanyUser MemberCookie
+        {
+            get
+            {
+                HttpCookie cookie = HttpContext.Current.Request.Cookies[MemberCookieKey];
+                CompanyUser model = null;
+                if (cookie != null)
+                {
+                    string userCookie = CommonMethod.AESDecrypt(cookie["Member"]);
+                    model = CommonMethod.ScriptDeserialize<CompanyUser>(userCookie);
+                    cookie.Expires = DateTime.Now.AddDays(30);
+                }
+                return model;
+            }
+            set
+            {
+                CompanyUser admin = value;
+
+                HttpCookie cookie = new HttpCookie(MemberCookieKey);
+                cookie["Member"] = CommonMethod.AESEncrypt(CommonMethod.ToJson(admin));
+                cookie["MemberTime"] = CommonMethod.AESEncrypt(DateTime.Now.ToString());
+                cookie.Expires = DateTime.Now.AddDays(30);
+                HttpContext.Current.Response.Cookies.Add(cookie);
+            }
+        }
+        #endregion
+
+        #region WeChatCookie
+        public static WeChatCookie WeChatCookie
+        {
+            get
+            {
+                HttpCookie cookie = HttpContext.Current.Request.Cookies[CompanyWeChatCookieKey];
+                WeChatCookie model = null;
+                if (cookie != null)
+                {
+                    string userCookie = CommonMethod.AESDecrypt(cookie["WeChat"]);
+                    model = CommonMethod.ScriptDeserialize<WeChatCookie>(userCookie);
+                    cookie.Expires = DateTime.Now.AddDays(30);
+                }
+                return model;
+            }
+            set
+            {
+                WeChatCookie admin = value;
+
+                HttpCookie cookie = new HttpCookie(AdminCookieKey);
+                cookie["WeChat"] = CommonMethod.AESEncrypt(CommonMethod.ToJson(admin));
+                cookie["WeChatTime"] = CommonMethod.AESEncrypt(DateTime.Now.ToString());
+                cookie.Expires = DateTime.Now.AddDays(30);
+                HttpContext.Current.Response.Cookies.Add(cookie);
+            }
+        }
+        #endregion
+
+
+        public static Account AccountCookie
+        {
+            get
+            {
+                HttpCookie cookie = HttpContext.Current.Request.Cookies[CompanyAccountCookieKey];
+                Account model = null;
+                if (cookie != null)
+                {
+                    string userCookie = CommonMethod.AESDecrypt(cookie["Account"]);
+                    model = CommonMethod.ScriptDeserialize<Account>(userCookie);
+                    cookie.Expires = DateTime.Now.AddDays(30);
+                }
+                return model;
+            }
+            set
+            {
+                Account admin = value;
+
+                HttpCookie cookie = new HttpCookie(CompanyAccountCookieKey);
+                cookie["Account"] = CommonMethod.AESEncrypt(CommonMethod.ToJson(admin));
+                cookie["AccountTime"] = CommonMethod.AESEncrypt(DateTime.Now.ToString());
+                cookie.Expires = DateTime.Now.AddDays(30);
+                HttpContext.Current.Response.Cookies.Add(cookie);
+            }
+        }
+
+    }
+}

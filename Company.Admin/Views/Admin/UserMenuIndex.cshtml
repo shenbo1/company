@@ -1,0 +1,172 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>菜单列表</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="/Content/css/bootstrap.min14ed.css?v=3.3.6" rel="stylesheet">
+    <link href="/Content/css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet">
+    <link href="/Content/css/plugins/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
+    <link href="/Content/css/animate.min.css" rel="stylesheet">
+    <link href="/Content/css/style.min862f.css?v=4.1.0" rel="stylesheet">
+    <style>
+        .box-content {
+            padding: 10px 0;
+        }
+
+        .float-e-margins .btn {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInDown">
+        <!-- Panel Other -->
+        <div class="ibox float-e-margins">
+            <div class="ibox-content">
+                <div class="row row-lg">
+                    <div class="col-sm-12">
+                        <!-- Example Events -->
+                        <div class="example-wrap">
+                            <h4 class="example-title">
+                                菜单列表
+                                <a class="btn btn-primary " style="float:right;" href="javascript:location.reload();" title="页面刷新"><i class="fa fa-refresh"></i> </a>
+                            </h4>
+                            <div class="example">
+                                <div class="box-content form-inline">
+                                    <div class="topbtnbar">
+                                        @*<input type="text" class="form-control" id="KeyWord" onkeyup="if (event.keyCode == '13') $('#btnSearch').click()" placeholder="关键字">
+                                            <button type="button" id="btnSearch" class="btn btn-success btn-sm " onclick="Search()">
+                                                查询
+                                            </button>*@
+                                        <button type="button" id="btnAdd" class="btn btn-info btn-sm" data-toggle="modal" data-target="#DivAdd">
+                                            新增
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>菜单名</th>
+                                            <th>链接地址</th>
+                                            <th>图标</th>
+                                            <th>排序</th>
+                                            <th>是否显示在左侧菜单</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbody"></tbody>
+                                </table>
+                                <div id="tree" class="ztree"></div>
+
+                                <label class="alert alert-success">主菜单:<span id="PCount">0</span>条数据</label>
+                                <label class="alert alert-info">子菜单:<span id="CCount">0</span>条数据</label>
+                                <label class="alert alert-warning">  共<span id="allTotal">0</span>条数据</label>
+
+                            </div>
+                        </div>
+                        <!-- End Example Events -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Panel Other -->
+    </div>
+
+    <script src="/Content/js/jquery.min.js?v=2.1.4"></script>
+    <script src="/Content/js/bootstrap.min.js?v=3.3.6"></script>
+    <script src="/Content/js/content.min.js?v=1.0.0"></script>
+    <script src="/Content/js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+    <script src="/Content/js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+    <script src="/Content/js/plugins/layer/layer.min.js"></script>
+    <script src="/Content/js/My97DatePicker/WdatePicker.js"></script>
+    <script src="/Content/js/ajax.js"></script>
+    @Html.Partial("_UserMenuAdd")
+</body>
+</html>
+
+<script>
+    $(function () {
+
+    });
+    function GetData()
+    {
+        var Data = {};
+        var Url = "@Url.Action("UserManagerList")"
+        ajaxGet.post(Data, Url, function (data) {
+            SuccessData(data);
+        }, function (data) { ExceptionDeal(data); })
+    }
+
+    var totalCount = 0, PCount = 0, CCount = 0;
+    function SuccessData(json) {
+        for (var i = 0; i < json.length; i++) {
+            PCount +=1;
+            CCount += json[i].ChildList.length;
+            var select = '<option value="'+json[i].Id+'">--'+json[i].Name+'</option>';
+            $("#PID").append(select);
+            var html = '';
+            html += '<tr class="alert alert-success">';
+            html += '<td >' + json[i].Name + ' (' + json[i].ChildList.length + ')' + '</td>';
+            html += '<td>' +( !!json[i].Url ? json[i].Url  : "-") + '</td>';
+            html += '<td><i class ="fa ' + json[i].MenuIcon + '"></i></td>';
+            html += '<td>' + json[i].OrderIndex + '</td>';
+            html += '<td>' + (json[i].IsLeft == 1 ? "是" : "否") + '</td>';
+            html += '<td>';
+            html += '<a title="修改" onclick="GetInfo(\''+json[i].Id+'\')">修改</a>';
+            html += '</td>';
+            html += "</tr>";
+            for (var j = 0; j < json[i].ChildList.length; j++) {
+                html += '<tr class="alert alert-info">';
+                html += '<td>' + json[i].ChildList[j].Name + '</td>';
+                html += '<td>' + (!!json[i].ChildList[j].Url ? json[i].ChildList[j].Url : "-") + '</td>';
+                html += '<td><i class ="fa ' + json[i].ChildList[j].MenuIcon + '"></i></td>';
+                html += '<td>' + json[i].ChildList[j].OrderIndex + '</td>';
+                html += '<td>' + (json[i].ChildList[j].IsLeft == 1 ? "是" : "否") + '</td>';
+                html += '<td>';
+                html += '<a  title="修改" onclick="GetInfo(\'' + json[i].ChildList[j].Id + '\')">修改</a>';
+                html += '</td>';
+                html += "</tr>";
+            }
+            $("#tbody").append(html);
+        }
+        totalCount = PCount + CCount;
+        $("#allTotal").html(totalCount);
+        $("#PCount").html(PCount);
+        $("#CCount").html(CCount);
+    }
+    $(function () {
+        GetData();
+    });
+    //查询按钮
+   function Search() {
+       location.reload();
+    }
+    //修改
+    function GetInfo(id) {
+        $('#DivAdd').modal("show");
+        var url = "@Url.Action("UserMenuGetOne")"
+        var Data = { id: id };
+        ajaxGet.post(Data, url, function (data) { GetDataSuccess(data); }, function (data) { ExceptionDeal(data); })
+    }
+    //获取数据
+    function GetDataSuccess(json) {
+        if (json.IsSuccess)
+        {
+            $("#hiddenId").val(json.Data.Id);
+            $("#Name").val(json.Data.Name);//菜单名
+            $("#Url").val(json.Data.Url);//链接地址
+            $("#MenuIcon").val(json.Data.MenuIcon);//图标
+            $("#PID").val(json.Data.PID);//父级编号
+            $("#OrderIndex").val(json.Data.OrderIndex);//排序
+            $("#IsLeft").val(json.Data.IsLeft);//是否显示在左侧菜单(1.是 0.否)
+            $("#UpdateDate").val(json.Data.UpdateDate);//修改时间
+        }
+    }
+</script>

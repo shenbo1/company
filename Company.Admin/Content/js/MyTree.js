@@ -1,0 +1,64 @@
+﻿/* 创建树 */
+function CreateTree(url) {
+    var Data = {};
+    var url = url;
+    ajaxGet.post(Data, url, function (data) {
+        GetTree(data);
+    }, function (data) { ExceptionDeal(data); })
+}
+
+var zNodes = [];//Ztree树节点
+function GetTree(data) {
+    zNodes = data;
+    treeObj = $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+    treeObj.expandAll(true);
+}
+var setting = {
+    check: {
+        enable: true,
+        chkboxType: { "Y": "ps", "N": "s" }
+    },
+    data: {
+        simpleData: {
+            enable: true
+        }
+    }
+};
+//全选
+function CheckAllNodes(cur) {
+    var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+    var status = $(cur).attr("attr-status");
+    if (status == 0) {
+        $(cur).attr("attr-status", 1);
+        $(cur).val('反选');
+        $(cur).removeClass("btn-primary").addClass("btn-warning");
+        treeObj.checkAllNodes(true);
+    }
+    else {
+        $(cur).attr("attr-status", 0);
+        $(cur).val('全选');
+        $(cur).addClass("btn-primary").removeClass("btn-warning");
+        var data = GetTreeChoose();
+        for (var i = 0; i < data.length; i++) {
+            treeObj.checkNode(treeObj.getNodeByParam("id", data[i], null), false, true);
+        }
+        //treeObj.checkAllNodes(false);
+    }
+}
+//选中指定的节点
+function AssignCheck(data) {
+    var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+    for (var i = 0; i < data.length; i++) {
+        treeObj.checkNode(treeObj.getNodeByParam("id", data[i], null), true, false);
+    }
+}
+/* 获取选中节点 */
+function GetTreeChoose() {
+    var treeObj = $.fn.zTree.getZTreeObj("treeDemo"),
+    nodes = treeObj.getCheckedNodes(true),
+    ids = [];
+    for (var i = 0; i < nodes.length; i++) {
+        ids.push(nodes[i].id);
+    }
+    return ids;
+}

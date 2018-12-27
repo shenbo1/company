@@ -1,0 +1,121 @@
+﻿<div class="modal fade" id="DivAdd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none">
+    <form id="commentForm" class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="btnClose()"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">新增/修改信息</h4>
+            </div>
+            <div class="modal-body" style="overflow-y:auto;max-height:500px">
+                <span class="label label-warning" id="bErrorInfo" style="display:none;"></span>
+                <div class="form-group">
+                    <label for="ProjectId">项目</label>
+                    @Html.DropDownList("ProjectId", (IEnumerable<SelectListItem>)ViewBag.Project, new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    <label for="CusMemberId">客户名称</label>
+                    @Html.DropDownList("CusMemberId", (IEnumerable<SelectListItem>)ViewBag.Member, new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    <label for="Name">工单名称</label>
+                    <input type="text" class="form-control" id="Name" placeholder="工单名称">
+                </div>
+                <div class="form-group">
+                    <label for="Infos">工单内容</label>
+                    <textarea class="form-control" id="Infos" placeholder="工单内容"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="GetTime">下单时间</label>
+                    <input type="text" class="form-control" id="GetTime" onfocus="WdatePicker({minDate:'%y-%M-%d',dateFmt: 'yyyy-MM-dd HH:mm:ss' })" placeholder="下单时间">
+                </div>
+                <div class="form-group">
+                    <label for="NeedTime">需求分析时间</label>
+                    <input type="text" class="form-control" id="NeedTime" onfocus="WdatePicker({minDate:'%y-%M-%d',dateFmt: 'yyyy-MM-dd HH:mm:ss' })" placeholder="需求分析时间">
+                </div>
+                <div class="form-group">
+                    <label for="DoTime">接单时间</label>
+                    <input type="text" class="form-control" id="DoTime" onfocus="WdatePicker({minDate:'%y-%M-%d',dateFmt: 'yyyy-MM-dd HH:mm:ss' })" placeholder="接单时间">
+                </div>
+                @*<div class="form-group">
+                    <label for="Users">参与人员</label>
+                    <input type="text" class="form-control" id="Users" placeholder="参与人员">
+                </div>*@
+                <div class="form-group">
+                    <label for="Status">项目状态</label>
+                    @Html.DropDownList("Status", (IEnumerable<SelectListItem>)ViewBag.WorkListStatus, new { @class = "form-control" })
+                </div>
+                @*<div class="form-group">
+                    <label for="Length">项目进度</label>
+                    <input type="text" class="form-control" id="Length" onkeyup="OnlyNum(this)" placeholder="项目进度">
+                </div>
+                <div class="form-group">
+                    <label for="CreateBy"></label>
+                    <input type="text" class="form-control" id="CreateBy" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label for="ModifyBy"></label>
+                    <input type="text" class="form-control" id="ModifyBy" placeholder="">
+                </div>*@
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="btnClose()">关闭</button>
+                <button type="button" class="btn btn-primary" id="btnComfirm" onclick="btnAddClick()">确定</button>
+            </div>
+        </div>
+    </form>
+</div>
+<input type="hidden" id="hiddenId" value="0" />
+<script>
+    function btnClose() {
+        $('#DivAdd').modal("hide");
+        $("#hiddenId").val('0');
+        $('#Name').val('');
+        $('#Infos').val('');
+        $('#GetTime').val('');
+        $('#NeedTime').val('');
+        $('#DoTime').val('');
+        $('#Users').val('');
+        $('#Status').val('');
+    }
+    function btnAddClick() {
+        var ID = $("#hiddenId").val();
+        var Data = {};
+        Data.Id = ID;
+        var ProjectId = $("#ProjectId").val();//
+        if (ProjectId == "") { layer.msg("请输入项目", { icon: 2 }); return; }
+        Data.ProjectId = ProjectId;
+        var CusMemberId = $("#CusMemberId").val();//客户名称
+        if (CusMemberId == "") { layer.msg("请输入客户名称", { icon: 2 }); return; }
+        Data.CusMemberId = CusMemberId;
+        var Name = $("#Name").val();//工单名称
+        if (Name == "") { layer.msg("请输入工单名称", { icon: 2 }); return; }
+        Data.Name = Name;
+        var Infos = $("#Infos").val();//工单简介
+        if (Infos == "") { layer.msg("请输入工单内容", { icon: 2 }); return; }
+        if (Infos.length >100) { layer.msg("工单内容不超过100字", { icon: 2 }); return; }
+        Data.Infos = Infos;
+        var GetTime = $("#GetTime").val();//下单时间
+        if (GetTime == "") { layer.msg("请输入下单时间", { icon: 2 }); return; }
+        Data.GetTime = GetTime;
+        var NeedTime = $("#NeedTime").val();//需求分析时间
+        if (NeedTime == "") { layer.msg("请输入需求分析时间", { icon: 2 }); return; }
+        Data.NeedTime = NeedTime;
+        var DoTime = $("#DoTime").val();//接单时间
+        if (DoTime == "") { layer.msg("请输入接单时间", { icon: 2 }); return; }
+        Data.DoTime = DoTime;
+        var Status = $("#Status").val();//项目状态
+        if (Status == "") { layer.msg("请输入项目状态", { icon: 2 }); return; }
+        Data.Status = Status;
+        var Length = $("#Length").val();//项目进度
+        if (Length == "") { layer.msg("请输入项目进度", { icon: 2 }); return; }
+        Data.Length = Length;
+        var url = "@Url.Action("WorkListAdd")";
+        ajaxGet.post(Data, url, function (data) { AddDataSuccess(data); }, function (data) { ExceptionDeal(data); })
+    }
+    function AddDataSuccess(json) {
+        if (json.IsSuccess) {
+            layer.msg(json.Message, { icon: 1 });
+            btnClose();
+            Search();
+        }
+    }
+</script>

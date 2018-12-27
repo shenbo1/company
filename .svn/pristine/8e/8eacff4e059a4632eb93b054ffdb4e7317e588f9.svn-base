@@ -1,0 +1,89 @@
+﻿using Company.DAL.Common;
+using Company.Dto;
+using Company.Dto.Model;
+using Dapper;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Company.DAL.Data
+{
+    public class WorkListDBOperate
+    {
+        const string TableName = "WorkList";
+
+        #region 添加
+        public static bool AddWorkList(WorkList model)
+        {
+
+            string sql = string.Format("insert into {0}([ProjectId],[ProjectName],[CompanyId],[CompanyName],[CusMemberId],[CusCompanyId],[Name],[Infos],[GetTime],[NeedTime],[DoTime],[Users],[Status],[Length],[IsDeleted],[CreateDate],[CreateBy])  values(@ProjectId,@ProjectName,@CompanyId,@CompanyName,@CusMemberId,@CusCompanyId,@Name,@Infos,@GetTime,@NeedTime,@DoTime,@Users,@Status,@Length,0,getdate(),@CreateBy)", TableName);
+            return DBAccess.ExecuteSqlWithEntity(sql, model);
+        }
+        #endregion
+
+        #region 修改
+        public static bool ModifyWorkList(WorkList model)
+        {
+            string sql = string.Format(@"update {0} set [ProjectId]=@ProjectId,[ProjectName]=@ProjectName,[CompanyId]=@CompanyId,[CompanyName]=@CompanyName,[CusMemberId]=@CusMemberId,[CusCompanyId]=@CusCompanyId,[Name]=@Name,[Infos]=@Infos,[GetTime]=@GetTime,[NeedTime]=@NeedTime,[DoTime]=@DoTime,[Users]=@Users,[Status]=@Status,[Length]=@Length,[IsDeleted]=@IsDeleted,[ModifyDate]=getdate(),[ModifyBy]=@ModifyBy
+            where Id=@Id", TableName);
+            return DBAccess.ExecuteSqlWithEntity(sql, model);
+        }
+        #endregion
+
+        #region 获取单个对象
+        public static WorkList GetModelById(int Id)
+        {
+            string sql = string.Format(@"select [Id],[ProjectId],[ProjectName],[CompanyId],[CompanyName],[CusMemberId],[CusCompanyId],[Name],[Infos],[GetTime],[NeedTime],[DoTime],[Users],[Status],[Length],[IsDeleted],[CreateDate],[CreateBy],[ModifyBy] from {0} (nolock) where Id=@Id", TableName);
+            return DBAccess.GetEntityById<WorkList>(sql, Id);
+        }
+        #endregion
+        #region 获取单个对象
+        public static WorkList GetModelByName(string Name)
+        {
+            string sql = string.Format(@"select [Id],[ProjectId],[ProjectName],[CompanyId],[CompanyName],[CusMemberId],[CusCompanyId],[Name],[Infos],[GetTime],[NeedTime],[DoTime],[Users],[Status],[Length],[IsDeleted],[CreateDate],[CreateBy],[ModifyBy],[Id],[ProjectId],[ProjectName],[CompanyId],[CompanyName],[CusMemberId],[CusCompanyId],[Name],[Infos],[GetTime],[NeedTime],[DoTime],[Users],[Status],[Length],[IsDeleted],[CreateDate],[CreateBy],[ModifyBy] from {0} (nolock) where Name=@Name", TableName);
+            return DBAccess.GetEntityByName<WorkList>(sql, Name);
+        }
+        #endregion
+
+
+        #region 获取分页列表
+        /// <summary>
+        /// 获取分页列表
+        /// </summary>
+        /// <param name="pagesize">每页显示多少行</param>
+        /// <param name="offset">跳过行数</param>
+        /// <param name="key">关键词</param>
+        /// <param name="totalcount">输出行数</param>
+        /// <param name="GroupId">输出行数</param>
+        /// <returns></returns>
+        public static List<WorkList> GetPagerList(WorkListQuery query, out int totalcount)
+        {
+            var param = new DynamicParameters();
+            totalcount = 0;
+            Pager pager = new Pager() { TableName = TableName + " A", Offset = query.Offset, PageSize = query.Limit, ColName = "A.[ID]",Direction = Direction.DESC };
+            pager.Columns = @"A.[Id],A.[ProjectId],A.[ProjectName],A.[CompanyId],A.[CompanyName],A.[CusMemberId],A.[CusCompanyId],A.[Name],A.[Infos],A.[GetTime],A.[NeedTime],A.[DoTime],A.[Users],A.[Status],A.[Length],A.[IsDeleted],A.[CreateDate],B.[Name] CusMemberName";
+            pager.WhereStr += " and A.[IsDeleted]=0 and a.CompanyId=@CompanyId";
+            pager.JoinSql = "left join CustomerMember(nolock) B on a.[CusMemberId] = b.[Id]";
+            param.Add("CompanyId", query.CompanyId.ToString());
+            if (!string.IsNullOrEmpty(query.KeyWord))
+            {
+                pager.WhereStr += " and A.[Name] like @Name";
+                param.Add("Name", "%" + query.KeyWord + "%");
+            }
+            if (query.ProjectId != 0) {
+                pager.WhereStr += " and A.[ProjectId] =@ProjectId";
+                param.Add("ProjectId", query.ProjectId);
+            }
+            if (!string.IsNullOrEmpty(query.Status))
+            {
+                pager.WhereStr += " and A.[Status] = @Status";
+                param.Add("Status", query.Status);
+            }
+            var list = PagerDBOperate<WorkList>.Init.GetList(pager, param, out totalcount);
+            return list;
+        }
+        #endregion
+    }
+}

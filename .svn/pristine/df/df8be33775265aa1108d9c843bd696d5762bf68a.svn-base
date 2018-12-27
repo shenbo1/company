@@ -1,0 +1,86 @@
+﻿<div class="modal fade" id="DivAdd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none">
+    <form class="modal-dialog" id="commentForm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="btnClose()"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">新增/修改菜单信息</h4>
+            </div>
+            <div class="modal-body" style="overflow-y:auto;">
+                <span class="label label-warning" id="bErrorInfo" style="display:none;"></span>
+                <div class="form-group">
+                    <label for="Name">菜单名</label>
+                    <input type="text" class="form-control" id="Name" placeholder="菜单名">
+                </div>
+                <div class="form-group">
+                    <label for="Url">链接地址</label>
+                    <input type="text" class="form-control" id="Url" placeholder="链接地址">
+                </div>
+                <div class="form-group">
+                    <label for="MenuIcon">图标</label>
+                    <input type="text" class="form-control" id="MenuIcon" placeholder="图标">
+                </div>
+                <div class="form-group">
+                    <label for="PID">父级菜单</label>
+                    <select class="form-control" id="PID">
+                        <option value="0">顶级菜单</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="OrderIndex">排序</label>
+                    <input type="text" class="form-control" id="OrderIndex" onkeyup="OnlyNum (this)" placeholder="排序">
+                </div>
+                <div class="form-group">
+                    <label for="IsLeft">是否显示在左侧菜单</label>
+                    <select id="IsLeft" class="form-control">
+                        <option value="1">是</option>
+                        <option value="0">否</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="btnClose()">关闭</button>
+                <button type="button" class="btn btn-primary" id="btnComfirm" onclick="btnAddClick()">确定</button>
+            </div>
+        </div>
+    </form>
+</div>
+<input type="hidden" id="hiddenId" value="0" />
+<script>
+    function btnClose() {
+        $('#DivAdd').modal("hide");
+        $("#hiddenId").val('0');
+        $('#Name').val('');
+        $('#Url').val('');
+        $('#MenuIcon').val('');
+        $('#PID').val('0');
+        $('#OrderIndex').val('');
+        $('#IsLeft').val('1');
+    }
+    function btnAddClick() {
+        var ID = $("#hiddenId").val();
+        var Name = $("#Name").val();//菜单名
+        if (Name == "") { layer.msg("请输入菜单名", { icon: 2 }); return; }
+        var Url = $("#Url").val();//链接地址
+        //if (Url == "") { layer.msg("请输入链接地址", { icon: 2 }); return; }
+        var MenuIcon = $("#MenuIcon").val();//图标
+        //if (MenuIcon == "") { layer.msg("请输入图标", { icon: 2 }); return; }
+        var PID = $("#PID").val();//父级编号
+        if (PID == "") { layer.msg("请输入父级编号", { icon: 2 }); return; }
+        var OrderIndex = $("#OrderIndex").val();//排序
+        if (OrderIndex == "") { layer.msg("请输入排序", { icon: 2 }); return; }
+        var IsLeft = $("#IsLeft").val();//是否显示在左侧菜单(1.是 0.否)
+        if (IsLeft == "") { layer.msg("请输入是否显示在左侧菜单(1.是 0.否)", { icon: 2 }); return; }
+        var UpdateDate = $("#UpdateDate").val();//修改时间
+        if (UpdateDate == "") { layer.msg("请输入修改时间", { icon: 2 }); return; }
+        var Data = { Name: Name, Url: Url, MenuIcon: MenuIcon, PID: PID, OrderIndex: OrderIndex, IsLeft: IsLeft, UpdateDate: UpdateDate, ID: ID };
+        var url = "@Url.Action("UserMenuAdd")";
+        ajaxGet.post(Data, url, function (data) { AddDataSuccess(data); }, function (data) { ExceptionDeal(data); })
+    }
+    function AddDataSuccess(json) {
+        if (json.IsSuccess) {
+            layer.msg(json.Message, { icon: 1 });
+            btnClose();
+            setTimeout(function () { Search(); }, 1000);
+        }
+    }
+</script>

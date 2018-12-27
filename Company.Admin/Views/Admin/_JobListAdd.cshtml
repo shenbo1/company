@@ -1,0 +1,130 @@
+﻿<div class="modal fade" id="DivAdd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none">
+    <form id="commentForm" class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="btnClose()"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">新增/修改信息</h4>
+            </div>
+            <div class="modal-body" style="overflow-y:auto;max-height:500px">
+                <span class="label label-warning" id="bErrorInfo" style="display:none;"></span>
+                <div class="form-group">
+                    <label for="Name">职位名称</label>
+                    <input type="text" class="form-control" id="Name" placeholder="职位名称">
+                </div>
+                <div class="form-group">
+                    <label for="Level">职位级别</label>
+                    <input type="text" class="form-control" id="Level" placeholder="职位级别">
+                </div>
+                <div class="form-group">
+                    <label for="Index">排序</label>
+                    <input type="text" class="form-control" id="Index" onkeyup="OnlyNum(this)" placeholder="排序">
+                </div>
+                <div class="form-group">
+                    <label for="IsParent">父级</label>
+                    <select class="form-control" id="IsParent">
+                        <option value="0">顶级</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="Price">月价格</label>
+                    <input type="text" class="form-control" id="Price" onkeyup="NumAndPoint(this)" placeholder="月价格">
+                </div>
+                <div class="form-group col-sm-12">
+                    <div class="col-sm-3">
+                        <label for="Ico">图片</label>
+                    </div>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control imgview" id="Ico" placeholder="图片">
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="m-t-xs font-bold"><a id="upload" title="上传头像"><i class="fa fa-upload"></i> 上传图片</a></div>
+                        <input type="file" style="display:none;" name="file" id="file_upload" value="" accept="image/jpg,image/jpeg,image/png" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="IsPublish">是否发布</label>
+                    <select class="form-control" id="IsPublish">
+                        <option value="1">是</option>
+                        <option value="0">否</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="Ico">简介</label>
+                    <textarea placeholder="简介" class="form-control" id="Info"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="btnClose()">关闭</button>
+                <button type="button" class="btn btn-primary" id="btnComfirm" onclick="btnAddClick()">确定</button>
+            </div>
+        </div>
+    </form>
+</div>
+<input type="hidden" id="hiddenId" value="0" />
+<script src="/Content/js/UploadJs/upload.js?@DateTime.Now"></script>
+<script>
+        var upload = new UploadImages();
+        upload.MaxSize = 1024;
+        upload.Success = function (src) {
+            $('#Ico').val(src);
+        };
+        upload.Init();
+    function btnClose() {
+        $('#DivAdd').modal("hide");
+        $("#hiddenId").val('0');
+        $('#Name').val('');
+        $('#Index').val('');
+        $('#IsParent').val('0');
+        $('#CreateBy').val('');
+        $('#ModifyBy').val('');
+        $('#Price').val('');
+        $('#Ico').val('');
+        $('#IsPublish').val('1');
+        $('#Info').val('');
+        $('#Level').val('');
+
+    }
+    function btnAddClick() {
+        var ID = $("#hiddenId").val();
+        var Data ={};
+        Data.Id = ID;
+        var Name = $("#Name").val();//名称
+        if (Name == "") { layer.msg("请输入职位名称", { icon: 2 }); return; }
+        Data.Name = Name;
+        var Level = $("#Level").val();//职位级别
+        if (Level == "") { layer.msg("请输入职位级别", { icon: 2 }); return; }
+        Data.Level = Level;
+        var Index = $("#Index").val();//排序
+        if (Index == "") { layer.msg("请输入排序", { icon: 2 }); return; }
+        Data.Index=Index;
+        var IsParent = $("#IsParent").val();//
+        if (IsParent == "") { layer.msg("请输入", { icon: 2 }); return; }
+        Data.IsParent=IsParent;
+        var CreateBy = $("#CreateBy").val();//创建人
+        if (CreateBy == "") { layer.msg("请输入创建人", { icon: 2 }); return; }
+        Data.CreateBy=CreateBy;
+        var ModifyBy = $("#ModifyBy").val();//更新人
+        if (ModifyBy == "") { layer.msg("请输入更新人", { icon: 2 }); return; }
+        Data.ModifyBy=ModifyBy;
+        var Price = $("#Price").val();//月价格
+        if (Price == "") { layer.msg("请输入月价格", { icon: 2 }); return; }
+        Data.Price=Price;
+        var Ico = $("#Ico").val();//图片URL
+        if (Ico == "") { layer.msg("请输入图片URL", { icon: 2 }); return; }
+        Data.Ico=Ico;
+        var IsPublish = $("#IsPublish").val();//是否发布
+        Data.IsPublish = IsPublish;
+        var Info = $("#Info").val();//是否发布
+        Data.Info = Info;
+        var url = "@Url.Action("JobListAdd")";
+        ajaxGet.post(Data, url, function (data) { AddDataSuccess(data); }, function (data) { ExceptionDeal(data); })
+    }
+
+    function AddDataSuccess(json) {
+        if (json.IsSuccess) {
+            layer.msg(json.Message, { icon: 1 });
+            btnClose();
+            Search();
+        }
+    }
+</script>

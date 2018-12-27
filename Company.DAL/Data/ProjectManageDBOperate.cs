@@ -1,0 +1,140 @@
+﻿using Company.DAL.Common;
+using Company.Dto;
+using Company.Dto.Model;
+using Dapper;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Company.DAL.Data
+{
+    public class ProjectManageDBOperate
+    {
+        const string TableName = "ProjectManage";
+
+        #region 添加
+        public static bool AddProjectManage(ProjectManage model)
+        {
+
+            string sql = string.Format("insert into {0}([Name],[FullName],[StartTime],[EndTime],[RelStartTime],[RelEndTime],[PayWay],[LastPayDate],[Money],[Status],[Infos],[CompanyId],[CreateDate],[CreateBy],[IsDeleted],[CusMemberId],[CusCompanyId],[Source])  values(@Name,@FullName,@StartTime,@EndTime,@RelStartTime,@RelEndTime,@PayWay,@LastPayDate,@Money,@Status,@Infos,@CompanyId,getdate(),@CreateBy,0,@CusMemberId,@CusCompanyId,@Source)", TableName);
+            return DBAccess.ExecuteSqlWithEntity(sql, model);
+        }
+        #endregion
+
+        #region 修改
+        public static bool ModifyProjectManage(ProjectManage model)
+        {
+            string sql = string.Format(@"update {0} set [Name]=@Name,[FullName]=@FullName,[StartTime]=@StartTime,[EndTime]=@EndTime,[RelStartTime]=@RelStartTime,[RelEndTime]=@RelEndTime,[PayWay]=@PayWay,[LastPayDate]=@LastPayDate,[Money]=@Money,[Status]=@Status,[Infos]=@Infos,[CompanyId]=@CompanyId,[ModifyDate]=getdate(),[ModifyBy]=@ModifyBy,[IsDeleted]=@IsDeleted,[CusCompanyId]=@CusCompanyId,[CusMemberId]=@CusMemberId
+            where Id=@Id", TableName);
+            return DBAccess.ExecuteSqlWithEntity(sql, model);
+        }
+        public static bool DeleteProjectManage(ProjectManage model)
+        {
+            string sql = string.Format(@"update {0} set [ModifyDate]=getdate(),[ModifyBy]=@ModifyBy,[IsDeleted]=@IsDeleted
+            where Id=@Id", TableName);
+            return DBAccess.ExecuteSqlWithEntity(sql, model);
+        }
+        public static bool ProjectManageModifyDate(ProjectManage model)
+        {
+            string sql = string.Format(@"update {0} set [ModifyDate]=getdate(),[ModifyBy]=@ModifyBy,PayDate=@PayDate
+            where Id=@Id", TableName);
+            return DBAccess.ExecuteSqlWithEntity(sql, model);
+        }
+
+        #endregion
+
+        #region 获取单个对象
+        public static ProjectManage GetModelById(int Id)
+        {
+            string sql = string.Format(@"select * from {0} (nolock) where Id=@Id and isdeleted=0", TableName);
+            return DBAccess.GetEntityById<ProjectManage>(sql, Id);
+        }
+        #endregion
+        #region 获取单个对象
+        public static ProjectManage GetModelByName(string Name)
+        {
+            string sql = string.Format(@"select [Id],[Name],[FullName],[StartTime],[EndTime],[RelStartTime],[RelEndTime],[PayWay],[LastPayDate],[Money],[Status],[Infos],[CompanyId],[CreateDate],[CreateBy],[ModifyBy],[IsDeleted],[Id],[Name],[FullName],[StartTime],[EndTime],[RelStartTime],[RelEndTime],[PayWay],[LastPayDate],[Money],[Status],[Infos],[CompanyId],[CreateDate],[CreateBy],[ModifyBy],[IsDeleted] from {0} (nolock) where Name=@Name", TableName);
+            return DBAccess.GetEntityByName<ProjectManage>(sql, Name);
+        }
+        #endregion
+
+        #region 获取所有数据
+        public static List<ProjectManage> GetList(int companyId,int cusMemberId) {
+            string sql = string.Format("select [Id],[Name],[FullName] from {0} A where 1=1 {1}",TableName,
+                "and A.[IsDeleted]=0 ");
+            var param = new DynamicParameters();
+            if (companyId != 0) {
+                sql += " and a.CompanyId=@CompanyId ";
+                param.Add("CompanyId", companyId.ToString());
+            }
+            if (cusMemberId != 0) {
+                sql += " and a.CusMemberId=@CusMemberId ";
+                param.Add("CusMemberId", cusMemberId.ToString());
+            }
+            var list = DBAccess.GetEntityList<ProjectManage>(sql, param);
+            return list;
+        }
+        #endregion
+
+        #region 获取分页列表
+        /// <summary>
+        /// 获取分页列表
+        /// </summary>
+        /// <param name="pagesize">每页显示多少行</param>
+        /// <param name="offset">跳过行数</param>
+        /// <param name="key">关键词</param>
+        /// <param name="totalcount">输出行数</param>
+        /// <param name="GroupId">输出行数</param>
+        /// <returns></returns>
+        public static List<ProjectManage> GetPagerList(QueryBase query,string payway,string status, out int totalcount)
+        {
+            var param = new DynamicParameters();
+            totalcount = 0;
+            Pager pager = new Pager() { TableName = TableName + " A", Offset = query.Offset, PageSize = query.Limit, ColName = "A.[ID]" };
+            pager.Columns = @"A.[Id],A.[Name],A.[FullName],A.[StartTime],A.[EndTime],A.[RelStartTime],
+                   A.[RelEndTime],A.[PayWay],A.[LastPayDate],A.[Money],A.[Status],A.[Infos],A.[CompanyId],
+                   A.[CreateDate],b.[Name] CusMemberName,c.[Name] CusCompanyName,a.[CusMemberId],
+                   a.[OpereateType],a.[DevType],a.[NowStatus],a.[DevLanguate],a.[MarketProspect],a.[Month],a.[PayDate]";
+            pager.WhereStr += " and A.[IsDeleted]=0 ";
+            pager.JoinSql += "left join CustomerMember(nolock) b on a.CusMemberId=b.Id ";
+            pager.JoinSql += "left join CustomerCompany(nolock) c on a.CusCompanyId=c.Id";
+            if (query.CompanyId!=0) {
+                pager.WhereStr += " and a.CompanyId=@CompanyId ";
+                param.Add("CompanyId", query.CompanyId.ToString());
+            }
+            if (query.CusMemberId != 0)
+            {
+                pager.WhereStr += " and a.CusMemberId=@CusMemberId ";
+                param.Add("CusMemberId", query.CusMemberId.ToString());
+            }
+            if (!string.IsNullOrEmpty(query.Sort)) {
+                pager.ColName = string.Format("A.[{0}]", query.Sort);
+            }
+            if (!string.IsNullOrEmpty(query.Order)) {
+                pager.Direction = query.Order == "asc" ? Direction.ASC : Direction.DESC;
+            }
+            if (!string.IsNullOrEmpty(query.KeyWord))
+            {
+                pager.WhereStr += " and (A.[Name] like @Name or A.[FullName] like @Name)";
+                param.Add("Name", "%" + query.KeyWord + "%");
+            }
+            if (!string.IsNullOrEmpty(payway))
+            {
+                pager.WhereStr += " and A.[PayWay]=@PayWay";
+                param.Add("PayWay", payway);
+            }
+            if (!string.IsNullOrEmpty(status))
+            {
+                pager.WhereStr += " and A.[Status]=@Status";
+                param.Add("Status", status);
+            }
+            var list = PagerDBOperate<ProjectManage>.Init.GetList(pager, param, out totalcount);
+            return list;
+        }
+        #endregion
+
+
+    }
+}

@@ -1,0 +1,155 @@
+﻿<div class="modal fade" id="DivAdd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none">
+    <form id="commentForm" class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="btnClose()"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">新增/修改信息</h4>
+            </div>
+            <div class="modal-body" style="overflow-y:auto;max-height:500px">
+                <span class="label label-warning" id="bErrorInfo" style="display:none;"></span>
+                <div class="form-group">
+                    <label for="Name">项目简称</label>
+                    <input type="text" class="form-control" id="Name" placeholder="项目简称">
+                </div>
+                <div class="form-group">
+                    <label for="FullName">项目全名</label>
+                    <input type="text" class="form-control" id="FullName" placeholder="项目全名">
+                </div>
+                <div class="form-group">
+                    <label for="StartTime">项目开始时间</label>
+                    <input type="text" class="form-control" id="StartTime" onfocus="WdatePicker({minDate:'%y-%M-%d'})" placeholder="项目开始时间">
+                </div>
+                <div class="form-group">
+                    <label for="EndTime">项目结束时间</label>
+                    <input type="text" class="form-control" id="EndTime" onfocus="WdatePicker({minDate:'%y-%M-%d'})" placeholder="项目结束时间">
+                </div>
+                @*<div class="form-group">
+            <label for="RelStartTime">项目实际开始时间</label>
+            <input type="text" class="form-control" id="RelStartTime" onfocus="WdatePicker({minDate:'%y-%M-%d'})" placeholder="项目实际开始时间">
+        </div>
+        <div class="form-group">
+            <label for="RelEndTime">项目实际开始时间</label>
+            <input type="text" class="form-control" id="RelEndTime" onfocus="WdatePicker({minDate:'%y-%M-%d'})" placeholder="项目实际开始时间">
+        </div>
+
+        <div class="form-group">
+            <label for="LastPayDate">最后一次付款时间</label>
+            <input type="text" class="form-control" id="LastPayDate" onfocus="WdatePicker({minDate:'%y-%M-%d'})" placeholder="最后一次付款时间">
+        </div>*@
+                <div class="form-group">
+                    <label for="PayWay">支付方式</label>
+                    @Html.DropDownList("PayWay", (IEnumerable<SelectListItem>)ViewBag.PayWay, new { @class = "form-control" })
+                    <input type="text" class="form-control" id="PayWay" placeholder="支付方式">
+                </div>
+                <div class="form-group">
+                    <label for="Money">金额</label>
+                    <input type="text" class="form-control" onkeyup="NumAndPoint(this)" id="Money" placeholder="金额">
+                </div>
+                <div class="form-group">
+                    <label for="Status">状态</label>
+                    <label for="PayWay">支付方式</label>
+                    @Html.DropDownList("Status", (IEnumerable<SelectListItem>)ViewBag.Status, new { @class = "form-control" })
+                    <input type="text" class="form-control" id="Status" placeholder="状态">
+                </div>
+                <div class="form-group">
+                    <label for="Infos">项目简介</label>
+                    <textarea  class="form-control" id="Infos" placeholder="项目简介"></textarea>
+                    @*<input type="text" class="form-control" id="Infos" placeholder="项目简介">*@
+                </div>
+                @* <div class="form-group">
+            <label for="CompanyId">公司编号</label>
+            <input type="text" class="form-control" id="CompanyId" onkeyup="OnlyNum(this)" placeholder="公司编号">
+        </div>
+        <div class="form-group">
+            <label for="CreateBy">创建人</label>
+            <input type="text" class="form-control" id="CreateBy" placeholder="创建人">
+        </div>
+        <div class="form-group">
+            <label for="ModifyBy">修改人</label>
+            <input type="text" class="form-control" id="ModifyBy" placeholder="修改人">
+        </div>*@
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="btnClose()">关闭</button>
+                <button type="button" class="btn btn-primary" id="btnComfirm" onclick="btnAddClick()">确定</button>
+            </div>
+        </div>
+    </form>
+</div>
+<input type="hidden" id="hiddenId" value="0" />
+<script>
+    function btnClose() {
+        $('#DivAdd').modal("hide");
+        $("#hiddenId").val('0');
+        $('#Name').val('');
+        $('#FullName').val('');
+        $('#StartTime').val('');
+        $('#EndTime').val('');
+        $('#RelStartTime').val('');
+        $('#RelEndTime').val('');
+        $('#PayWay').val('');
+        $('#LastPayDate').val('');
+        $('#Money').val('');
+        $('#Status').val('');
+        $('#Infos').val('');
+        $('#CompanyId').val('');
+        $('#CreateBy').val('');
+        $('#ModifyBy').val('');
+    }
+    function btnAddClick() {
+        var ID = $("#hiddenId").val();
+        var Data = {};
+        Data.Id = ID;
+        var Name = $("#Name").val();//项目简称
+        if (Name == "") { layer.msg("请输入项目简称", { icon: 2 }); return; }
+        Data.Name = Name;
+        var FullName = $("#FullName").val();//项目全名
+        if (FullName == "") { layer.msg("请输入项目全名", { icon: 2 }); return; }
+        Data.FullName = FullName;
+        var StartTime = $("#StartTime").val();//项目开始时间
+        if (StartTime == "") { layer.msg("请输入项目开始时间", { icon: 2 }); return; }
+        Data.StartTime = StartTime;
+        var EndTime = $("#EndTime").val();//项目结束时间
+        if (EndTime == "") { layer.msg("请输入项目结束时间", { icon: 2 }); return; }
+        Data.EndTime = EndTime;
+        var RelStartTime = $("#RelStartTime").val();//项目实际开始时间
+        if (RelStartTime == "") { layer.msg("请输入项目实际开始时间", { icon: 2 }); return; }
+        Data.RelStartTime = RelStartTime;
+        var RelEndTime = $("#RelEndTime").val();//项目实际开始时间
+        if (RelEndTime == "") { layer.msg("请输入项目实际开始时间", { icon: 2 }); return; }
+        Data.RelEndTime = RelEndTime;
+        var PayWay = $("#PayWay").val();//支付方式
+        if (PayWay == "") { layer.msg("请输入支付方式", { icon: 2 }); return; }
+        Data.PayWay = PayWay;
+        var LastPayDate = $("#LastPayDate").val();//最后一次付款时间
+        if (LastPayDate == "") { layer.msg("请输入最后一次付款时间", { icon: 2 }); return; }
+        Data.LastPayDate = LastPayDate;
+        var Money = $("#Money").val();//金额
+        if (Money == "") { layer.msg("请输入金额", { icon: 2 }); return; }
+        Data.Money = Money;
+        var Status = $("#Status").val();//状态
+        if (Status == "") { layer.msg("请输入状态", { icon: 2 }); return; }
+        Data.Status = Status;
+        var Infos = $("#Infos").val();//项目简介
+        if (Infos == "") { layer.msg("请输入项目简介", { icon: 2 }); return; }
+        Data.Infos = Infos;
+        var CompanyId = $("#CompanyId").val();//公司编号
+        if (CompanyId == "") { layer.msg("请输入公司编号", { icon: 2 }); return; }
+        Data.CompanyId = CompanyId;
+        var CreateBy = $("#CreateBy").val();//创建人
+        if (CreateBy == "") { layer.msg("请输入创建人", { icon: 2 }); return; }
+        Data.CreateBy = CreateBy;
+        var ModifyBy = $("#ModifyBy").val();//修改人
+        if (ModifyBy == "") { layer.msg("请输入修改人", { icon: 2 }); return; }
+        Data.ModifyBy = ModifyBy;
+        var url = "@Url.Action("ProjectManageAdd")";
+        ajaxGet.post(Data, url, function (data) { AddDataSuccess(data); }, function (data) { ExceptionDeal(data); })
+    }
+    function AddDataSuccess(json) {
+        if (json.IsSuccess) {
+            layer.msg(json.Message, { icon: 1 });
+            btnClose();
+            Search();
+        }
+    }
+</script>

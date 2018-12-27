@@ -1,0 +1,183 @@
+﻿<div class="modal fade" id="DivAdd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none;width:100%;">
+    <form id="commentForm" class="modal-dialog" role="document" style="margin:0px;width:100%;min-height:600px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="btnClose()"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">新增/修改信息</h4>
+            </div>
+            <div class="modal-body" style="overflow-y:auto;min-height:500px">
+                <span class="label label-warning" id="bErrorInfo" style="display:none;"></span>
+                <div class="form-group row">
+                    <div class="col-sm-6">
+                        <label for="Name" class="col-sm-4"><span class="text-danger">*</span>新闻名</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="Name" placeholder="新闻名">
+
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="Name" class="col-sm-4"><span class="text-danger">*</span>标签</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="Tag" placeholder="标签">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-6">
+                        <div class="col-sm-4">
+                            <label for="CardFront"><span class="text-danger">*</span>图片</label>
+                        </div>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control imgview" id="MainImg" placeholder="图片">
+                        </div>
+                        <div class="col-sm-2">
+                            <a id="upload2" title="上传图片"><i class="fa fa-upload"></i> 上传图片</a>
+                            <input type="file" style="display:none;" name="file" id="file_upload2" value="" accept="image/jpg,image/jpeg,image/png" />
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="Name" class="col-sm-4"><span class="text-danger">*</span>排序</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="Index" placeholder="排序">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-6">
+                        <label for="Name" class="col-sm-4"><span class="text-danger">*</span>发布时间</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="PublishDate" onfocus="WdatePicker({minDate:'%y-%M-%d'})" placeholder="发布时间">
+
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="Name" class="col-sm-4"><span class="text-danger">*</span>发布者名字</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="PublishName" placeholder="发布者名字">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-6">
+                        <label for="Name" class="col-sm-4"><span class="text-danger">*</span>是否发布</label>
+                        <div class="col-sm-8">
+                            <select id="IsPublish" class="form-control">
+                                <option value="0">否</option>
+                                <option value="1">是</option>
+                            </select>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-6">
+                        <label for="Name" class="col-sm-4"><span class="text-danger">*</span>文章摘要</label>
+                        <div class="col-sm-8">
+                           <textarea class="form-control" placeholder="文章摘要" id="desc"></textarea>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-12">
+                        <label for="Name" class="col-sm-2"><span class="text-danger">*</span>备注</label>
+                        <div class="col-sm-10">
+                            <script id="editor" type="text/plain" style="min-height:200px;">
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <div class="col-sm-4 col-sm-offset-2">
+                    <button type="button" class="btn btn-primary" id="btnComfirm" onclick="btnAddClick()">确定</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="btnClose()">关闭</button>
+                </div>
+            </div>
+
+            @*<div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="btnClose()">关闭</button>
+                <button type="button" class="btn btn-primary" id="btnComfirm" onclick="btnAddClick()">确定</button>
+            </div>*@
+        </div>
+    </form>
+</div>
+<input type="hidden" id="hiddenId" value="0" />
+<script src="/Content/js/UploadJs/upload.js?@DateTime.Now"></script>
+<script>
+    var ue = UE.getEditor('editor');
+    $(function () {
+
+         var upload2 = new UploadImages();
+        upload2.FileObj = $('#file_upload2');
+        upload2.EditObj = $('#upload2');
+        upload2.MaxSize = 1024;
+        upload2.Success = function (src) {
+
+            //$('#EducationPhoto').val(src);
+            $('#MainImg').val( src);
+            //upload2.EditObj.parent().find('input').val(src);
+        };
+        upload2.Init();
+    })
+    function btnClose() {
+        $('#DivAdd').modal("hide");
+        $("#hiddenId").val('0');
+        $('#Name').val('');
+        $('#Tag').val('');
+        $('#MainImg').val('');
+        $('#Infos').val('');
+        $('#PublishDate').val('');
+        $('#PublishName').val('');
+        $('#CreateBy').val('');
+        $('#ModifyBy').val('');
+        $('#GUID').val('');
+        $('#Index').val('');
+        $("#desc").val('');
+        UE.getEditor('editor').setContent('');
+    }
+    function btnAddClick() {
+        var ID = $("#hiddenId").val();
+        var Data = {};
+        Data.Id = ID;
+
+        var Name = $("#Name").val();//
+        if (Name == "") { layer.msg("请输入名字", { icon: 2 }); return; }
+        Data.Name = Name;
+        var Tag = $("#Tag").val();//
+        if (Tag == "") { layer.msg("请输入标签", { icon: 2 }); return; }
+        Data.Tag = Tag;
+        var MainImg = $("#MainImg").val();//
+        if (MainImg == "") { layer.msg("请输入图片", { icon: 2 }); return; }
+        Data.MainImg = MainImg;
+        var Index = $("#Index").val();//
+        if (Index == "") { layer.msg("请输入排序", { icon: 2 }); return; }
+        Data.Index = Index;
+        var PublishDate = $("#PublishDate").val();//
+        if (PublishDate == "") { layer.msg("请输入发布时间", { icon: 2 }); return; }
+        Data.PublishDate = PublishDate;
+        var PublishName = $("#PublishName").val();//
+        if (PublishName == "") { layer.msg("请输入发布人姓名", { icon: 2 }); return; }
+        Data.PublishName = PublishName;
+        var Desc = $("#desc").val();//
+        if (Desc == "") { layer.msg("请输入新闻摘要", { icon: 2 }); return; }
+        Data.Desc = Desc;
+        var Infos = ue.getContent();//
+        if (Infos == "") { layer.msg("请输入新闻内容", { icon: 2 }); return; }
+        Data.Infos = Infos;
+      
+        Data.IsPublish = $("#IsPublish").val();
+
+        var url = "@Url.Action("NewsInfoAdd")";
+        ajaxGet.post(Data, url, function (data) { AddDataSuccess(data); }, function (data) { ExceptionDeal(data); })
+    }
+    function AddDataSuccess(json) {
+        if (json.IsSuccess) {
+            layer.msg(json.Message, { icon: 1 });
+            btnClose();
+            Search();
+        }
+    }
+</script>

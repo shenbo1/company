@@ -1,0 +1,71 @@
+﻿@{
+    Layout = "~/Layout/_LayoutWebSite.cshtml";
+    Page.Title = "新闻动态";
+    Page.Key = "软件开发，技术支持，智能硬件，智能名宿";
+    Page.Desc = "微信开发，小程序开发，智能展厅，智能酒店，智能民宿，智能家居，智能办公, 技术孵化，技术合伙人，硬件开发，智能硬件";
+
+    Page.AccountName = ViewBag.AccountName;
+}
+<link href="/Content/css/animate.min.css" rel="stylesheet">
+<style>
+    .dateandmember {
+        text-align: center;
+        font-size: 16px;
+    }
+        .dateandmember .date {
+        text-align:left;}
+        .dateandmember .member {
+            text-align: right;
+        }
+
+        .new_list h1 {
+            font-size: 40px;
+            text-align: center;
+        }
+    .new_list .news_content {
+        border: 1px solid #ddd;
+        padding: 10px;
+        margin: 20px 0;
+    }
+</style>
+<div class="main-container container">
+    <ul class="breadcrumb">
+        <li><a href="#"><i class="fa fa-home"></i></a></li>
+        <li><a href="#">新闻板块</a></li>
+        <li><a href="#">最新资讯</a></li>
+    </ul>
+</div>
+
+<div class="new_list main-container container bounceInLeft">
+   <h1></h1>
+   <div class="dateandmember">
+       <span class="date"></span>
+       <span class="member"></span>
+   </div>
+    <div class="news_content"></div>
+</div>
+<script src="~/Content/js/ajax.js"></script>
+<script src="~/Content/js/jquery.min.js"></script>
+<script src="~/Content/js/plugins/layer/layer.js"></script>
+<script>
+    layer.load();
+    ajaxGet.post({ Id: GetQueryString("id") }, "/WebSite/NewDetail", function (data) {
+        console.log(data);
+        $('.news_content').html(data.Infos);
+        $('title').text('新闻动态-' + data.Name);
+        $('.new_list h1').html(data.Name);
+        $('.new_list .date').html('发布时间:' + ChangeDt(data.PublishDate));
+        $('.new_list .member').html('发布者:' + data.PublishName);
+        //for (var i = 0; i < data.rows.length; i++) {
+        //    var json = data.rows[i];
+        //    if (!isNullOrEmpty(json.MainImg)) { json.MainImg = json.MainImg.replace('small', 'large'); }
+        //    var html = CreateHtml(json.Id, json.MainImg, json.Name, json.Desc);
+        //    $(".new_list ul").append(html);
+        //}
+        layer.closeAll();
+    }, function () {
+        layer.closeAll();
+        alert('找不到新闻');
+        })
+
+</script>

@@ -1,0 +1,107 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Dapper;
+using System.Data.SqlClient;
+using Company.Dto;
+using Company.Dto.Model;
+using Company.DAL.Common;
+
+namespace Company.DAL
+{
+    public class CompanyDepartMentDBOperate
+    {
+        const string TableName = "CompanyDepartMent";
+
+        #region 添加
+        public static bool AddCompanyDepartMent(CompanyDepartMent model)
+        {
+            string sql = string.Format("insert into {0}(Name,PId,CompanyId,[CompanyName],CreateDate,IsDeleted)  values(@Name,@PId,@CompanyId,@CompanyName,getdate(),0)", TableName);
+            return DBAccess.ExecuteSqlWithEntity(sql, model);
+        }
+        #endregion
+
+        #region 修改
+        public static bool ModifyCompanyDepartMent(CompanyDepartMent model)
+        {
+            string sql = string.Format(@"update {0} set [Name]=@Name,[PId]=@PId,[CompanyId]=@CompanyId,[CompanyName]=@CompanyName,[ModifyDate]=getdate()
+            where Id=@Id", TableName);
+            return DBAccess.ExecuteSqlWithEntity(sql, model);
+        }
+        #endregion
+
+        #region 获取单个对象
+        public static CompanyDepartMent GetModelById(int Id)
+        {
+            string sql = string.Format(@"select Id,Name,PId,CompanyId,ModifyDate,IsDeleted from {0} (nolock) where Id=@Id", TableName);
+            return DBAccess.GetEntityById<CompanyDepartMent>(sql, Id);
+        }
+        #endregion
+
+        #region 获取所有数据
+        public static List<CompanyDepartMent> GetList(int PId,int companyId)
+        {
+            string sql = string.Format(@"select Id,Name,PId,CompanyId,ModifyDate,IsDeleted from {0} (nolock) where PId=@PId ", TableName);
+            if (companyId != 0) { sql += " and CompanyId=@CompanyId "; }
+            return DBAccess.GetEntityList<CompanyDepartMent>(sql, new { PId = PId,CompanyId = companyId });
+        }
+        public static List<CompanyDepartMent> GetListChild(int companyId) {
+            string sql = @" select a.Id,b.Name+'-'+ a.Name  Name from [CompanyDepartMent] a
+  inner join [CompanyDepartMent] b on a.pid = b.id where 1= 1";
+            if(companyId!=0) sql+=" and a.companyId=@CompanyId";
+            return DBAccess.GetEntityList<CompanyDepartMent>(sql, new {  CompanyId = companyId });
+        }
+        #endregion
+
+        #region 获取分页列表
+        /// <summary>
+        /// 获取分页列表
+        /// </summary>
+        /// <param name="pagesize">每页显示多少行</param>
+        /// <param name="offset">跳过行数</param>
+        /// <param name="key">关键词</param>
+        /// <param name="totalcount">输出行数</param>
+        /// <param name="GroupId">输出行数</param>
+        /// <returns></returns>
+        public static List<CompanyDepartMent> GetPagerList(int pagesize, int offset, string name, int companyId, out int totalcount)
+        {
+            var param = new DynamicParameters();
+            totalcount = 0;
+            Pager pager = new Pager() { TableName = TableName + " A", Offset = offset, PageSize = pagesize, ColName = "A.[ID]" };
+            pager.Columns = @"A.[Id],A.[Name],A.[PId],A.[CompanyId],A.[CreateDate],A.[IsDeleted],A.[AuditStep]";
+            if (!string.IsNullOrEmpty(name))
+            {
+                pager.WhereStr += " and A.[Name] like @Name";
+                param.Add("Name", "%" + name + "%");
+            }
+            if (companyId != 0)
+            {
+                pager.WhereStr += " and A.[CompanyId] = @CompanyId";
+                param.Add("CompanyId", companyId);
+            }
+            var list = PagerDBOperate<CompanyDepartMent>.Init.GetList(pager, param, out totalcount);
+            return list;
+        }
+        #endregion
+
+        #region 根据部门编号获取完整部门名称
+        /// <summary>
+        /// 根据部门编号获取完整部门名称
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public static CompanyDepartMent GetDepartMentById(int id) 
+        {
+            string sql = @"select b.Id,c.Name+'-'+ b.Name Name from CompanyDepartMent(nolock) b
+left join CompanyDepartMent(nolock) c
+on b.PId=c.Id
+where b.Id=@Id";
+            return DBAccess.GetEntityById<CompanyDepartMent>(sql, id);
+        }
+        #endregion
+    }
+
+}
+

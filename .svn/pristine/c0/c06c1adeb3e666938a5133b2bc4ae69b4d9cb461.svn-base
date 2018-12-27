@@ -1,0 +1,93 @@
+﻿using Company.DAL.Common;
+using Company.Dto;
+using Company.Dto.Model;
+using Dapper;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Company.DAL.Data
+{
+    public class CustomerMemberDBOperate
+    {
+        const string TableName = "CustomerMember";
+
+        #region 添加
+        public static bool AddCustomerMember(CustomerMember model)
+        {
+
+            string sql = string.Format("insert into {0}([CompanyId],[CompanyName],[CusCompanyId],[Name],[ImgUrl],[Mobile],[Email],[Infos],[IsDeleted],[CreateDate],[CreateBy])  values(@CompanyId,@CompanyName,@CusCompanyId,@Name,@ImgUrl,@Mobile,@Email,@Infos,0,getdate(),@CreateBy)", TableName);
+            return DBAccess.ExecuteSqlWithEntity(sql, model);
+        }
+        #endregion
+
+        #region 修改
+        public static bool ModifyCustomerMember(CustomerMember model)
+        {
+            string sql = string.Format(@"update {0} set [CompanyId]=@CompanyId,[CompanyName]=@CompanyName,[CusCompanyId]=@CusCompanyId,[Name]=@Name,[ImgUrl]=@ImgUrl,[Mobile]=@Mobile,[Email]=@Email,[Infos]=@Infos,[IsDeleted]=@IsDeleted,[ModifyDate]=getdate(),[ModifyBy]=@ModifyBy
+            where Id=@Id", TableName);
+            return DBAccess.ExecuteSqlWithEntity(sql, model);
+        }
+        #endregion
+
+        #region 获取单个对象
+        public static CustomerMember GetModelById(int Id)
+        {
+            string sql = string.Format(@"select [Id],[CompanyId],[CompanyName],[CusCompanyId],[Name],[ImgUrl],[Mobile],[Email],[Infos],[IsDeleted],[CreateDate],[CreateBy],[ModifyBy] from {0} (nolock) where Id=@Id", TableName);
+            return DBAccess.GetEntityById<CustomerMember>(sql, Id);
+        }
+        #endregion
+        #region 获取单个对象
+        public static CustomerMember GetModelByName(string Name)
+        {
+            string sql = string.Format(@"select [Id],[CompanyId],[CompanyName],[CusCompanyId],[Name],[ImgUrl],[Mobile],[Email],[Infos],[IsDeleted],[CreateDate],[CreateBy],[ModifyBy],[Id],[CompanyId],[CompanyName],[CusCompanyId],[Name],[ImgUrl],[Mobile],[Email],[Infos],[IsDeleted],[CreateDate],[CreateBy],[ModifyBy] from {0} (nolock) where Name=@Name", TableName);
+            return DBAccess.GetEntityByName<CustomerMember>(sql, Name);
+        }
+        #endregion
+
+
+        #region 获取分页列表
+        /// <summary>
+        /// 获取分页列表
+        /// </summary>
+        /// <param name="pagesize">每页显示多少行</param>
+        /// <param name="offset">跳过行数</param>
+        /// <param name="key">关键词</param>
+        /// <param name="totalcount">输出行数</param>
+        /// <param name="GroupId">输出行数</param>
+        /// <returns></returns>
+        public static List<CustomerMember> GetPagerList(QueryBase query, out int totalcount)
+        {
+            var param = new DynamicParameters();
+            totalcount = 0;
+            Pager pager = new Pager() { TableName = TableName + " A", Offset = query.Offset, PageSize = query.Limit, ColName = "A.[ID]" };
+            pager.Columns = @"A.[Id],A.[CompanyId],B.Name [CompanyName],A.[CusCompanyId],A.[Name],A.[ImgUrl],A.[Mobile],A.[Email],A.[Infos],A.[IsDeleted],A.[CreateDate],A.[CreateBy],A.[ModifyBy]";
+            pager.WhereStr += " and A.[IsDeleted]=0 and a.[CompanyId]=@CompanyId";
+            pager.JoinSql = "left join CustomerCompany(nolock) B on A.CusCompanyId=B.Id";
+            param.Add("CompanyId", query.CompanyId);
+
+            if (!string.IsNullOrEmpty(query.KeyWord))
+            {
+                pager.WhereStr += " and (A.[Name] like @Name or a.[Mobile] like @Name or a.[Email] like @Name)";
+                param.Add("Name", "%" + query.KeyWord + "%");
+            }
+            var list = PagerDBOperate<CustomerMember>.Init.GetList(pager, param, out totalcount);
+            return list;
+        }
+        #endregion
+
+        #region 获取所有数据
+        public static List<CustomerMember> GetList(int companyId)
+        {
+            string sql = string.Format("select a.[Id],a.[Name],B.Name [CompanyName] from {0}(nolock) a left join  CustomerCompany(nolock) B on A.CusCompanyId=B.Id where 1=1 {1}", TableName, "and A.[IsDeleted]=0 and a.CompanyId=@CompanyId");
+            var param = new DynamicParameters();
+            param.Add("CompanyId", companyId.ToString());
+            var list = DBAccess.GetEntityList<CustomerMember>(sql, param);
+            return list;
+        }
+        #endregion
+
+    }
+}

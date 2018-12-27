@@ -1,0 +1,252 @@
+﻿@{
+     Layout = null;
+}
+
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="lib/html5shiv.js"></script>
+    <script type="text/javascript" src="lib/respond.min.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" type="text/css" href="/Template/HAdmin/static/h-ui/css/H-ui.min.css" />
+    <link rel="stylesheet" type="text/css" href="/Template/HAdmin/static/h-ui.admin/css/H-ui.admin.css" />
+    <link rel="stylesheet" type="text/css" href="/Template/HAdmin/lib/Hui-iconfont/1.0.8/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="/Template/HAdmin/static/h-ui.admin/skin/default/skin.css" id="skin" />
+    <link rel="stylesheet" type="text/css" href="/Template/HAdmin/static/h-ui.admin/css/style.css" />
+    <!--[if IE 6]>
+    <script type="text/javascript" src="lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+    <script>DD_belatedPNG.fix('*');</script>
+    <![endif]-->
+    <title>工单列表</title>
+    <link href="/Template/HAdmin/lib/webuploader/0.1.5/webuploader.css" rel="stylesheet" type="text/css" />
+    <style>
+        textarea {
+            resize: vertical;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <button onclick="save();" class="btn btn-secondary radius" type="button"><i class="Hui-iconfont"></i> 保存</button>
+        <form class="form form-horizontal" id="form-article-add">
+            <div class="row cl">
+                <div class="formControls col-xs-8 col-sm-2">
+                    <label>工单名</label>
+                </div>
+                <div class="formControls col-xs-8 col-sm-2">
+                    <input type="text" class="input-text " id="name" value="" placeholder="工单名">
+                </div>
+            </div>
+            <div class="row cl">
+                <div class="formControls col-xs-8 col-sm-2">
+                    <label>工单详情</label>
+                </div>
+            </div>
+            <div class="row cl detail">
+                <div class="formControls col-xs-8 col-sm-2">
+                    <input type="text" class="input-text level" id="level1" value="" placeholder="如PC,手机端">
+                </div>
+                <div class="formControls col-xs-8 col-sm-2">
+                    <input type="text" class="input-text name" id="name1" value="" placeholder="工单名称">
+                </div>
+                <div class="formControls col-xs-8 col-sm-6">
+                    <textarea name="abstract" style=" resize: vertical;" class="textarea valid" placeholder="工单内容,回车即另一条"  id="info1"></textarea>
+                </div>
+                <div class="formControls col-xs-8 col-sm-2">
+                    <button onClick="add('','','');" class="btn btn-primary radius" type="button">添加</button>
+                </div>
+            </div>
+            <input type="hidden" id="hiddenId"  value="0"/>
+        </form>
+    </div>
+    <!--_footer 作为公共模版分离出去-->
+    <script type="text/javascript" src="/Template/HAdmin/lib/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="/Template/HAdmin/lib/layer/2.4/layer.js"></script>
+    <script type="text/javascript" src="/Template/HAdmin/static/h-ui/js/H-ui.min.js"></script>
+    <script type="text/javascript" src="/Template/HAdmin/static/h-ui.admin/js/H-ui.admin.js"></script> <!--/_footer /作为公共模版分离出去-->
+    <!--请在下方写此页面业务相关的脚本-->
+    <script type="text/javascript" src="/Template/HAdmin/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+    <script type="text/javascript" src="/Template/HAdmin/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+    <script type="text/javascript" src="/Template/HAdmin/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+    <script type="text/javascript" src="/Template/HAdmin/lib/webuploader/0.1.5/webuploader.min.js"></script>
+    <script src="/Content/js/ajax.js"></script>
+</body>
+</html>
+<script>
+    var projectId = GetQueryString("id");
+    var pid = GetQueryString("pid");
+    $(function () {
+        if (!isNullOrEmpty(pid)) {
+              var url = "@Url.Action("GetWorkDetailById")";
+            ajaxGet.post({ projectId: pid }, url, function (data) {
+            if (data.IsSuccess) {
+                console.log(data.Data);
+                var json = data.Data;
+                $("#name").val(json.Name);
+                var detail = json.DetailList;
+                var item = json.ItemList;
+                for (var i = 0; i < detail.length; i++) {
+                    var RoleCode = detail[i].RoleCode;// '';
+                    var Infos = detail[i].Infos;// '';
+                    var guid = detail[i].Guid;// '';
+                    var Detail = '';
+                    for (var j = 0; j < item.length; j++) {
+                        if (item[j].DetailGuid == guid) { Detail += item[j].Infos + '\n'; }
+                    }
+                    if (i == 0) {
+                        $('#level1').val(RoleCode);
+                        $('#name1').val(Infos); $('#info1').val(Detail);
+                    } else {
+                        add(RoleCode, Infos, Detail);
+                    }
+                }
+            }
+            else {
+                layer.msg(data.Message, { icon: 2 });
+            }
+            // Search();
+        }, function (data) { ExceptionDeal(data); })
+        }
+    });
+    var submit = false;
+    function save() {
+        if (submit) {
+            layer.msg("保存中...请耐心等待", { icon: 2 });
+            return;
+        }
+        var names = $("#name").val();
+        if (names == '') { layer.msg("工单名称不能为空", { icon: 2 }); return; }
+        if (names.length > 30) { layer.msg("工单名称不能超过30字", { icon: 2 }); flag = false; return; }
+
+        var flag = true;
+        var Data = [];
+        $('.detail').each(function () {
+            var level = $(this).find('.level').val();
+            var name = $(this).find('.name').val();
+            var textarea = $(this).find('.textarea').val();
+            if (level == '') { layer.msg("工单角色不能为空", { icon: 2 }); flag = false; return; }
+            if (level.length > 10) { layer.msg("工单角色不能超过10字", { icon: 2 }); flag = false; return; }
+            if (name == '') { layer.msg("工单名称不能为空", { icon: 2 }); flag = false; return; }
+            if (name.length > 30) { layer.msg("工单名称不能超过30字", { icon: 2 }); flag = false; return; }
+            if (textarea == '') { layer.msg("工单内容不能为空", { icon: 2 }); flag = false; return; }
+            var obj = {
+                Role: $(this).find('.level').val(),
+                Name: $(this).find('.name').val(),
+                Infos: $(this).find('.textarea').val()
+            };
+            Data.push(obj);
+        });
+        if (!flag) { return; }
+        layer.msg("提交中...", { icon: 1 });
+        //var index = layer.load(1, {
+        //    shade: [0.1, '#fff'] //0.1透明度的白色背景
+        //});
+        var url = "@Url.Action("WorkListInfoEdit")";
+        ajaxGet.post({ str: JSON.stringify(Data), projectId: projectId, name: $("#name").val(), id: $("#hiddenId").val() }, url, function (data) {
+            if (data.IsSuccess) {
+                layer.msg(data.Message, { icon: 1 });
+                setTimeout(function () {
+                    parent.window.location.reload();
+                    layer_close();
+                }, 1500);
+            }
+            else {
+                layer.msg(data.Message, { icon: 2 });
+            }
+            // Search();
+        }, function (data) { ExceptionDeal(data); })
+        //console.log(Data);
+    }
+    function add(level,name,de) {
+        var flag = true;
+        $('.detail').each(function () {
+            var level = $(this).find('.level').val();
+            var name = $(this).find('.name').val();
+            var textarea = $(this).find('.textarea').val();
+            if (level == '') { layer.msg("工单角色不能为空", { icon: 2 }); flag = false; return; }
+            if (level.length > 10) { layer.msg("工单角色不能超过10字", { icon: 2 }); flag = false; return;}
+            if (name == '') { layer.msg("工单名称不能为空", { icon: 2 }); flag = false; return; }
+            if (name.length > 30) { layer.msg("工单名称不能超过30字", { icon: 2 }); flag = false; return; }
+            if (textarea == '') { layer.msg("工单内容不能为空", { icon: 2 }); flag = false; return;}
+        });
+        if (!flag) { return; }
+        var html = '';
+        html += ' <div class="row cl detail">';
+        html += ' <div class="formControls col-xs-8 col-sm-2" >';
+        html += '<input type="text" class="input-text level" value="' + level + '" placeholder="如PC,手机端" >';
+        html += '</div>';
+        html += ' <div class="formControls col-xs-8 col-sm-2">';
+        html += '<input type="text" class="input-text name" value="' + name + '" placeholder="工单名称">';
+        html += ' </div>';
+        html += ' <div class="formControls col-xs-8 col-sm-6">';
+        html += ' <textarea name="abstract" style=" resize: vertical;" class="textarea valid" placeholder="工单内容,回车即另一条">' + de + '</textarea>';
+        html += ' </div>';
+        html += '  <div class="formControls col-xs-8 col-sm-2">';
+        html += '<button onClick="del(this);" class="btn btn-danger radius" type="button">删除</button>';
+        html += ' </div>';
+        html += ' </div>';
+        $('form').append(html);
+    }
+    function del(cur) { $(cur).parents('.detail').remove(); }
+    function GetSuccess(json) {
+        if (json.IsSuccess) {
+            var data = json.Data;
+            $("#name").val(data.Name);
+            $("#mobile").val(data.Mobile);
+            $("#email").val(data.Email);
+            $("#job").val(data.Job);
+            $("#sex").val(data.Sex);
+        }
+    }
+
+    //var submit = false;
+    //function save() {
+
+    //    if (submit) {
+    //        layer.msg("保存中...请耐心等待", { icon: 2 });
+    //        return;
+    //    }
+    //    var Data = {};
+    //    var Name = $("#name").val();
+    //    if (Name == "") { layer.msg("请输入姓名", { icon: 2 }); return; }
+    //    if (Name.length > 20) { layer.msg("名字不超过20字", { icon: 2 }); return;  }
+    //    Data.Name = Name;
+    //    var sex = $("#sex").val();
+    //    Data.Sex = sex;
+    //    var mobile = $("#mobile").val();
+    //    if (mobile == "") { layer.msg("请输入手机号", { icon: 2 }); return; }
+    //    if (!checkMobile(mobile)) {
+    //        layer.msg("手机号格式错误", { icon: 2 }); return;
+    //    }
+    //    Data.Mobile = mobile;
+    //    var email = $("#email").val();
+    //    if (email == "") { layer.msg("请输入邮箱", { icon: 2 }); return; }
+    //    if (!isEmail(email)) {
+    //        layer.msg("邮箱格式错误", { icon: 2 }); return;
+    //    }
+    //    Data.Email = email;
+    //    var job = $("#job").val();
+    //    if (job == "") { layer.msg("请输入职位", { icon: 2 }); return; }
+    //    if (job.length > 30) { layer.msg("职位不超过30字", { icon: 2 }); return; }
+    //    Data.Job = job;
+    //    var url = "/member/SaveMemberInfo";
+    //    ajaxGet.post(Data, url, function (data) { AddSuccess(data); }, function (data) { ExceptionDeal(data); })
+    //    submit = true;
+    //}
+    function AddSuccess(json) {
+        if (json.IsSuccess) {
+            layer.msg(json.Message, { icon: 1 });
+            setTimeout(function () {
+                layer_close();
+            }, 1500);
+            return;
+        }
+        layer.msg(json.Message, { icon: 2 }); return;
+    }
+</script>

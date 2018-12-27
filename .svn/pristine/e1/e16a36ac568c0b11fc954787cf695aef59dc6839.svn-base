@@ -1,0 +1,210 @@
+﻿@model Company.Dto.CompanyUser
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+
+
+<!-- Mirrored from www.zi-han.net/theme/hplus/contacts.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 20 Jan 2016 14:18:21 GMT -->
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人中心</title>
+
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="/content/css/bootstrap.min14ed.css?v=3.3.6" rel="stylesheet">
+    <link href="/content/css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet">
+
+    <link href="/content/css/animate.min.css" rel="stylesheet">
+    <link href="/content/css/style.min862f.css?v=4.1.0" rel="stylesheet">
+
+</head>
+
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <a class="btn btn-primary " style="float:right;" href="javascript:location.reload();" title="页面刷新"><i class="fa fa-refresh"></i> </a>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="animated fadeInRight">
+                    <div class="ibox-title">
+                        <h5>个人资料</h5>
+                    </div>
+                    <div class="ibox-content form-horizontal">
+                        <div class="col-sm-4">
+                            <div class="text-center">
+                                <img alt="@Model.Name" class="img-circle m-t-xs img-responsive" src="@Model.WeChatHeadUrl">
+                                <div class="m-t-xs font-bold"><a id="upload" title="上传头像"><i class="fa fa-edit"></i> 上传头像</a></div>
+                                <input type="file" style="display:none;" name="file" id="file_upload" value="" accept="image/jpg,image/jpeg,image/png" />
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <h3><strong>@Model.Name</strong></h3>
+                            <p><i class="fa fa-map-marker"></i> @Model.DepartName</p>
+                            <p><i class="fa fa-phone"></i> @Model.Mobile <a title="修改手机号" onclick="show('#e_mobile')"><i class="fa fa-edit"></i> </a></p>
+                            <p><i class="fa fa-envelope"></i> @Model.Email <a title="修改邮箱" onclick="show('#e_email')"><i class="fa fa-edit"></i> </a></p>
+                            <p><i class="fa fa-lock"></i> ****** <a title="修改密码" onclick="show('#e_password')"><i class="fa fa-edit"></i> </a></p>
+                            @*<p>入职时间 @Model.Email</p>*@
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6" id="e_password" style="display:none;">
+                <div class="animated fadeInRight">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>密码修改</h5>
+                        </div>
+                        <div class="ibox-content form-horizontal">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">旧密码：</label>
+                                <div class="col-sm-8">
+                                    <input type="password" placeholder="旧密码" id="old" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">新密码：</label>
+                                <div class="col-sm-8">
+                                    <input type="password" placeholder="新密码" id="pwd" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">重复密码：</label>
+                                <div class="col-sm-8">
+                                    <input type="password" placeholder="重复密码" id="repwd" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-3 col-sm-8">
+                                    <button class="btn btn-sm btn-primary" type="button" onclick="Modify('pwd')">修 改</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4" id="e_mobile" style="display:none;">
+                <div class="animated fadeInRight">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>手机号修改</h5>
+                        </div>
+                        <div class="ibox-content form-horizontal">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">新手机：</label>
+                                <div class="col-sm-8">
+                                    <input type="tel" maxlength="11" placeholder="手机号" id="mobile" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-offset-3 col-sm-8">
+                                    <button class="btn btn-sm btn-primary" type="button" onclick="Modify('mobile')">修 改</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4" id="e_email" style="display:none;">
+                <div class="animated fadeInRight">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>邮箱修改</h5>
+                        </div>
+                        <div class="ibox-content form-horizontal">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">新邮箱：</label>
+                                <div class="col-sm-8">
+                                    <input type="email" placeholder="邮箱地址" id="email" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-offset-3 col-sm-8">
+                                    <button class="btn btn-sm btn-primary" type="button" onclick="Modify('email')">修 改</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/content/js/jquery.min.js?v=2.1.4"></script>
+    <script src="/content/js/bootstrap.min.js?v=3.3.6"></script>
+    <script src="/content/js/content.min.js?v=1.0.0"></script>
+    <script src="/Content/js/ajax.js"></script>
+    <script src="/Content/js/font.js"></script>
+    <script src="~/Content/js/plugins/layer/layer.min.js"></script>
+    <script src="/Content/js/UploadJs/upload.js?@DateTime.Now"></script>
+    <script>
+        var id = '@Model.Id';
+        function show(id) { $(id).show(); }
+        var upload = new UploadImages();
+        upload.Success = function (src) {
+            //console.log(src + '');
+            upload.FileObj.siblings('img').attr('src', src);
+            var Data = {};
+            Data.Id = id;
+            Data.WeChatHeadUrl = src;
+             var url = "@Url.Action("CompanyUserAdd")";
+            ajaxGet.post(Data, url, function (json) {
+                if (json.IsSuccess) {
+                    layer.msg('头像修改成功', { icon: 1 });
+                } else {
+                    layer.msg(json.Message, { icon: 2 });
+                }
+
+            }, function (data) { ExceptionDeal(data); })
+
+        };
+       upload.Init();
+        function Modify(way) {
+            var Data = {};
+            Data.Id = id;
+            if (way == "email") {
+                var email = $("#email").val();
+                if (email == "") { layer.msg("请填写邮箱", { icon: 2 }); return; }
+                if (!isEmail(email)) {
+                    layer.msg("邮箱格式错误", { icon: 2 }); return;
+                }
+                Data.Email = email;
+            }
+            else if (way == "mobile") {
+                var mobile = $("#mobile").val();
+                if (mobile == "") { layer.msg("请填写手机号", { icon: 2 }); return; }
+                if (!checkMobile(mobile)) {
+                    layer.msg("手机号格式错误", { icon: 2 }); return;
+                }
+                Data.Mobile = mobile;
+            }
+            else {
+                var old = $("#old").val();
+                if (old == '') {  layer.msg("请输入旧密码", { icon: 2 }); return;   }
+                var pwd = $("#pwd").val();
+                if (pwd == '') {  layer.msg("请输入新密码", { icon: 2 }); return; }
+                if (pwd.length < 6) { layer.msg("密码长度至少6位数", { icon: 2 }); return; }
+                if (pwd != $("#repwd").val()) { layer.msg("重复密码不一致", { icon: 2 }); return; }
+                Data.PassWord = old;
+                Data.ModifyBy = pwd;
+            }
+            var url = "@Url.Action("CompanyUserAdd")";
+            ajaxGet.post(Data, url, function (json) {
+                if (json.IsSuccess) {
+                    layer.msg('保存成功', { icon: 1 });
+                    setTimeout(function () { window.location.reload(); }, 1500)
+                } else {
+                    layer.msg(json.Message, { icon: 2 });
+                }
+            }, function (data) { ExceptionDeal(data); })
+        }
+    </script>
+</body>
+
+</html>

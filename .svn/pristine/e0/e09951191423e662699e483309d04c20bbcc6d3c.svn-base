@@ -1,0 +1,228 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>共同条目操作</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="/Content/css/bootstrap.min14ed.css?v=3.3.6" rel="stylesheet">
+    <link href="/Content/css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet">
+    <link href="/Content/css/plugins/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
+    <link href="/Content/css/animate.min.css" rel="stylesheet">
+    <link href="/Content/css/style.min862f.css?v=4.1.0" rel="stylesheet">
+    <style>
+        .box-content {
+            padding: 10px 0;
+        }
+
+        .float-e-margins .btn {
+            margin-bottom: 0;
+        }
+
+        [v-cloak] {
+            display: none !important;
+        }
+    </style>
+</head>
+<body class="gray-bg">
+    <div id="main">
+        <!-- Panel Other -->
+        <div class="ibox float-e-margins">
+            <div class="ibox-content">
+                <div class="row row-lg">
+                    <div class="col-sm-12">
+                        <!-- Example Events -->
+                            <form id="commentForm" class="modal-dialog" role="document" style="margin:0px;width:100%;">
+                                    <div class="modal-body" style="overflow-y:auto;max-height:500px">
+                                        <span class="label label-warning" id="bErrorInfo" style="display:none;"></span>
+                                        <div class="form-group row">
+                                            <div class="col-sm-4">
+                                                <label for="WorkId"><span class="text-danger">*</span>工单名称</label>
+                                                @Html.DropDownList("WorkId", (IEnumerable<SelectListItem>)ViewBag.WorkList, new { @class = "form-control" })
+                                                @*<input type="text" class="form-control" id="WorkId" onkeyup="OnlyNum(this)" placeholder="工单编号">*@
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <label for="Name"><span class="text-danger">*</span>条目名称</label>
+                                                <input type="text" class="form-control" id="Name" placeholder="条目名称">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-sm-6">
+                                                <label for="Level"><span class="text-danger">*</span>工单等级</label>
+                                                <input id="Level" placeholder="工单等级(0,本周 1,下周)" value="0" onkeyup="OnlyNum(this)" class="form-control" />
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <label for="Name"><span class="text-danger">*</span>工单耗时</label>
+                                                <input type="text" class="form-control" id="DayCount" onkeyup="NumAndPoint(this)" placeholder="工单耗时">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-sm-6">
+                                                <label for="Status"><span class="text-danger">*</span>工单状态</label>
+                                                @Html.DropDownList("Status", (IEnumerable<SelectListItem>)ViewBag.ItemStatus, new { @class = "form-control" })
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <label for="Type"><span class="text-danger">*</span>工单类型</label>
+                                                @Html.DropDownList("Type", (IEnumerable<SelectListItem>)ViewBag.ItemType, new { @class = "form-control" })
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-group row">
+                                            <div class="col-sm-12">
+                                                <label for="UserId"><span class="text-danger">*</span>负责人</label>
+                                                <button type="button" class="btn btn-primary btn-sm"
+                                                        v-on:click="checkMember(item,'search')"
+                                                        style="margin-right:5px" v-cloak v-for="item in UserList">
+                                                    <i class="fa fa-check" v-if="item.Checked"></i>
+                                                    <span>{{item.Name}}</span>
+                                                </button>
+                                                <input type="hidden" id="checkMember" :value="CheckedMember" />
+                                                <input type="hidden" id="checkMemberName" :value="CheckedMemberName" />
+                                            </div>
+
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-sm-12">
+                                                <label for="Infos"><span class="text-danger">*</span>功能描述</label>
+                                                <textarea class="form-control" id="Infos" placeholder="功能描述"></textarea>
+                                            </div>
+
+                                        </div>
+
+                                        @*<div class="form-group">
+                            <label for="Infos">功能描述</label>
+
+                        </div>*@
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="btnClose()">关闭</button>
+                                        <button type="button" class="btn btn-primary" id="btnComfirm" onclick="btnAddClick()">确定</button>
+                                    </div>
+                            </form>
+                        <input type="hidden" id="hiddenId" value="0" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Panel Other -->
+    </div>
+
+    <script src="/Content/js/jquery.min.js?v=2.1.4"></script>
+    <script src="/Content/js/bootstrap.min.js?v=3.3.6"></script>
+    <script src="/Content/js/jquery-migrate-1.1.0.js"></script>
+    <script src="/Content/js/jquery.form.js"></script>
+    <script src="/Content/js/content.min.js?v=1.0.0"></script>
+    <script src="/Content/js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+    <script src="/Content/js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+    <script src="/Content/js/plugins/layer/layer.min.js"></script>
+    <script src="/Content/js/config.js"></script>
+    <script src="/Content/js/ajax.js"></script>
+    <script src="/Content/js/plugins/vue/vue.min.js"></script>
+    <script src="/Content/js/My97DatePicker/WdatePicker.js"></script>
+    <script src="/Content/js/plugins/iCheck/icheck.min.js"></script>
+
+    @*@Html.Partial("_WorkListItemsAdd")*@
+</body>
+</html>
+<script>
+    $(function () {
+
+         var v = new Vue({
+            el: "#main",
+            data: {
+                UserList: [],
+                CheckedMember: "",
+                CheckedMemberName: "",
+            },
+            created: function () {
+                this.getUser();
+            },
+            methods: {
+                 getUser: function () {
+                    var $this = this;
+                    var url = "@Url.Action("CompanyUserListNotPager")";
+                    var Data = {};
+                    ajaxGet.post(Data, url, function (json) {
+                        if (json.IsSuccess) {
+                            $this.UserList = json.Data;
+                        }
+                        else {
+                        }
+                    }, function (data) {
+                        ExceptionDeal(data);
+                    })
+                },
+                checkMember: function (item, type) {
+                    item.Checked = !item.Checked;
+                    var $this = this;
+                    if (item.Checked) {
+                        $this.CheckedMember += item.UserName + ",";
+                        $this.CheckedMemberName += item.Name + ",";
+                    }
+                    else {
+                        $this.CheckedMember = $this.CheckedMember.replace(item.UserName + ",", "");
+                        $this.CheckedMemberName = $this.CheckedMemberName.replace(item.Name + ",", "");
+                    }
+                    //console.log($this.CheckedMember)
+                    //alert(item.UserName)
+                }
+            }
+        });
+    
+    })
+    function btnAddClick() {
+        var ID = $("#hiddenId").val();
+        var Data = {};
+        Data.Id = ID;
+        var WorkId = $("#WorkId").val();//工单Id
+        if (WorkId == "") { layer.msg("请输入工单Id", { icon: 2 }); return; }
+        Data.WorkId = WorkId;
+        var Name = $("#Name").val();//详情
+        if (Name == "") { layer.msg("请输入条目名称", { icon: 2 }); return; }
+        Data.Name = Name;
+        var Level = $("#Level").val();//项目优先级
+        if (Level == "" ) { layer.msg("请输入工单等级", { icon: 2 }); return; }
+        Data.Level = Level;
+        var DayCount = $("#DayCount").val();//项目状态
+        if (DayCount == "") { layer.msg("请输入工单耗时", { icon: 2 }); return; }
+        Data.DayCount = DayCount;
+        var Status = $("#Status").val();//项目状态
+        if (Status == "") { layer.msg("请输入项目状态", { icon: 2 }); return; }
+        Data.Status = Status;
+        var Type = $("#Type").val();//工单类型
+        if (Type == "") { layer.msg("请输入工单类型", { icon: 2 }); return; }
+        Data.Type = Type;
+        var UserId = $("#checkMember").val();//负责人
+        if (UserId == "") { layer.msg("请选择负责人", { icon: 2 }); return; }
+        Data.UserId = UserId;
+        var UserName = $("#checkMemberName").val();//负责人名称
+        if (UserName == "") { layer.msg("请输入负责人名称", { icon: 2 }); return; }
+        Data.UserName = UserName;
+        var StartDate = $("#StartDate").val();//开始时间
+        if (StartDate == "") { layer.msg("请输入开始时间", { icon: 2 }); return; }
+        Data.StartDate = StartDate;
+        var EndDate = $("#EndDate").val();//结束时间
+        if (EndDate == "") { layer.msg("请输入结束时间", { icon: 2 }); return; }
+        Data.EndDate = EndDate;
+        var Infos = $("#Infos").val();//备注
+        if (Infos == "") { layer.msg("请输入功能描述", { icon: 2 }); return; }
+        if (Infos.length > 200) { layer.msg("功能描述长度不超过500字", { icon: 2 }); return; }
+        Data.Infos = Infos;
+        var url = "@Url.Action("WorkListItemsAdd")";
+        ajaxGet.post(Data, url, function (data) { AddDataSuccess(data); }, function (data) { ExceptionDeal(data); })
+    }
+    function AddDataSuccess(json) {
+        if (json.IsSuccess) {
+            layer.msg(json.Message, { icon: 1 });
+            setTimeout(function () {
+                parent.Search();
+                parent.layer.closeAll();
+            }, 2000);
+        }
+    }
+</script>

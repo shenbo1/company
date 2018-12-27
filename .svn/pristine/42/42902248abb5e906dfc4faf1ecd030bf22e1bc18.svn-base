@@ -1,0 +1,17 @@
+﻿<appSettings>
+  <add key="webpages:Version" value="3.0.0.0" />
+  <add key="webpages:Enabled" value="false" />
+  <add key="ClientValidationEnabled" value="true" />
+  <add key="UnobtrusiveJavaScriptEnabled" value="true" />
+
+  <add key="DataConnection" value="Data Source=123.57.58.157;Initial Catalog=Company;User ID=shenbo;Password=shenbo;" />
+  <add key="eeeYoooCompany" value="Data Source=123.57.58.157;Initial Catalog=eeeYoooCompany;User ID=shenbo;Password=shenbo;" />
+  <add key="AESKey" value="BcWAqZbhe1kcj13dXLau4KC+eIiwkEB+05MR6dKwcHI=" />
+
+  <add key="IsUseWeChat" value="0" />
+  <add key="IsOnline" value="0" />
+  <!-- 聚合配置 -->
+  <add key="JuHeUrl" value="http://v.juhe.cn/sms/send" />
+  <add key="JuHeTplId" value="9471" />
+  <add key="JuHeKey" value="2ea3038ca4351f93580da41ed46be5d4" />
+</appSettings>  

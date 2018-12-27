@@ -1,0 +1,195 @@
+﻿
+@{
+    Layout = "~/Layout/_LayoutWebSite.cshtml";
+    Page.Title = "eeeYooo注册";
+    Page.Key = "软件开发，技术支持，智能硬件，智能名宿";
+    Page.Desc = "微信开发，小程序开发，智能展厅，智能酒店，智能民宿，智能家居，智能办公, 技术孵化，技术合伙人，硬件开发，智能硬件";
+    Page.AccountName = ViewBag.AccountName;
+}
+}
+
+<div class="main-container container">
+    <ul class="breadcrumb">
+        <li><a href="#"><i class="fa fa-home"></i></a></li>
+        <li><a href="#">账户</a></li>
+        <li><a href="#">注册</a></li>
+    </ul>
+
+    <div class="row">
+        <div id="content" class="col-sm-12">
+            <h2 class="title">注册账号</h2>
+            <p>如果你已有账号,请前往 <a href="/WebSite/Login">登陆页面</a>.</p>
+            <form nctype="multipart/form-data" class="form-horizontal account-register clearfix">
+                <fieldset id="account">
+                    <legend>个人信息</legend>
+                    <div class="form-group required" style="display: none;">
+                        <label class="col-sm-2 control-label">Customer Group</label>
+                        <div class="col-sm-10">
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="customer_group_id" value="1" checked="checked"> Default
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group required">
+                        <label class="col-sm-2 control-label" for="input-firstname">姓名</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="firstname" value="" placeholder="姓名" id="input-firstname" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group required">
+                        <label class="col-sm-2 control-label" for="input-telephone">手机号</label>
+                        <div class="col-sm-10">
+                            <input type="tel" name="telephone" value="" placeholder="手机号" id="input-telephone" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group required">
+                        <label class="col-sm-2 control-label" for="input-email">邮箱</label>
+                        <div class="col-sm-10">
+                            <input type="email" name="email" value="" placeholder="邮箱" id="input-email" class="form-control">
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset id="address">
+                    <legend>公司资料</legend>
+                    <div class="form-group required">
+                        <label class="col-sm-2 control-label" for="input-company">公司名</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="company" value="" placeholder="公司名" id="input-company" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group required">
+                        <label class="col-sm-2 control-label" for="input-company">公司状态</label>
+                        <div class="col-sm-10">
+                            <select name="country_id" id="input-city" class="form-control">
+                                <option value="1">已注册</option>
+                                <option value="2">筹备中</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group required">
+                        <label class="col-sm-2 control-label" for="input-address-1">公司地址</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="address_1" value="" placeholder="公司地址" id="input-address" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group required">
+                        <label class="col-sm-2 control-label" for="input-city">城市</label>
+                        <div class="col-sm-10">
+                            <select name="country_id" id="input-city" class="form-control">
+                                <option value="上海">上海</option>
+                                <option value="北京">北京</option>
+                                <option value="深圳">深圳</option>
+                                <option value="香港">香港</option>
+                                <option value="其他">其他</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group required">
+                        <label class="col-sm-2 control-label" for="input-info">公司简介</label>
+                        <div class="col-sm-10">
+                            <textarea placeholder="公司简介" id="input-info" class="form-control"></textarea>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend>账户信息</legend>
+                    @*<div class="form-group required">
+                            <label class="col-sm-2 control-label" for="input-account">账户名</label>
+                            <div class="col-sm-10">
+                                <input type="password" name="password" value="" placeholder="账户名" id="input-account" class="form-control">
+                            </div>
+                        </div>*@
+                    <div class="form-group required">
+                        <label class="col-sm-2 control-label" for="input-password">密码</label>
+                        <div class="col-sm-10">
+                            <input type="password" name="password" value="" placeholder="密码" id="input-password" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group required">
+                        <label class="col-sm-2 control-label" for="input-confirm">确认密码</label>
+                        <div class="col-sm-10">
+                            <input type="password" name="confirm" value="" placeholder="确认密码" id="input-confirm" class="form-control">
+                        </div>
+                    </div>
+                </fieldset>
+                @*<fieldset>
+                        <legend>Newsletter</legend>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Subscribe</label>
+                            <div class="col-sm-10">
+                                <label class="radio-inline">
+                                    <input type="radio" name="newsletter" value="1"> Yes
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="newsletter" value="0" checked="checked"> No
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>*@
+                <div class="buttons">
+                    <div class="pull-right">
+                        <input class="box-checkbox" type="checkbox" name="agree" value="1"> &nbsp;
+                        我已阅读eeeYooo <a href="#" class="agree" style="color:#F4A137;"><b>协议条款</b></a>
+                        <input type="button" id="btn" value="提交" onclick="register();" class="btn btn-primary">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    function register() {
+        if ($('#btn').val() != '提交') { return; }
+        var Data = {};
+        var Name = $("#input-firstname").val();//姓名
+        if (Name == "") { layer.msg("请输入姓名", { icon: 2 }); return; }
+        Data.Name = Name;
+        var Telephone = $("#input-telephone").val();//所在城市
+        if (Telephone == "") { layer.msg("请输入手机号", { icon: 2 }); return; }
+        if (!checkMobile(Telephone)) {
+            layer.msg("手机号格式错误", { icon: 2 }); return;
+        }
+        Data.Telephone = Telephone;
+        var Email = $("#input-email").val();//联系人邮箱
+        if (Email == "") { layer.msg("请输入邮箱", { icon: 2 }); return; }
+        if (!isEmail(Email)) {
+            layer.msg("邮箱格式错误", { icon: 2 }); return;
+        }
+        Data.Email = Email;
+        var CompanyName = $("#input-company").val();//公司名
+        if (CompanyName == "") { layer.msg("请输入公司名", { icon: 2 }); return; }
+        if (CompanyName.length > 20) { layer.msg("公司名最多20字", { icon: 2 }); return; }
+        Data.CompanyName = CompanyName;
+        var CompanyAddress = $("#input-address").val();//公司地址
+        if (CompanyAddress == "") { layer.msg("请输入公司地址", { icon: 2 }); return; }
+        if (CompanyAddress.length > 200) { layer.msg("公司地址最多100字", { icon: 2 }); return; }
+        Data.CompanyAddress = CompanyAddress;
+        var CompanyInfo = $("#input-info").val();//公司简介
+        if (CompanyInfo == "") { layer.msg("请输入公司简介", { icon: 2 }); return; }
+        if (CompanyInfo.length > 200) { layer.msg("公司简介最多200字", { icon: 2 }); return; }
+        Data.CompanyInfo = CompanyInfo;
+        var pwd = $("#input-password").val();//密码
+        if (pwd == "") { layer.msg("请输入密码", { icon: 2 }); return; }
+        if (pwd.length <6) { layer.msg("密码至少为6位数", { icon: 2 }); return; }
+        var repwd = $("#input-confirm").val();//密码
+        if (pwd != repwd) { layer.msg("两次密码不一致", { icon: 2 }); return; }
+        Data.PassWord = pwd;
+        Data.City = $("#input-city").val();
+        Data.Role = 1;
+        var url = "/Account/Register";
+
+        $('#btn').val('提交中...')
+        ajaxGet.post(Data, url, function (data) { AddDataSuccess(data); }, function (data) { ExceptionDeal(data); })
+    }
+    function AddDataSuccess(json) {
+        $('#btn').val('提交')
+        if (json.IsSuccess) {
+            layer.msg("注册成功,请登陆", { icon: 1 });
+            location = "/WebSite/Login";
+        } else {
+            layer.msg(json.Message, { icon: 2 });
+        }
+    }
+</script>

@@ -1,0 +1,362 @@
+﻿<div class="modal fade" id="DivAdd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" 
+     style="display: none;width:100%;"
+     >
+    <form id="commentForm" class="modal-dialog" role="document"   style="margin:0px;width:100%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="btnClose()"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">新增/修改信息</h4>
+            </div>
+            <div class="modal-body">
+                <span class="label label-warning" id="bErrorInfo" style="display:none;"></span>
+                <div class="form-group row">
+                    <div class="col-sm-6">
+                        <label for="Name" class="col-sm-4"><span class="text-danger">*</span>登录名</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control " id="UserName" placeholder="登录名">
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="SocialNo" class="col-sm-4">社保编号</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="SocialNo" placeholder="社保编号">
+                        </div>
+
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-6">
+                        <label for="Name" class="col-sm-4"><span class="text-danger">*</span>密码</label>
+                        <div class="col-sm-8">
+                            <input type="password" class="form-control" id="PasssWord" placeholder="密码">
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="Name" class="col-sm-4"><span class="text-danger">*</span>确认密码</label>
+                        <div class="col-sm-8">
+                            <input type="password" class="form-control" id="RePassWord" placeholder="确认密码">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-6">
+                        <label for="Name" class="col-sm-4"><span class="text-danger">*</span>姓名</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control " id="Name" placeholder="姓名">
+
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="UsedName" class="col-sm-4">曾用名</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="UsedName" placeholder="曾用名">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-6">
+                        <label for="Mobile" class="col-sm-4"><span class="text-danger">*</span>手机号</label>
+                        <div class="col-sm-8">
+                            <input type="text" maxlength="11" class="form-control" onkeyup="OnlyNum(this)" id="Mobile" placeholder="手机号">
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="Email" class="col-sm-4"><span class="text-danger">*</span>邮箱</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="Email" placeholder="邮箱">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="form-group row">
+
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-6">
+                        <label for="DepartId" class="col-sm-4"><span class="text-danger">*</span>部门</label>
+                        <div class="col-sm-8">
+                            @Html.DropDownList("DepartId", (IEnumerable<SelectListItem>)ViewBag.DepartMent, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="CardNo" class="col-sm-4"><span class="text-danger">*</span>身份证号</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" onkeyup="OnlyNum(this)" id="CardNo" placeholder="身份证号">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-sm-6">
+                        <label for="Sex" class="col-sm-4"><span class="text-danger">*</span>性别</label>
+                        <div class="col-sm-8">
+                            @Html.DropDownList("Sex", (IEnumerable<SelectListItem>)ViewBag.Sex, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="Nation" class="col-sm-4"><span class="text-danger">*</span>民族</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="Nation" placeholder="民族">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-6">
+                        <label for="Political" class="col-sm-4"><span class="text-danger">*</span>政治面貌</label>
+                        <div class="col-sm-8">
+                            @*<input type="text" class="form-control" id="Political" placeholder="政治面貌">*@
+                            @Html.DropDownList("Political", (IEnumerable<SelectListItem>)ViewBag.Political, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="Education" class="col-sm-4"><span class="text-danger">*</span>学历</label>
+                        <div class="col-sm-8">
+                            @*<input type="text" class="form-control" id="Education" placeholder="学历">*@
+                            @Html.DropDownList("Education", (IEnumerable<SelectListItem>)ViewBag.Education, new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-sm-6">
+                        <label for="HomeAddress" class="col-sm-4"><span class="text-danger">*</span>户籍地址</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="HomeAddress" placeholder="户籍地址">
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="HomeAddressType" class="col-sm-4"><span class="text-danger">*</span>户籍类别</label>
+                        <div class="col-sm-8">
+                            @Html.DropDownList("HomeAddressType", (IEnumerable<SelectListItem>)ViewBag.HuKou, new { @class = "form-control" })
+                            @*<input type="text" class="form-control" id="HomeAddressType" onkeyup="OnlyNum(this)" placeholder="户籍类别">*@
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-6">
+                        <label for="Address" class="col-sm-4"><span class="text-danger">*</span>本市居住地址</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="Address" placeholder="本市居住地址">
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="EnterDate" class="col-sm-4"><span class="text-danger">*</span>入职时间</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="EnterDate" onfocus="WdatePicker()" placeholder="入职时间">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-6">
+                        <div class="col-sm-4">
+                            <label for="CardFront"><span class="text-danger">*</span>身份证正面</label>
+                        </div>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control imgview" id="CardFront" placeholder="身份证正面">
+                        </div>
+                        <input type="file" style="display:none;" name="file" id="file_upload4" value="" accept="image/jpg,image/jpeg,image/png" />
+                        <a class="col-sm-2" id="upload4"><i class="fa fa-upload"></i> 上传</a>
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="CardFontBehind" class="col-sm-4"><span class="text-danger">*</span>身份证反面</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control imgview" id="CardFontBehind" placeholder="身份证反面">
+                        </div>
+                        <input type="file" style="display:none;" name="file" id="file_upload3" value="" accept="image/jpg,image/jpeg,image/png" />
+                        <a class="col-sm-2" id="upload3"><i class="fa fa-upload"></i> 上传</a>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-6">
+                        <label for="EducationPhoto" class="col-sm-4 control-label"><span class="text-danger">*</span>学历复印件</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control imgview" id="EducationPhoto" placeholder="学历复印件">
+                        </div>
+                        <input type="file" style="display:none;" name="file" id="file_upload2" value="" accept="image/jpg,image/jpeg,image/png" />
+                        <a class="col-sm-2 control-label " id="upload2"><i class="fa fa-upload"></i> 上传</a>
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="WeChatHeadUrl" class="col-sm-4 control-label"><span class="text-danger">*</span>头像</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control imgview" id="WeChatHeadUrl" placeholder="头像">
+                        </div>
+                        <input type="file" style="display:none;" name="file" id="file_upload" value="" accept="image/jpg,image/jpeg,image/png" />
+                        <a class="col-sm-2 control-label " id="upload"><i class="fa fa-upload"></i> 上传</a>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="col-sm-4 col-sm-offset-2">
+                    <button type="button" class="btn btn-primary" id="btnComfirm" onclick="btnAddClick()">确定</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="btnClose()">关闭</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<input type="hidden" id="hiddenId" value="0" />
+<script>
+    $(function () {
+        var upload = new UploadImages();
+        upload.Success = function (src) {
+            //console.log(src + '');
+            layer.msg("上传成功", { icon: 1 });
+            $('#WeChatHeadUrl').val(src);
+            //upload.EditObj.parent().find('input').val( src);
+        };
+        upload.Init();
+        var upload2 = new UploadImages();
+        upload2.FileObj = $('#file_upload2');
+        upload2.EditObj = $('#upload2');
+        upload2.Success = function (src) {
+            layer.msg("上传成功", { icon: 1 });
+            $('#EducationPhoto').val(src);
+            //upload2.EditObj.parent().find('input').val(src);
+        };
+        upload2.Init();
+        var upload3 = new UploadImages();
+        upload3.FileObj = $('#file_upload3');
+        upload3.EditObj = $('#upload3');
+        upload3.Success = function (src) {
+            layer.msg("上传成功", { icon: 1 });
+            $('#CardFontBehind').val(src);
+
+            //upload2.EditObj.parent().find('input').val(src);
+        };
+        upload3.Init();
+        var upload4 = new UploadImages();
+        upload4.FileObj = $('#file_upload4');
+        upload4.EditObj = $('#upload4');
+        upload4.Success = function (src) {
+            layer.msg("上传成功", { icon: 1 });
+            $('#CardFront').val(src);
+
+            //upload2.EditObj.parent().find('input').val(src);
+        };
+        upload4.Init();
+    })
+    function btnClose() {
+        $('#DivAdd').modal("hide");
+        $("#hiddenId").val('0');
+        $('#Name').val('');
+        $('#Mobile').val('');
+        $('#Email').val('');
+        $('#UserName').val('');
+        $('#RePassWord,#PasssWord').parents('.form-group').hide();
+
+        $('#UserName').removeAttr("disabled");
+        $('#UsedName').val('');
+        $('#SocialNo').val('');
+        $('#CardNo').val('');
+        $('#CardFront').val('');
+        $('#CardFontBehind').val('');
+        $('#Nation').val('');
+        $('#EducationPhoto').val('');
+        $('#HomeAddress').val('');
+        //$('#HomeAddressType').val('');
+        $('#Address').val('');
+        $('#EnterDate').val('');
+
+        //$('#WeChatOpenId').val('');
+        //$('#WeChatNickName').val('');
+        $('#WeChatHeadUrl,#PasssWord,#RePassWord').val('');
+        //$('#IsBindWeChat').val('');
+        //$('#CompanyId').val('');
+        //$('#CompanyName').val('');
+
+    }
+    function btnAddClick() {
+        var ID = $("#hiddenId").val();
+        var Data ={};
+        Data.Id = ID;
+        var UserName = $("#UserName").val();//登录名
+        if (ID == 0) {
+            if (UserName == "") { layer.msg("请输入登录名", { icon: 2 }); return; }
+            Data.UserName = UserName;
+            var pwd = $("#PasssWord").val();//密码
+            if (pwd == "") { layer.msg("请输入密码", { icon: 2 }); return; }
+            var repwd = $("#RePassWord").val();//密码
+            if (pwd != repwd) { layer.msg("重复密码不一致", { icon: 2 }); return; }
+            Data.PassWord = pwd;
+        }
+        var Name = $("#Name").val();//姓名
+        if (Name == "") { layer.msg("请输入姓名", { icon: 2 }); return; }
+        Data.Name=Name;
+        var Mobile = $("#Mobile").val();//手机号
+        if (Mobile == "") { layer.msg("请输入手机号", { icon: 2 }); return; }
+        if (!checkMobile(Mobile)) {
+            layer.msg("手机号格式错误", { icon: 2 }); return;
+        }
+        Data.Mobile=Mobile;
+        var Email = $("#Email").val();//邮箱
+        if (Email == "") { layer.msg("请输入邮箱", { icon: 2 }); return; }
+        if (!isEmail(Email)) {
+            layer.msg("邮箱格式错误", { icon: 2 }); return;
+        }
+        Data.Email=Email;
+
+        var DepartId = $("#DepartId").val();//部门编号
+        if (DepartId == "") { layer.msg("请输入部门编号", { icon: 2 }); return; }
+        Data.DepartId = DepartId;
+        var UsedName = $("#UsedName").val();//曾用名
+        //if (UsedName == "") { layer.msg("请输入曾用名", { icon: 2 }); return; }
+        Data.UsedName = UsedName;
+        var SocialNo = $("#SocialNo").val();//社保编号
+        //if (SocialNo == "") { layer.msg("请输入社保编号", { icon: 2 }); return; }
+        Data.SocialNo = SocialNo;
+        var CardNo = $("#CardNo").val();//身份证号
+        if (CardNo == "") { layer.msg("请输入身份证号", { icon: 2 }); return; }
+        Data.CardNo = CardNo;
+       
+        var Sex = $("#Sex").val();//性别
+        if (Sex == "") { layer.msg("请输入性别", { icon: 2 }); return; }
+        Data.Sex = Sex;
+        var Nation = $("#Nation").val();//名族
+        if (Nation == "") { layer.msg("请输入民族", { icon: 2 }); return; }
+        Data.Nation = Nation;
+        var Political = $("#Political").val();//政治面貌
+        if (Political == "") { layer.msg("请输入政治面貌", { icon: 2 }); return; }
+        Data.Political = Political;
+        var Education = $("#Education").val();//学历
+        if (Education == "") { layer.msg("请输入学历", { icon: 2 }); return; }
+        Data.Education = Education;
+        var HomeAddress = $("#HomeAddress").val();//户籍地址
+        if (HomeAddress == "") { layer.msg("请输入户籍地址", { icon: 2 }); return; }
+        Data.HomeAddress = HomeAddress;
+        var HomeAddressType = $("#HomeAddressType").val();//户籍类别
+        if (HomeAddressType == "") { layer.msg("请输入户籍类别", { icon: 2 }); return; }
+        Data.HomeAddressType = HomeAddressType;
+        var Address = $("#Address").val();//本市居住地址
+        if (Address == "") { layer.msg("请输入本市居住地址", { icon: 2 }); return; }
+        Data.Address = Address;
+        var EnterDate = $("#EnterDate").val();//入职时间
+        if (EnterDate == "") { layer.msg("请选择入职时间", { icon: 2 }); return; }
+        Data.EnterDate = EnterDate;
+        var CardFront = $("#CardFront").val();//身份证正面
+        if (CardFront == "") { layer.msg("请上传身份证正面", { icon: 2 }); return; }
+        Data.CardFront = CardFront;
+        var CardFontBehind = $("#CardFontBehind").val();//身份证反面
+        if (CardFontBehind == "") { layer.msg("请上传身份证反面", { icon: 2 }); return; }
+        Data.CardFontBehind = CardFontBehind;
+        var EducationPhoto = $("#EducationPhoto").val();//身份证反面
+        if (EducationPhoto == "") { layer.msg("请上传学历复印件", { icon: 2 }); return; }
+        Data.EducationPhoto = EducationPhoto;
+
+        var WeChatHeadUrl = $("#WeChatHeadUrl").val();//请上传头像
+        if (WeChatHeadUrl == "") { layer.msg("请上传头像", { icon: 2 }); return; }
+        Data.WeChatHeadUrl = WeChatHeadUrl;
+
+
+
+        var url = "@Url.Action("CompanyUserAdd")";
+        ajaxGet.post(Data, url, function (data) { AddDataSuccess(data); }, function (data) { ExceptionDeal(data); })
+    }
+    function AddDataSuccess(json) {
+        if (json.IsSuccess) {
+            layer.msg(json.Message, { icon: 1 });
+            btnClose();
+            Search();
+        }
+    }
+</script>

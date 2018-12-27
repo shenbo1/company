@@ -1,0 +1,210 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Text;
+using Dapper;
+using Company.Util;
+
+namespace Company.DAL
+{
+    public class DBAccess
+    {
+
+        #region Dapper
+
+
+        #region 增删改
+
+        /// <summary>
+        /// 用实体执行sql语句
+        /// 增删改操作
+        /// </summary>
+        /// <typeparam name="T">泛型</typeparam>
+        /// <param name="sql">sql语句</param>
+        /// <param name="entity">实体</param>
+        /// <returns>返回受影响的行数是否大于0</returns>
+        public static bool ExecuteSqlWithEntity<T>(string sql, T entity)
+        {
+            using (SqlConnection con = new SqlConnection(ConfigSetting.DataConnection))
+            {
+                con.Open();
+                return con.Execute(sql, entity) > 0;
+            }
+        }
+        public static bool ExecuteSqlWithEntity<T>(string sql, T entity,string Conn)
+        {
+            using (SqlConnection con = new SqlConnection(Conn))
+            {
+                con.Open();
+                return con.Execute(sql, entity) > 0;
+            }
+        }
+        /// <summary>
+        /// 用实体执行sql语句
+        /// 增删改操作
+        /// </summary>
+        /// <param name="sql">sql语句</param>
+        /// <param name="entity">实体</param>
+        /// <returns>返回受影响的行数是否大于0</returns>
+        public static bool ExecuteSqlWithEntity(string sql, object entity)
+        {
+            using (SqlConnection con = new SqlConnection(ConfigSetting.DataConnection))
+            {
+                con.Open();
+                return con.Execute(sql, entity) > 0;
+            }
+        }
+        public static bool ExecuteSqlWithEntity(string sql, object entity,string Conn)
+        {
+            using (SqlConnection con = new SqlConnection(Conn))
+            {
+                con.Open();
+                return con.Execute(sql, entity) > 0;
+            }
+        }
+        #endregion
+
+
+        #region 获取实体
+        /// <summary>
+        /// 根据sql获取实体 
+        /// </summary>
+        /// <typeparam name="T">返回实体的类型</typeparam>
+        /// <param name="sql">sql语句</param>
+        /// <param name="paras">参数对象</param>
+        /// <returns>实体</returns>   
+        public static T GetEntityFirstOrDefault<T>(string sql, object paras = null)
+        {
+            using (SqlConnection con = new SqlConnection(ConfigSetting.DataConnection))
+            {
+                con.Open();
+                return con.Query<T>(sql, paras).FirstOrDefault();
+            }
+        }
+        public static T GetEntityFirstOrDefault<T>(string sql, string Conn, object paras = null)
+        {
+            using (SqlConnection con = new SqlConnection(Conn))
+            {
+                con.Open();
+                return con.Query<T>(sql, paras).FirstOrDefault();
+            }
+        }
+
+        #endregion
+
+
+        #region 获取实体集合
+        /// <summary>
+        /// 查询集合
+        /// </summary>
+        /// <typeparam name="T">泛型参数</typeparam>
+        /// <param name="sql">sql select语句</param>
+        /// <param name="paras"> 参数对象</param>
+        /// <returns></returns>
+        public static List<T> GetEntityList<T>(string sql, object paras = null)
+        {
+            using (SqlConnection con = new SqlConnection(ConfigSetting.DataConnection))
+            {
+                con.Open();
+                return con.Query<T>(sql, paras).ToList();
+            }
+        }
+        public static List<T> GetEntityList<T>(string sql,string Conn, object paras = null)
+        {
+            using (SqlConnection con = new SqlConnection(Conn))
+            {
+                con.Open();
+                return con.Query<T>(sql, paras).ToList();
+            }
+        }
+        #endregion
+
+
+        #region 返回结果集的第一行第一列
+        /// <summary>
+        /// 执行sql语句
+        /// 并返回结果集的第一行第一列
+        /// </summary>
+        /// <typeparam name="T">泛型</typeparam>
+        /// <param name="sql">sql语句</param>
+        /// <param name="paras">参数对象</param>
+        /// <returns>返回结果集的第一行第一列</returns>
+        /// 
+        public static T ExecuteSql<T>(string sql,string Conn, object paras = null)
+        {
+            using (SqlConnection con = new SqlConnection(Conn))
+            {
+                con.Open();
+                return con.ExecuteScalar<T>(sql, paras);
+            }
+        }
+        public static T ExecuteSql<T>(string sql,  object paras = null)
+        {
+            using (SqlConnection con = new SqlConnection(ConfigSetting.DataConnection))
+            {
+                con.Open();
+                return con.ExecuteScalar<T>(sql, paras);
+            }
+        }
+        #endregion
+
+
+        #region 其它
+
+        /// <summary>
+        /// 根据Id获取实体
+        /// </summary>
+        /// <typeparam name="T">返回实体的类型</typeparam>
+        /// <param name="sql">sql语句</param>
+        /// <param name="id">参数id</param>
+        /// <returns>实体</returns>
+        public static T GetEntityById<T>(string sql, int id)
+        {
+            using (SqlConnection con = new SqlConnection(ConfigSetting.DataConnection))
+            {
+                con.Open();
+                return con.Query<T>(sql, new { Id = id }, null, true, null, CommandType.Text).ToList().FirstOrDefault();
+            }
+        }
+        public static T GetEntityById<T>(string sql, int id,string Conn)
+        {
+            using (SqlConnection con = new SqlConnection(Conn))
+            {
+                con.Open();
+                return con.Query<T>(sql, new { Id = id }, null, true, null, CommandType.Text).ToList().FirstOrDefault();
+            }
+        }
+
+        /// <summary>
+        /// 根据Id删除实体
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public static bool DeleteEntityById(string sql, int id)
+        {
+            using (SqlConnection con = new SqlConnection(ConfigSetting.DataConnection))
+            {
+                con.Open();
+                return con.Execute(sql, new { Id = id }, null, null, CommandType.Text) > 0;
+            }
+        }
+
+        public static bool DeleteEntityById(string sql, int id,string Conn)
+        {
+            using (SqlConnection con = new SqlConnection(Conn))
+            {
+                con.Open();
+                return con.Execute(sql, new { Id = id }, null, null, CommandType.Text) > 0;
+            }
+        }
+        #endregion
+
+
+
+        #endregion
+
+    }
+}

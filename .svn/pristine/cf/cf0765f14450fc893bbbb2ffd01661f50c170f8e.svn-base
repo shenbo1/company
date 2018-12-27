@@ -1,0 +1,121 @@
+﻿using Company.DAL.Data;
+using Company.Dto;
+using Company.Util;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Company.BLL.Data
+{
+    public class WorkItemsBLL
+    {
+        public static bool ImportExcel(DataTable dt, CompanyUser user) {
+            try
+            {
+                using (SqlBulkCopy sqlBC = new SqlBulkCopy(ConfigSetting.DataConnection))
+                {
+                    //一次批量的插入的数据量
+                    sqlBC.BatchSize = dt.Rows.Count;
+                    //超时之前操作完成所允许的秒数，如果超时则事务不会提交 ，数据将回滚，所有已复制的行都会从目标表中移除
+                    sqlBC.BulkCopyTimeout = 1800;
+                    //设置要批量写入的表
+                    sqlBC.DestinationTableName = "WorkListItems";
+
+
+                    DataTable newDt = new DataTable();
+
+                    #region  赋值
+                    var objType = typeof(WorkListItems);
+                    PropertyInfo[] properties = objType.GetProperties();
+                    string[] outColName = new string[] { "Id", "ModifyDate", "CanEdit", "ModifyBy", "LevelName", "LevelClass", "StatusName", "StatusClass", "WorkName", "ProjectName" };
+                    foreach (var item in properties)
+                    {
+                        var name = item.Name;
+                        if (outColName.Contains(name)) { continue; }
+                        newDt.Columns.Add(new DataColumn() { ColumnName = item.Name });
+                        sqlBC.ColumnMappings.Add(item.Name, item.Name);
+                    }
+                    var itemType = CommonMethod.GetEnumItems<ItemType>();
+                    var itemStatus = CommonMethod.GetEnumItems<ItemStatus>();
+                    var userName = new List<string>();
+                    var workId = new List<int>();
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        var type = dt.Rows[i][6].ToString();
+                        var status = dt.Rows[i][7].ToString();
+                        KeyValuePair<string, string>?  typeTxt = itemType.FirstOrDefault(a => a.Value == type);
+                        KeyValuePair<string, string>? statusTxt = itemStatus.FirstOrDefault(a => a.Value == status);
+                        if (!typeTxt.HasValue 
+                            || string.IsNullOrWhiteSpace(typeTxt.Value.Key)
+                            || !statusTxt.HasValue
+                            || string.IsNullOrWhiteSpace(statusTxt.Value.Key))
+                        { continue; }
+                        DataRow dr = newDt.NewRow();
+                        dr["CompanyId"] = user.CompanyId.ToString();
+                        dr["CompanyName"] = user.CompanyName.ToString();
+                        dr["ProjectId"] = "";
+                        dr["WorkId"] = dt.Rows[i][0];
+                        dr["Name"] = dt.Rows[i][1];
+                        dr["Infos"] = dt.Rows[i][2];
+                        dr["UserName"] = dt.Rows[i][3].ToString() + ",";
+                        dr["Level"] = dt.Rows[i][4].ToString();
+                        dr["DayCount"] = dt.Rows[i][5].ToString();
+                        dr["StartDate"] =DateTime.Now;
+                        dr["EndDate"] = DateTime.Now.AddDays(CommonMethod.GetInt( dr["DayCount"]));
+
+                        dr["Type"] = typeTxt.Value.Key;
+                        dr["Status"] = statusTxt.Value.Key;
+
+
+                        dr["IsDeleted"] = "0";
+                        dr["CreateDate"] = DateTime.Now.ToString();
+                        dr["CreateBy"] = user.UserName;
+                        newDt.Rows.Add(dr);
+                        workId.Add(CommonMethod.GetInt(dt.Rows[i][0]));
+                        userName.AddRange(dr["UserName"].ToString().Split(','));
+                    }
+                    #endregion
+
+                    var companyList = CompanyUserDBOperate.GetUserByNames(userName.ToArray());
+                    var workList = WorkListDBOperate.GetListByIds(workId.ToArray());
+
+                    for (int i = 0; i < newDt.Rows.Count; i++)
+                    {
+                        var usrName = newDt.Rows[i]["UserName"].ToString();
+                        var usrs = usrName.Split(',');
+                        var ids = string.Empty;
+                        foreach (var item in usrs)
+                        {
+                            if (string.IsNullOrWhiteSpace(item)) { continue; }
+                            ids += companyList.FirstOrDefault(a => a.Name == item).UserName + ",";
+                        }
+                        var wId = CommonMethod.GetInt(newDt.Rows[i]["WorkId"]);
+                        newDt.Rows[i]["UserId"] = ids;
+                        newDt.Rows[i]["ProjectId"] = workList.FirstOrDefault(a => a.Id == wId).ProjectId;
+                    }
+
+                    //批量写入
+                    if (newDt.Rows.Count != 0 && newDt != null)
+                    {
+                        sqlBC.WriteToServer(newDt);
+                        newDt.Dispose();
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                string msg = ex.Message;
+                LogBussiness.AddLog("WorkItemsImport", "", ex.Message, LogLevel.Error);
+                return false;
+            }
+            return true;
+        }
+    }
+}
+

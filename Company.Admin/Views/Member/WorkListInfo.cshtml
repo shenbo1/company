@@ -1,0 +1,311 @@
+﻿
+@{
+    Layout = null;
+}
+
+
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="lib/html5shiv.js"></script>
+    <script type="text/javascript" src="lib/respond.min.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" type="text/css" href="/Template/HAdmin/static/h-ui/css/H-ui.min.css" />
+    <link rel="stylesheet" type="text/css" href="/Template/HAdmin/static/h-ui.admin/css/H-ui.admin.css" />
+    <link rel="stylesheet" type="text/css" href="/Template/HAdmin/lib/Hui-iconfont/1.0.8/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="/Template/HAdmin/static/h-ui.admin/skin/default/skin.css" id="skin" />
+    <link rel="stylesheet" type="text/css" href="/Template/HAdmin/static/h-ui.admin/css/style.css" />
+    <link href="/Content/css/bootstrap.min14ed.css?v=3.3.6" rel="stylesheet">
+    <link href="/Content/css/plugins/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
+    <!--[if IE 6]>
+    <script type="text/javascript" src="lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+    <script>DD_belatedPNG.fix('*');</script>
+    <![endif]-->
+    <title>工单列表</title>
+</head>
+<body>
+    @*<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 用户中心 <span class="c-gray en">&gt;</span> 用户管理*@
+    <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+    <div class="page-container">
+        <div class="text-c">
+            <input type="text" class="input-text" id="KeyWord" style="width:250px" onkeyup="if (event.keyCode == '13') $('#btnSearch').click()" placeholder="关键字">
+            项目：
+            @Html.DropDownList("ProjectIdSel", (IEnumerable<SelectListItem>)ViewBag.Project, "全部",
+             new Dictionary<string, object>() {
+                                        { "class", "input-text" },
+                                         { "style", "width:250px" },
+         })
+            <button type="button" class="btn btn-success radius" id="btnSearch" name="" onclick="search();"><i class="Hui-iconfont">&#xe665;</i> 搜工单</button>
+
+        </div>
+       <div class="cl pd-5 bg-1 bk-gray mt-20">
+            <span class="l">
+                @*<a href="javascript:;" onclick="datadel()" class="btn btn-danger radius">
+                <i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a>*@
+                <a href="javascript:;" onclick="layerFull('510','510','WorkListInfoAdd?id=@ViewBag.ProjectId','添加工单')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加工单</a>
+            </span>
+            @*<span class="r">共有数据：<strong>88</strong> 条</span>*@
+        </div>
+       <div class="mt-20">
+           <table id="table">
+               @*<thead>
+                <tr class="text-c">
+                    <th width="25"><input type="checkbox" name="" value=""></th>
+                    <th width="80">编号</th>
+                    <th width="100">项目名称</th>
+                    <th width="40">项目专员</th>
+                    <th width="90">联系方式</th>
+                    <th width="150">项目状态</th>
+                    <th width="150">项目简介</th>
+                    <th width="">合作方式</th>
+                    <th width="130">启动时间</th>
+                    <th width="100">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="text-c">
+                    <td><input type="checkbox" value="1" name=""></td>
+                    <td>1</td>
+                    <td><u style="cursor:pointer" class="text-primary" onclick="member_show('张三','member-show.html','10001','360','400')">张三</u></td>
+                    <td>男</td>
+                    <td>13000000000</td>
+                    <td>admin@mail.com</td>
+                    <td class="text-l">北京市 海淀区</td>
+                    <td>2014-6-11 11:11:42</td>
+                    <td class="td-status"><span class="label label-success radius">已启用</span></td>
+                    <td class="td-manage"><a style="text-decoration:none" onClick="member_stop(this,'10001')" href="javascript:;" title="停用"><i class="Hui-iconfont">&#xe631;</i></a> <a title="编辑" href="javascript:;" onclick="member_edit('编辑','member-add.html','4','','510')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a> <a style="text-decoration:none" class="ml-5" onClick="change_password('修改密码','change-password.html','10001','600','270')" href="javascript:;" title="修改密码"><i class="Hui-iconfont">&#xe63f;</i></a> <a title="删除" href="javascript:;" onclick="member_del(this,'1')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a></td>
+                </tr>
+            </tbody>*@
+           </table>
+           <input type="hidden" id="hidPId" value="@ViewBag.ProjectId" />
+       </div>
+    </div>
+    <!--_footer 作为公共模版分离出去-->
+    <script type="text/javascript" src="/Template/HAdmin/lib/jquery/1.9.1/jquery.min.js"></script>
+    <script src="/Content/js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+    <script src="/Content/js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+    <script type="text/javascript" src="/Template/HAdmin/lib/layer/2.4/layer.js"></script>
+    <script type="text/javascript" src="/Template/HAdmin/static/h-ui/js/H-ui.min.js"></script>
+    <script type="text/javascript" src="/Template/HAdmin/static/h-ui.admin/js/H-ui.admin.js"></script>
+    <!--/_footer 作为公共模版分离出去-->
+    <!--请在下方写此页面业务相关的脚本-->
+    <script type="text/javascript" src="/Template/HAdmin/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+    <script type="text/javascript" src="/Template/HAdmin/lib/laypage/1.2/laypage.js"></script>
+    <script src="~/Content/js/ajax.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            if ($("#hidPId").val() != 0) {
+                $("#ProjectIdSel,#ProjectId").val($("#hidPId").val());
+                $("#gongdandetail").html('<b class="text-danger">' + $('#ProjectIdSel option:selected').text() + '</b>')
+            }
+
+
+      $('#table').bootstrapTable({
+            method: 'POST',
+            url: "@Url.Action("WorkListList")",
+            height: 500,
+            pagination: true,
+            striped: true,
+            pageSize: 10,
+            pageNumber: 1,
+            pageList: [10, 25, 50, 100, 200],
+            queryParams: QueryParams,
+            contentType: "application/x-www-form-urlencoded",
+            sidePagination: "server",
+            sortable: true,
+            sortOrder: "desc",
+            sortName: "Id",
+            //showColumns: true, // 开启自定义列显示功能
+            columns: [
+                {
+                    field: 'Id',
+                    title: '编号',
+                    align: 'center',
+                    valign: 'middle',
+                    sortable: true,
+                    formatter: function (value, row, index) {
+                        return '<a href="/admin/worklistitemsinfo?pid='+row.Id+'" target="_blank">' + value + '</a>';
+                    }
+                },
+                
+             {
+                field: 'ProjectName',
+                 title: '项目',
+                align: 'center',
+                 valign: 'middle',
+                 formatter: function (value, row, index) {
+                     return value ;
+                 }
+            },
+            {
+                field: 'Name',
+                title: '工单名称',
+                align: 'left',
+                valign: 'middle',
+                class: 'project-title',
+                formatter: function (value, row, index) {
+                    //var html = '';
+                    //html += '<a href="#">'+value+'</a><br />'
+                    //html += '<small>创建于 ' + ChangeDt(row.CreateDate) + '</small><br />';
+                    //html += '<small>下单于 ' + ChangeDt(row.GetTime) + '</small><br />';
+                    //html += '<small>需求分析于 ' + ChangeDt(row.NeedTime) + '</small><br />';
+                    //html += '<small>接单于 ' + ChangeDt(row.DoTime) + '</small>';
+                    return value;
+                }
+            },
+            {
+                field: 'Infos',
+                title: '工单内容',
+                align: 'left',
+                valign: 'middle',
+                formatter: function (value, row, index) {
+                    var html = '';
+                    var list = row.DetailList;
+                    var all = [];
+                    if (list != null) {
+                        for (var i = 0; i < list.length; i++) {
+                            all.push(list[i].Index + ":" + (list[i].RoleCode) + '-' + list[i].Infos);
+                        }
+                    }
+                    //console.log(all)
+                    html = all.join(';');
+                    if (html == '') { html = '-'; }
+                    if (html.length > 10) {
+                        html = html.substr(0, 10) + '...' ;
+                    }
+                    else if (html == '') {
+                        html = '-';
+
+                    } 
+                    return '<a class="detail">'+ html+'</a>';
+                },
+                events: operateEvents
+            },
+            {
+                field: 'UserName',
+                title: '参与人员',
+                align: 'center',
+                valign: 'middle',
+                class:'project-people',
+                formatter: function (value, row, index) {
+                    var html = '';
+                    if (isNullOrEmpty(value)) {
+                        html = '-';
+                    }
+                    else {
+                        html = value.substr(0, value.length - 1);
+                    }
+                    return '<a class="editUser">' + html + '</a>';
+                },
+                events: operateEvents
+            },
+            {
+                field: 'CreateDate',
+                title: '创建时间',
+                align: 'center',
+                valign: 'middle',
+                sortable: true,
+                formatter: function (value, row, index) {
+                    return ChangeDt(value);
+                }
+            },
+                {
+                    field: 'Status',
+                    title: '项目状态',
+                    align: 'center',
+                    valign: 'middle',
+                    class: 'project-status',
+                    formatter: function (value, row, index) {
+                        return '<span class="status label ' + row.StatusClass + '">' + row.StatusTxt;
+                    },
+                    events: operateEvents
+                },
+            {
+                field: 'Id',
+                title: '操作',
+                align: 'center',
+                valign: 'middle',
+                formatter: function (value, row, index) {
+                    var operate = '';
+                    //operate += ' <a class="btn btn-info btn-sm look"><i class="fa fa-folder"></i> 查看 </a>';
+                    //operate += ' <a class="btn btn-success btn-sm detail"><i class="fa fa-search"></i> 详细条目 </a>';
+                    operate += ' <a class="btn btn-info btn-sm edit"><i class="fa fa-pencil"></i> 编辑 </a>';
+                    operate += ' <a class="btn btn-danger btn-sm delete"><i class="fa fa-trash"></i> 删除 </a>';
+                    return operate;
+                },
+                events: operateEvents
+            }
+            ]
+        });
+});
+        function QueryParams(parma) {
+            parma["KeyWord"] = $("#KeyWord").val();
+            offset = parma["offset"] = parma.offset;
+            limit = parma["limit"] = parma.limit;
+            parma["ProjectId"] = $("#ProjectIdSel").val();
+            parma["Status"] = $('#StatusSel').val();
+            if ($("#ProjectIdSel").val() != 0) {
+                $("#gongdandetail").html('<b class="text-danger">' + $('#ProjectIdSel option:selected').text() + '</b>');
+                $('#ProjectId').val($("#ProjectIdSel").val())
+            }
+            else {
+                $("#gongdandetail").html('');
+            }
+
+            return parma;
+        }
+          //列事件
+        window.operateEvents = {
+          'click .detail': function (e, value, row, index) {
+            //member_add('修改项目-' + row.Name, 'ProjectManageAdd?id=' + row.Id, '', '510');
+            //GetInfo(row);
+        },
+            'click .edit': function (e, value, row, index) {
+            layerFull('510','510','WorkListInfoAdd?id=@ViewBag.ProjectId&pid='+row.Id,'修改工单-'+row.Name)
+            //member_add('修改项目-' + row.Name, 'ProjectManageAdd?id=' + row.Id, '', '510');
+            //GetInfo(row);
+        },
+        'click .delete': function (e, value, row, index) {
+            layer.confirm('确定删除['+row.Name+']?', {
+                    btn: ['确定', '取消'] //按钮
+                }, function () {
+                    var url = "@Url.Action("ProjectManageDelete")";
+                    var Data = {};
+                    Data.Id = row.Id;
+                    Data.IsDeleted = 1;
+                    ajaxGet.post(Data, url, function (data) {
+                        if (data.IsSuccess) {
+                            layer.msg(data.Message, { icon: 1 });
+                            Search();
+                        }
+                        else {
+                            layer.msg(data.Message, { icon: 2 });
+                        }
+                        // Search();
+                    }, function (data) { ExceptionDeal(data); })
+                    // layer.msg('的确很重要', { icon: 1 });
+                }, function () {
+
+                });
+        },
+        };
+        function Search() {
+            $('#table').bootstrapTable("refresh");
+        }
+/*用户-添加*/
+function member_add(title,url,w,h){
+	layer_show(title,url,w,h);
+}
+/*用户-查看*/
+function member_show(title,url,id,w,h){
+	layer_show(title,url,w,h);
+}
+    </script>
+</body>
+</html>

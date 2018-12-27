@@ -1,0 +1,168 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Company.Dto.Model
+{
+    public class Pager
+    {
+        private string _tableName = "";
+        private string _colName = "ID";
+        private Direction _direction = Direction.DESC;
+        private int _pageSize = 10;
+        private int _pageIndex = 10;
+        private string _whereStr = "";
+        private string _columns = "*";
+        private string _joinSql = "";
+        private int _offset = 0;
+
+        /// <summary>
+        /// 跳过行数
+        /// </summary>
+        public int Offset
+        {
+            set
+            {
+                this._offset = value;
+            }
+        }
+        /// <summary>
+        /// 链接其他表
+        /// </summary>
+        public string JoinSql
+        {
+            set
+            {
+                this._joinSql = value;
+            }
+            get
+            {
+                return this._joinSql;
+            }
+        }
+        /// <summary>
+        /// 查询的字段，默认为*
+        /// </summary>
+        public string Columns
+        {
+            set
+            {
+                this._columns = value;
+            }
+            get
+            {
+                return this._columns;
+            }
+        }
+
+        /// <summary>
+        /// 表名
+        /// </summary>
+        public string TableName
+        {
+            get { return _tableName; }
+            set { _tableName = value; }
+        }
+        /// <summary>
+        /// 需排序列名称
+        /// </summary>
+        public string ColName
+        {
+            set { _colName = value; }
+        }
+
+        /// <summary>
+        /// 排序
+        /// </summary>
+        public Direction Direction
+        {
+            set { _direction = value; }
+        }
+
+        /// <summary>
+        /// 每页记录条数
+        /// </summary>
+        public int PageSize
+        {
+            set { _pageSize = value; }
+        }
+
+        /// <summary>
+        /// 页码数
+        /// </summary>
+        public int PageIndex
+        {
+            set { _pageIndex = value; }
+        }
+
+        /// <summary>
+        /// where 条件拼接 and ...
+        /// </summary>
+        public string WhereStr
+        {
+            set { _whereStr = value; }
+            get { return _whereStr; }
+        }
+
+        /// <summary>
+        /// 总行数
+        /// </summary>
+        public int RecordCount { get; set; }
+
+        /// <summary>
+        /// 总页数
+        /// </summary>
+        public int PageCount { get; set; }
+
+        #region 获取表数量的sql
+        /// <summary>
+        /// 获取表数量的sql
+        /// </summary>
+        /// <returns></returns>
+        public string GetTotalCountSql()
+        {
+            string sql = "SELECT COUNT(0) FROM " + _tableName + " (NOLOCK) \n" + _joinSql;
+            sql += "\n WHERE 1=1 " + _whereStr;
+            return sql;
+        }
+        #endregion
+
+        #region 获取数据sql
+        /// <summary>
+        /// 获取数据sql
+        /// </summary>
+        /// <returns></returns>
+        public string GetDataSql()
+        {
+            string sql = "";
+            sql = string.Format("SELECT TOP {0} * FROM (\n", _pageSize);
+            sql += string.Format("SELECT ROW_NUMBER() OVER(ORDER BY {0} {1}) RN,{2} FROM {3}(NOLOCK) {4}\n", _colName,
+                Enum.GetName(typeof(Direction), (int)_direction), _columns, _tableName, _joinSql);
+            sql += string.Format(" WHERE 1=1 {0} \n", _whereStr);
+            sql += ") AS TB \n";
+            sql += string.Format(" WHERE TB.RN>{0}", _offset >= 0 ? _offset : _pageSize * (_pageIndex - 1));
+            sql = sql.ToUpper();
+            return sql;
+        }
+
+        #endregion
+
+        #region 获取总页数
+        /// <summary>
+        /// 获取总页数
+        /// </summary>
+        public void TotalPage()
+        {
+            this.PageCount = ((this.RecordCount - 1) / _pageSize) + 1;
+        }
+        #endregion
+    }
+
+    public enum Direction
+    {
+        ASC = 1,
+        DESC = 2
+    }
+}

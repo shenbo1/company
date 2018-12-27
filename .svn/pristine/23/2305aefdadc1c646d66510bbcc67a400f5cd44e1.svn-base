@@ -1,0 +1,175 @@
+﻿//用途：检查输入手机号码是否正确 
+function checkMobile(s) {
+    var regu = /^[1][0-9]{10}$/;
+    var re = new RegExp(regu);
+    if (re.test(s)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+//是否是url链接
+function checkURL(URL) {
+    var str = URL;
+    //判断URL地址的正则表达式为:http(s)?://([\w-]+\.)+[\w-]+(/[\w- ./?%&=]*)?
+    //下面的代码中应用了转义字符"\"输出一个字符"/"
+    var Expression = /http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/;
+    var objExp = new RegExp(Expression);
+    if (objExp.test(str) == true) {
+        return true;
+    } else {
+        return false;
+    }
+}
+//用途：检查输入对象的值是否符合E-Mail格式 
+function isEmail(str) {
+    var myReg = /^(\w)+(\.\w+)*@(\w)+((\.\w+)+)$/;
+    if (myReg.test(str)) return true;
+    return false;
+}
+//只能输入数字
+function OnlyNum(_obj) {
+    _obj.value = _obj.value.replace(/\D/g, '');
+}
+//输入数字和一位小数点
+function NumAndPoint(obj) {   // 值允许输入一个小数点和数字
+    obj.value = obj.value.replace(/[^\d.]/g, "");     //先把非数字的都替换掉，除了数字和.
+    obj.value = obj.value.replace(/^\./g, "");         //必须保证第一个为数字而不是.
+    obj.value = obj.value.replace(/\.{2,}/g, ".");   //保证只有出现一个.而没有多个.
+    obj.value = obj.value.replace(".", "$#$").replace(/\./g, "").replace("$#$", ".");    //保证.只出现一次，而不能出现两次以上
+}
+function ChangeDt(cellval) {
+    var date = new Date(parseInt(cellval.replace("/Date(", "").replace(")/", ""), 10));
+    var month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
+    var currentDate = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+    var hh = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+    var mm = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+    var ss = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+    var datetostring = date.getFullYear() + "-" + month + "-" + currentDate + " " + hh + ":" + mm ;
+    //当表中字段为空时
+    if (datetostring == "1-01-01 08:00:00") {
+        datetostring = "";
+    }
+    return datetostring;
+}
+
+
+function layerOpenIframe(width, height, url, title) {
+    layer.open({
+        type: 2,
+        title: title,
+        shadeClose: true,
+        shade: 0.8,
+        maxmin: true,
+        area: [width, height],
+        content: url //iframe的url
+    });
+}
+function layerFull(width, height, url, title) {
+    var index = layer.open({
+        type: 2,
+        title: title,
+        shadeClose: true,
+        shade: 0.8,
+        maxmin: true,
+        area: [width, height],
+        content: url //iframe的url
+    });
+    layer.full(index);
+}
+//ajax封装函数
+var ajaxGet = (function () {
+    return {
+        get: function (Data, Url, FuncSuccess, FuncException) {
+            $.ajax({
+                type: "get",
+                dataType: "jsonp",
+                jsonpCallback: "callback",
+                data: Data,
+                url: Url,
+                success: function (data) {
+                    FuncSuccess(data);
+                },
+                error: function (data) {
+                    FuncException(data);
+                }
+            });
+        },
+        post: function (Data, Url, FuncSuccess, FuncException) {
+            $.ajax({
+                type: "post",
+                data: Data,
+                url: Url,
+                success: function (data) {
+                    FuncSuccess(data);
+                },
+                error: function (data) {
+                    FuncException(data);
+                }
+            });
+        },
+    };
+})();
+function ExceptionDeal(err) {
+    alert("ajaxError");
+    console.log(err);
+}
+
+
+function $j(id) {
+    return $("#" + id);
+}
+var ExportFormModel = {
+    action: "ExportExcelTemplatePrizeRecordList",//前端填入
+    params: ["startTimeStr", "endTimeStr"],//前端填入
+    exportBtnId: "",//前端填入
+    init: function () {
+        var self = ExportFormModel;
+        $j(self.exportBtnId).click(self.submit);
+    },
+    submit: function () {
+        var self = ExportFormModel;
+        var Form = document.createElement("FORM");
+        document.body.appendChild(Form);
+        Form.method = "POST";
+        Form.action = self.action;
+        for (var i = 0; i < self.params.length; i++) {
+            var element1 = $("<input name='" + self.params[i] + "' type='hidden' />")[0];
+            Form.appendChild(element1);
+            element1.value = $j(self.params[i]).val();
+        }
+        Form.submit();
+    }
+}
+
+function getJsonObjLength(jsonObj) {
+    var Length = 0;
+    for (var item in jsonObj) {
+        Length++;
+    }
+    return Length;
+}
+
+function isNullOrEmpty(obj) {
+    if ( obj == null || obj == undefined || obj=='' || obj == "null" || obj == "undefined") {
+        return true;
+    } else {
+        return false;
+    }
+}
+var Loading = {
+    Show: function () {
+        if ($(".MASK").length > 0) {
+            $(".MASK").show();
+            return;
+        }
+        $('body').append('<div class="MASK" style="top:0;left:0;background:rgba(0,0,0,0.5);height:100%;width:100%;position: fixed;z-index: 999;"><div class="div_loading" style="position: absolute; top:50%;left:50%;width:100%;transform:translate(-50%,-50%);text-align: center;"><img  width="50" src="/content/img/loading.gif" alt="" /></div></div>');
+    },
+    Hide: function () { $(".MASK").hide(); }
+};
+function GetQueryString(name) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+    var r = window.location.search.substr(1).match(reg);
+    if (r != null) return unescape(r[2]);
+    return null;
+}

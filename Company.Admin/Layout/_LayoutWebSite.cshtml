@@ -1,0 +1,891 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+
+    <!-- Basic page needs
+    ============================================ -->
+    <meta charset="utf-8">
+    <title>@Page.Title</title>
+    <meta name="keywords" content="@Page.Key" />
+    <meta name="description" content="@Page.Desc" />
+
+    <!-- Mobile specific metas
+    ============================================ -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <!-- Libs CSS
+    ============================================ -->
+    <link href="/WebSite/css/reset.css" rel="stylesheet" />
+    <link href="/WebSite/css/stylesheet.css" rel="stylesheet" />
+    <link href="/WebSite/css/media.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="/website/css/googleapis.css">
+    <link rel="stylesheet" href="/website/css/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/website/css/font-awesome.min.css">
+    <link href="/website/js/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet">
+    <link href="/website/js/owl-carousel/owl.carousel.css" rel="stylesheet">
+    <link href="/website/css/themecss/lib.css" rel="stylesheet">
+    <link href="/website/js/jquery-ui/jquery-ui.min.css" rel="stylesheet">
+
+    <!-- Theme CSS
+    ============================================ -->
+    <link href="/website/css/themecss/so_megamenu.css" rel="stylesheet">
+    <link href="/website/css/themecss/so-categories.css" rel="stylesheet">
+    <link href="/website/css/themecss/so-listing-tabs.css" rel="stylesheet">
+    <link id="color_scheme" href="/website/css/theme.css" rel="stylesheet">
+    <link href="/website/css/responsive.css" rel="stylesheet">
+
+    <style>        .jobMenu img{ width:20px;}
+        .vertical ul.megamenu > li > a {padding:1px 15px;        }
+    </style>
+</head>
+
+<body class="common-home res layout-home1">
+
+    <div id="wrapper" class="wrapper-full banners-effect-7">
+        <!-- Header Container  -->
+        <header id="header" class=" variantleft type_1">
+            <!-- Header Top -->
+            <div class="header-top compact-hidden">
+                <div class="container">
+                    <div class="row">
+                        <div class="header-top-left form-inline col-sm-6 col-xs-12 compact-hidden">
+                            <div class="navbar-logo col-md-4 col-sm-12 col-xs-12" style="text-align:center;">
+                                <a href="/website/index">
+                                <img style="width:120px;" src="/website/image/demo/logos/theme_logo.png" title="eeeYooo 软件开发，技术支持，智能硬件，智能名宿" alt="eeeYooo 软件开发，技术支持，智能硬件，智能名宿" />
+                                    @*<h1 style="margin:10px 0;font-size:16px;">物联网孵化</h1>*@
+                                </a>
+                            </div>
+                            @*<div class="form-group languages-block ">
+                                    <form action="index.html" method="post" enctype="multipart/form-data" id="bt-language">
+                                        <a class="btn btn-xs dropdown-toggle" data-toggle="dropdown">
+                                            <img src="/website/image/demo/flags/gb.png" alt="English" title="English">
+                                            <span class="">English</span>
+                                            <span class="fa fa-angle-down"></span>
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="index.html"><img class="image_flag" src="/website/image/demo/flags/gb.png" alt="English" title="English" /> English </a></li>
+                                            <li> <a href="index.html"> <img class="image_flag" src="/website/image/demo/flags/lb.png" alt="Arabic" title="Arabic" /> Arabic </a> </li>
+                                        </ul>
+                                    </form>
+                                </div>
+
+                                <div class="form-group currencies-block">
+                                    <form action="index.html" method="post" enctype="multipart/form-data" id="currency">
+                                        <a class="btn btn-xs dropdown-toggle" data-toggle="dropdown">
+                                            <span class="icon icon-credit "></span> US Dollar <span class="fa fa-angle-down"></span>
+                                        </a>
+                                        <ul class="dropdown-menu btn-xs">
+                                            <li> <a >(€)&nbsp;Euro</a></li>
+                                            <li> <a >(£)&nbsp;Pounds	</a></li>
+                                            <li> <a >($)&nbsp;US Dollar	</a></li>
+                                        </ul>
+                                    </form>
+                                </div>*@
+                        </div>
+                        <div class="header-top-right collapsed-block text-right  col-sm-6 col-xs-12 compact-hidden">
+                            <h5 class="tabBlockTitle visible-xs">More<a class="expander " href="#TabBlock-1"><i class="fa fa-angle-down"></i></a></h5>
+                            <div class="tabBlock" id="TabBlock-1">
+                                <ul class="top-link list-inline">
+                                    <li class="account" id="my_account">
+                                        <a href="/member/center" title="个人中心" class="btn btn-xs">
+                                            <span>@Page.AccountName</span>
+                                            @*<span class="fa fa-angle-down"></span>*@
+                                        </a>
+                                        @*<ul class="dropdown-menu ">
+                                                <li><a href="/WebSite/Register"><i class="fa fa-user"></i> 注册</a></li>
+                                                <li><a href="login.html"><i class="fa fa-pencil-square-o"></i> 登陆</a></li>
+                                            </ul>*@
+                                    </li>
+                                    @*<li class="wishlist"><a  id="wishlist-total" class="top-link-wishlist" title="Wish List (2)"><span>Wish List (2)</span></a></li>
+                                        <li class="checkout"><a  class="top-link-checkout" title="Checkout"><span>Checkout</span></a></li>
+                                        <li class="login"><a  title="Shopping Cart"><span>Shopping Cart</span></a></li>*@
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- //Header Top -->
+            <!-- Header center -->
+            <div class="header-center left" style="display:none;">
+                <div class="container">
+                    <div class="row">
+                        <!-- Logo -->
+                        @*<div class="navbar-logo col-md-3 col-sm-12 col-xs-12">
+                                <a href="/website/index"><img style="width:120px;" src="/website/image/demo/logos/theme_logo.png" title="eeeYooo" alt="eeeYooo" /></a>
+                            </div>*@
+                        <!-- //end Logo -->
+                        <!-- Search -->
+                        <div id="sosearchpro" class="col-sm-7 search-pro">
+                            @*<form method="GET" action="index.html">
+                                    <div id="search0" class="search input-group">
+                                        <input class="autosearch-input form-control" type="text" value="" size="50" autocomplete="off" placeholder="输入你想要查询的内容..." name="search">
+                                        <span class="input-group-btn">
+                                            <button type="button" class="button-search btn btn-primary" name="submit_search"><i class="fa fa-search"></i></button>
+                                        </span>
+                                    </div>
+                                    <input type="hidden" name="route" value="product/search" />
+                                </form>*@
+                        </div>
+                        <!-- //end Search -->
+                        <!-- Secondary menu -->
+                        <div class="col-md-2 col-sm-5 col-xs-12 shopping_cart pull-right">
+                            <!--cart-->
+                            <div id="cart" class=" btn-group btn-shopping-cart">
+                                <a data-loading-text="Loading..." class="top_cart dropdown-toggle" data-toggle="dropdown">
+                                    <div class="shopcart">
+                                        <span class="handle pull-left"></span>
+                                        @*<span class="title">购物车</span>*@
+                                        @*<p class="text-shopping-cart cart-total-full">2 item(s) - $1,262.00 </p>*@
+                                    </div>
+                                </a>
+
+                                @*<ul class="tab-content content dropdown-menu pull-right shoppingcart-box" role="menu">
+
+                                        <li>
+                                            <table class="table table-striped">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="text-center" style="width:70px">
+                                                            <a href="product.html"> <img src="/website/image/demo/shop/product/35.jpg" style="width:70px" alt="Filet Mign" title="Filet Mign" class="preview"> </a>
+                                                        </td>
+                                                        <td class="text-left"> <a class="cart_product_name" href="product.html">Filet Mign</a> </td>
+                                                        <td class="text-center"> x1 </td>
+                                                        <td class="text-center"> $1,202.00 </td>
+                                                        <td class="text-right">
+                                                            <a href="product.html" class="fa fa-edit"></a>
+                                                        </td>
+                                                        <td class="text-right">
+                                                            <a onClick="cart.remove('2');" class="fa fa-times fa-delete"></a>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-center" style="width:70px">
+                                                            <a href="product.html"> <img src="/website/image/demo/shop/product/141.jpg" style="width:70px" alt="Canon EOS 5D" title="Canon EOS 5D" class="preview"> </a>
+                                                        </td>
+                                                        <td class="text-left"> <a class="cart_product_name" href="product.html">Canon EOS 5D</a> </td>
+                                                        <td class="text-center"> x1 </td>
+                                                        <td class="text-center"> $60.00 </td>
+                                                        <td class="text-right">
+                                                            <a href="product.html" class="fa fa-edit"></a>
+                                                        </td>
+                                                        <td class="text-right">
+                                                            <a onClick="cart.remove('1');" class="fa fa-times fa-delete"></a>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </li>
+                                        <li>
+                                            <div>
+                                                <table class="table table-bordered">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td class="text-left">
+                                                                <strong>Sub-Total</strong>
+                                                            </td>
+                                                            <td class="text-right">$1,060.00</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-left">
+                                                                <strong>Eco Tax (-2.00)</strong>
+                                                            </td>
+                                                            <td class="text-right">$2.00</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-left">
+                                                                <strong>VAT (20%)</strong>
+                                                            </td>
+                                                            <td class="text-right">$200.00</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-left">
+                                                                <strong>Total</strong>
+                                                            </td>
+                                                            <td class="text-right">$1,262.00</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                                <p class="text-right"> <a class="btn view-cart" ><i class="fa fa-shopping-cart"></i>View Cart</a>&nbsp;&nbsp;&nbsp; <a class="btn btn-mega checkout-cart" ><i class="fa fa-share"></i>Checkout</a> </p>
+                                            </div>
+                                        </li>
+                                    </ul>*@
+                            </div>
+                            <!--//cart-->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <!-- //Header center -->
+            <!-- Header Bottom -->
+            <div class="header-bottom">
+                <div class="container">
+                    <div class="row">
+
+                        <div class="sidebar-menu col-md-3 col-sm-6 col-xs-12 ">
+                            <div class="responsive so-megamenu ">
+                                <div class="so-vertical-menu no-gutter compact-hidden">
+                                    <nav class="navbar-default">
+
+                                        <div class="container-megamenu vertical @Page.Open">
+                                            <div id="menuHeading">
+                                                <div class="megamenuToogle-wrapper">
+                                                    <div class="megamenuToogle-pattern">
+                                                        <div class="container">
+                                                            <div>
+                                                                <span></span>
+                                                                <span></span>
+                                                                <span></span>
+                                                            </div>
+                                                            所有职位
+                                                            @if (Page.Open == "open")
+                                                            {
+                                                                <i class="fa pull-right arrow-circle  fa-chevron-circle-down"></i>
+                                                            }
+                                                            else
+                                                            {
+                                                                <i class="fa pull-right arrow-circle  fa-chevron-circle-up"></i>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="navbar-header">
+                                                <button type="button" id="show-verticalmenu" data-toggle="collapse" class="navbar-toggle fa fa-list-alt"></button>
+                                                所有职位
+                                            </div>
+                                            <div class="vertical-wrapper">
+                                                <span id="remove-verticalmenu" class="fa fa-times"></span>
+                                                <div class="megamenu-pattern">
+                                                    <div class="container">
+                                                        <ul class="megamenu jobMenu">
+                                                            @*<li class="item-vertical style1 with-sub-menu hover">
+                                                                <p class="close-menu"></p>
+                                                                <a class="clearfix">
+                                                                    <img src="/website/image/theme/icons/9.png" alt="icon">
+                                                                    <span>项目经理</span>
+                                                                </a>
+                                                                <div class="sub-menu" data-subwidth="100">
+                                                                    <div class="content">
+                                                                        <div class="row">
+                                                                            <div class="col-sm-12">
+                                                                                <div class="row">
+                                                                                    <div class="col-md-4 static-menu">
+                                                                                        <div class="menu">
+                                                                                            <ul>
+                                                                                                <li>
+                                                                                                    <a href="#" class="main-menu">Apparel</a>
+                                                                                                </li>
+                                                                                            </ul>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                            <li class="item-vertical style1 with-sub-menu hover">
+                                                                <p class="close-menu"></p>
+                                                                <a  class="clearfix">
+                                                                    <img src="/website/image/theme/icons/9.png" alt="icon">
+                                                                    <span>产品经理</span>
+                                                                </a>
+                                                            </li>
+                                                            <li class="item-vertical style1 with-sub-menu hover">
+                                                                <p class="close-menu"></p>
+                                                                <a  class="clearfix">
+                                                                    <img src="/website/image/theme/icons/9.png" alt="icon">
+                                                                    <span>UI界面设计</span>
+                                                                </a>
+                                                            </li>
+                                                            <li class="item-vertical style1 with-sub-menu hover">
+                                                                <p class="close-menu"></p>
+                                                                <a  class="clearfix">
+                                                                    <img src="/website/image/theme/icons/9.png" alt="icon">
+                                                                    <span>前端工程师</span>
+                                                                </a>
+                                                            </li>
+                                                            <li class="item-vertical style1 with-sub-menu hover">
+                                                                <p class="close-menu"></p>
+                                                                <a  class="clearfix">
+                                                                    <img src="/website/image/theme/icons/9.png" alt="icon">
+                                                                    <span>系统工程师</span>
+                                                                </a>
+                                                            </li>
+                                                            <li class="item-vertical style1 with-sub-menu hover">
+                                                                <p class="close-menu"></p>
+                                                                <a  class="clearfix">
+                                                                    <img src="/website/image/theme/icons/9.png" alt="icon">
+                                                                    <span>测试工程师</span>
+                                                                </a>
+                                                            </li>*@
+                                                            @*<li class="item-vertical">
+                                                                    <p class="close-menu"></p>
+                                                                    <a  class="clearfix">
+                                                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                                                                        <span>  C# 语言</span>
+                                                                    </a>
+                                                                </li>
+                                                                <li class="item-vertical with-sub-menu hover">
+                                                                    <p class="close-menu"></p>
+                                                                    <a  class="clearfix">
+                                                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                        <span>Java 语言</span>
+                                                                    </a>
+                                                                </li>
+                                                                <li class="item-vertical with-sub-menu hover">
+                                                                    <p class="close-menu"></p>
+                                                                    <a  class="clearfix">
+                                                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                        <span>PHP 语言</span>
+                                                                    </a>
+                                                                </li>
+                                                                <li class="item-vertical with-sub-menu hover">
+                                                                    <p class="close-menu"></p>
+                                                                    <a  class="clearfix">
+                                                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                        <span>Python 语言</span>
+                                                                    </a>
+                                                                </li>
+                                                                <li class="item-vertical">
+                                                                    <p class="close-menu"></p>
+                                                                    <a  class="clearfix">
+                                                                        <img src="/website/image/theme/icons/11.png" alt="icon">
+                                                                        <span>前端工程师</span>
+                                                                    </a>
+                                                                </li>
+                                                                <li class="item-vertical">
+                                                                    <p class="close-menu"></p>
+                                                                    <a  class="clearfix">
+                                                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                        <span>HTML5 页面开发</span>
+                                                                    </a>
+                                                                </li>
+                                                                <li class="item-vertical">
+                                                                    <p class="close-menu"></p>
+                                                                    <a  class="clearfix">
+                                                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                        <span>IOS 系统开发</span>
+                                                                    </a>
+                                                                </li>
+                                                                <li class="item-vertical">
+                                                                    <p class="close-menu"></p>
+                                                                    <a  class="clearfix">
+                                                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                        <span>Android 系统开发</span>
+                                                                    </a>
+                                                                </li>
+                                                                <li class="item-vertical">
+                                                                    <p class="close-menu"></p>
+                                                                    <a  class="clearfix">
+                                                                        <img src="/website/image/theme/icons/6.png" alt="icon">
+                                                                        <span>测试工程师</span>
+                                                                    </a>
+                                                                </li>
+                                                                <li class="item-vertical">
+                                                                    <p class="close-menu"></p>
+                                                                    <a  class="clearfix">
+                                                                        <img src="/website/image/theme/icons/8.png" alt="icon">
+                                                                        <span>UI界面设计 </span>
+                                                                    </a>
+                                                                </li>*@
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </nav>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Main menu -->
+                        <div class="megamenu-hori header-bottom-right  col-md-9 col-sm-6 col-xs-12 ">
+                            <div class="responsive so-megamenu ">
+                                <nav class="navbar-default">
+                                    <div class=" container-megamenu  horizontal">
+                                        <div class="navbar-header">
+                                            <button type="button" id="show-megamenu" data-toggle="collapse" class="navbar-toggle">
+                                                <span class="icon-bar"></span>
+                                                <span class="icon-bar"></span>
+                                                <span class="icon-bar"></span>
+                                            </button>
+                                            分类
+                                        </div>
+
+                                        <div class="megamenu-wrapper">
+                                            <span id="remove-megamenu" class="fa fa-times"></span>
+                                            <div class="megamenu-pattern">
+                                                <div class="container">
+                                                    <ul class="megamenu " data-transition="slide" data-animationtime="250">
+                                                        <li class="home with-sub-menu hover">
+                                                            <a href="/WebSite/index">Abount eeeYooo <b class="caret"></b></a>
+                                                            <div class="sub-menu" style="width: 100%; right: auto;">
+                                                                <div class="content">
+                                                                    <div class="row">
+                                                                        <div class="col-md-3">
+                                                                            <div class="column">
+                                                                                <a class="title-submenu">eeeYooo 文化</a>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-3">
+                                                                            <div class="column">
+                                                                                <a class="title-submenu">eeeYooo 服务</a>
+                                                                            </div>
+                                                                            <div>
+                                                                                <ul class="row-list">
+                                                                                    <li><a href="/WebSite/Techatch">技术孵化</a></li>
+                                                                                    <li><a href="/WebSite/OutDev">外包开发</a></li>
+                                                                                    <li><a href="/WebSite/Peration">成熟项目运维</a></li>
+                                                                                    <li><a href="/WebSite/Dev">项目二次开发</a></li>
+                                                                                </ul>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-3">
+                                                                            <div class="column">
+                                                                                <a class="title-submenu">开发模式</a>
+                                                                            </div>
+                                                                            <div>
+                                                                                <ul class="row-list">
+                                                                                    <li><a href="/WebSite/InnerDev">内场开发</a></li>
+                                                                                    <li><a href="/WebSite/OutOtherDev">外派开发</a></li>
+                                                                                    <li><a href="/WebSite/PaiDev">排期开发</a></li>
+                                                                                </ul>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-3">
+                                                                            <div class="column">
+                                                                                <a class="title-submenu">计费模式</a>
+                                                                            </div>
+                                                                            <div>
+                                                                                <ul class="row-list">
+                                                                                    <li><a href="/WebSite/InnerCharge">内场计费</a></li>
+                                                                                    <li><a href="/WebSite/OutCharge">外场计费</a></li>
+                                                                                    <li><a href="/WebSite/PaiCharge">排期计费</a></li>
+                                                                                    <li><a href="/WebSite/HardCharge">硬件计费</a></li>
+                                                                                    <li><a href="/WebSite/EeeyoooCharge">eeeYooo服务费</a></li>
+                                                                                    <li><a href="/WebSite/PayCharge">交付方式计费模式</a></li>
+                                                                                    <li><a href="/WebSite/OutSourceCharge">源码计费模式</a></li>
+                                                                                </ul>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-3">
+                                                                            <div class="column">
+                                                                                <a class="title-submenu">开发流程</a>
+                                                                            </div>
+                                                                            <div>
+                                                                                <ul class="row-list">
+                                                                                    <li><a href="/WebSite/DevProcess">开发流程图</a></li>
+                                                                                    <li><a href="/WebSite/DevManage">开发管理说明</a></li>
+                                                                                    <li><a href="/WebSite/OnlineManage">上线管理</a></li>
+                                                                                </ul>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-3">
+                                                                            <div class="column">
+                                                                                <a class="title-submenu">上线流程</a>
+                                                                            </div>
+                                                                            <div>
+                                                                                <ul class="row-list">
+                                                                                    <li><a href="/WebSite/OnlineWay">上线方式</a></li>
+                                                                                    <li><a href="/WebSite/OnlineInfo">上线说明</a></li>
+                                                                                </ul>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-3">
+                                                                            <div class="column">
+                                                                                <a class="title-submenu">交付流程</a>
+                                                                            </div>
+                                                                            <div>
+                                                                                <ul class="row-list">
+                                                                                    <li><a href="/WebSite/PayWay">交付方式</a></li>
+                                                                                    <li><a href="/WebSite/PayWayInfo">交付说明</a></li>
+                                                                                </ul>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-3">
+                                                                            <div class="column">
+                                                                                <a class="title-submenu">付款流程</a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                        @*<li class="with-sub-menu hover">
+            <p class="close-menu"></p>
+            <a  class="clearfix">
+                <strong>会员注册</strong>
+                <span class="label"> Hot</span>
+                <b class="caret"></b>
+            </a>
+            <div class="sub-menu" style="width: 100%; right: auto;">
+                <div class="content">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="column">
+                                <a  class="title-submenu">下拉列表会员注册</a>
+
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="column">
+                                <a  class="title-submenu">项目信息完善</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </li>*@
+                                                        <li class="with-sub-menu hover">
+                                                            <p class="close-menu"></p>
+                                                            <a class="clearfix">
+                                                                <strong>会员中心</strong>
+                                                                <span class="label"> Hot</span>
+                                                                <b class="caret"></b>
+                                                            </a>
+                                                            <div class="sub-menu" style="width: 100%; right: auto;">
+                                                                <div class="content">
+                                                                    <div class="row">
+                                                                        <div class="col-md-3">
+                                                                            <div class="column">
+                                                                                <a class="title-submenu">下拉列表会员登录</a>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-3">
+                                                                            <div class="column">
+                                                                                <a class="title-submenu">会员信息</a>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-3">
+                                                                            <div class="column">
+                                                                                <a class="title-submenu">企业信息</a>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-3">
+                                                                            <div class="column">
+                                                                                <a class="title-submenu">项目列表</a>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-3">
+                                                                            <div class="column">
+                                                                                <a class="title-submenu">项目进度管理</a>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-3">
+                                                                            <div class="column">
+                                                                                <a class="title-submenu">工单管理</a>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-3">
+                                                                            <div class="column">
+                                                                                <a class="title-submenu">财务管理</a>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-3">
+                                                                            <div class="column">
+                                                                                <a class="title-submenu">消息通知管理</a>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-3">
+                                                                            <div class="column">
+                                                                                <a class="title-submenu">日志管理</a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                        <li class="with-sub-menu hover">
+                                                            <p class="close-menu"></p>
+                                                            <a class="clearfix" href="/WebSite/NewsInfoList">
+                                                                <strong>新闻动态</strong>
+                                                                <span class="label">New</span>
+                                                            </a>
+                                                        </li>
+        @*<li class="with-sub-menu hover">
+            <p class="close-menu"></p>
+            <a  class="clearfix">
+                <strong>开发团队中心</strong>
+                <b class="caret"></b>
+            </a>
+            <div class="sub-menu" style="width: 100%; display: none;">
+                <div class="content">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <a  class="title-submenu">下拉列表开发团队登录</a>
+                        </div>
+                        <div class="col-md-3">
+                            <a  class="title-submenu">项目管理</a>
+                        </div>
+                        <div class="col-md-3">
+                            <a  class="title-submenu">项目日程管理</a>
+                        </div>
+                        <div class="col-md-3">
+                            <a  class="title-submenu">项目状态跟新与管理</a>
+                        </div>
+                        <div class="col-md-3">
+                            <a  class="title-submenu">工单上传</a>
+                        </div>
+                        <div class="col-md-3">
+                            <a  class="title-submenu">更新与管理</a>
+                        </div>
+                        <div class="col-md-3">
+                            <a  class="title-submenu">消息通知管理</a>
+                        </div>
+                        <div class="col-md-3">
+                            <a  class="title-submenu">日志管理</a>
+                        </div>
+                        <div class="col-md-3">
+                            <a  class="title-submenu">财务管理</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </li>*@
+                                                    </ul>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </nav>
+                            </div>
+                        </div>
+                        <!-- //end Main menu -->
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Navbar switcher -->
+            <!-- //end Navbar switcher -->
+        </header>
+        @RenderBody();
+        <!-- Footer Container -->
+        <footer class="footer-container">
+            <!-- Footer Top Container -->
+            <section class="footer-top">
+                <div class="container content">
+                    <div class="row">
+                        <div class="col-sm-6 col-md-3 box-information">
+                            <div class="module clearfix">
+                                <h3 class="modtitle">eeeYooo服务</h3>
+                                <div class="modcontent">
+                                    <ul class="menu">
+                                        <li><a >技术孵化</a></li>
+                                        <li><a >外包开发</a></li>
+                                        <li><a >成熟项目运维</a></li>
+                                        <li><a >项目二次开发</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 col-md-3 box-service">
+                            <div class="module clearfix">
+                                <h3 class="modtitle">开发模式</h3>
+                                <div class="modcontent">
+                                    <ul class="menu">
+                                        <li><a >内场开发</a></li>
+                                        <li><a >外派开发</a></li>
+                                        <li><a >排期开发</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 col-md-3 box-account">
+                            <div class="module clearfix">
+                                <h3 class="modtitle">计费模式</h3>
+                                <div class="modcontent">
+                                    <ul class="menu">
+                                        <li><a >内场计费</a></li>
+                                        <li><a >外场计费</a></li>
+                                        <li><a >排期计费</a></li>
+                                        <li><a >硬件计费</a></li>
+                                        <li><a >eeeYooo服务费</a></li>
+                                        <li><a >交付方式计费模式</a></li>
+                                        <li><a >源码计费模式</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 col-md-3 collapsed-block ">
+                            <div class="module clearfix">
+                                <h3 class="modtitle">联系我们</h3>
+                                <div class="modcontent">
+                                    <ul class="contact-address">
+                                        <li><span class="fa fa-map-marker"></span>   上海市青浦区<br />阁游路258号211室</li>
+                                        <li><span class="fa fa-envelope-o"></span> 邮箱: <a href="mailto:jeoffrey.yang@eeeyooo.com"> jeoffrey.yang@eeeyooo.com</a></li>
+                                        <li style="line-height:35px;"><span class="fa fa-phone"></span> 联系人:Jeo</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+            <!-- /Footer Top Container -->
+            <!-- Footer Bottom Container -->
+            <div class="footer-bottom-block ">
+                <div class=" container">
+                    <div class="row">
+                        <div class="col-sm-5 copyright-text">CopyRight &copy; 2018 eeeYooo All rights reserved. </div>
+                        <div class="col-sm-7">
+                            <div class="block-payment text-right"><img src="/website/image/demo/content/payment.png" alt="payment" title="payment"></div>
+                        </div>
+                        <!--Back To Top-->
+                        <div class="back-to-top"><i class="fa fa-angle-up"></i><span> Top </span></div>
+
+                    </div>
+                </div>
+            </div>
+            <!-- /Footer Bottom Container -->
+
+
+        </footer>
+        <!-- //end Footer Container -->
+
+    </div>
+    <!-- Social widgets -->
+    @*<section class="social-widgets visible-lg">
+            <ul class="items">
+                <li class="item item-01 facebook">
+                    <a href="" class="tab-icon"><span class="fa fa-facebook"></span></a>
+                    <div class="tab-content">
+                        <div class="title">
+                            <h5>FACEBOOK</h5>
+                        </div>
+                        <div class="loading">
+                            <img src="/website/image/theme/lazy-loader.gif" class="ajaxloader" alt="loader">
+                        </div>
+                    </div>
+                </li>
+                <li class="item item-02 twitter">
+                    <a href="" class="tab-icon"><span class="fa fa-twitter"></span></a>
+                    <div class="tab-content">
+                        <div class="title">
+                            <h5>TWITTER FEEDS</h5>
+                        </div>
+                        <div class="loading">
+                            <img src="/website/image/theme/lazy-loader.gif" class="ajaxloader" alt="loader">
+                        </div>
+                    </div>
+                </li>
+                <li class="item item-03 youtube">
+                    <a  class="tab-icon"><span class="fa fa-youtube"></span></a>
+                    <div class="tab-content">
+                        <div class="title">
+                            <h5>YouTube</h5>
+                        </div>
+                        <div class="loading"> <img src="/website/image/theme/lazy-loader.gif" class="ajaxloader" alt="loader"></div>
+                    </div>
+                </li>
+            </ul>
+        </section>*@
+    <!-- End Social widgets -->
+
+    <link rel='stylesheet' property='stylesheet' href='/website/css/themecss/cpanel.css' type='text/css' media='all' />
+
+
+    <!-- Include Libs & Plugins  ============================================ -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script type="text/javascript" src="/website/js/jquery-2.2.4.min.js"></script>
+    <script type="text/javascript" src="/website/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/website/js/owl-carousel/owl.carousel.js"></script>
+    <script type="text/javascript" src="/website/js/themejs/libs.js"></script>
+    <script type="text/javascript" src="/website/js/unveil/jquery.unveil.js"></script>
+    <script type="text/javascript" src="/website/js/countdown/jquery.countdown.min.js"></script>
+    <script type="text/javascript" src="/website/js/dcjqaccordion/jquery.dcjqaccordion.2.8.min.js"></script>
+    <script type="text/javascript" src="/website/js/datetimepicker/moment.js"></script>
+    <script type="text/javascript" src="/website/js/datetimepicker/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="/website/js/jquery-ui/jquery-ui.min.js"></script>
+    <!-- Theme files ============================================ -->
+    <script type="text/javascript" src="/website/js/themejs/application.js"></script>
+    <script type="text/javascript" src="/website/js/themejs/toppanel.js"></script>
+    <script type="text/javascript" src="/website/js/themejs/so_megamenu.js"></script>
+    <script type="text/javascript" src="/website/js/themejs/addtocart.js"></script>
+    <script src="/Content/js/plugins/layer/layer.min.js"></script>
+    <script src="/Content/js/config.js"></script>
+    <script src="/Content/js/ajax.js?@DateTime.Now"></script>
+    <script src="/WebSite/js/base.js"></script>
+    <script src="/WebSite/js/scroll_big.js"></script>
+
+    @*<script type="text/javascript" src="/website/js/themejs/cpanel.js"></script>*@
+</body>
+</html>
+<script>
+    //var leftmenu = localStorage["leftmenu"];
+    //if (isNullOrEmpty(leftmenu)) {
+    var url = 'http://www.eeeyooo.com';
+    ajaxGet.post({}, "/website/GetJobList", function (data) {
+        var html = '';
+        for (var i = 0; i < data.length; i++) {
+            var json = data[i];
+            html += '<li class="item-vertical style1 with-sub-menu hover" style="border-top:1px solid #ddd;">';
+            html += '<p class="close-menu" ></p>';
+            html += '<a class="clearfix" > ';
+            html += '<img src = "' + url+ json.Ico + '" alt = "'+json.Name+'" > ';
+            html += '<span> ' + json.Name + '</span> ';
+            html += '</a> ';
+            if (!isNullOrEmpty(json.List)) {
+                //html += '<div class="sub-menu" data-subwidth="100">';
+                //html += '<div class="content">';
+                //html += '<div class="row">';
+                //html += '<div class="col-sm-12">';
+                //html += '<div class="row">';
+                //html += '<div class="col-md-4 static-menu">';
+                //html += '<div class="menu">';
+                //html += '<ul>';
+                //for (var j = 0; j < json.List.length; j++) {
+                //    var model = json.List[j];
+                //    html += '<li><a class="main-menu">' + model.Name + '-' + model.Level + '</a>';
+                //    if (!isNullOrEmpty(model.Info))
+                //        html += '<ul><li> <a>' + model.Info + '</a></li>';
+                //    html += '</li > ';
+                //}
+                //html += '</ul>';
+                //html += '</div>';
+                //html += '</div>';
+                //html += '</div>';
+                //html += '</div>';
+                //html += '</div>';
+                //html += '</div>';
+                //html += '</div>';
+            }
+            html += '</li>';
+            if (!isNullOrEmpty(json.List)) {
+                for (var j = 0; j < json.List.length; j++) {
+                    var model = json.List[j];
+                    html += '<li class="item-vertical style1 with-sub-menu hover" style="margin-left:20px;">';
+                    html += '<p class="close-menu" ></p>';
+                    html += '<a class="clearfix" > ';
+                    html += '<img src = "' + url + model.Ico + '" alt = "' + model.Name + '" > ';
+                    html += '<span> ' + model.Name + '</span> ';
+                    html += '</a> ';
+                    html += '</li>';
+                }
+            }
+        }
+        $('.jobMenu').html(html);
+        localStorage["leftmenu"] = html;
+        hoverMegaMenu();
+        renderWidthSubmenu();
+
+    }, function () { });
+    //} else {
+    //    $('.jobMenu').html(leftmenu);
+    //    hoverMegaMenu();
+    //    renderWidthSubmenu();
+    //}
+</script>
+

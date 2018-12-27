@@ -1,0 +1,227 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Data;
+using System.IO;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
+using NPOI.HSSF.UserModel;
+using System.Web;
+using Aspose.Cells;
+using System.Reflection;
+using System.ComponentModel;
+
+namespace Company.Util
+{
+    public class ExportHelper
+    {
+        public static void Export<T>(List<T> data, HttpResponseBase response, string excelName, string param1 = "", string param2 = "")
+        {
+            Workbook workbook = new Workbook();
+            Worksheet sheet = (Worksheet)workbook.Worksheets[0];
+
+            //为标题设置样式     
+            Style styleTitle = workbook.Styles[workbook.Styles.Add()];//新增样式 
+            styleTitle.HorizontalAlignment = TextAlignmentType.Center;//文字居中 
+            styleTitle.Font.Name = "宋体";//文字字体 
+            styleTitle.Font.Size = 18;//文字大小 
+            styleTitle.Font.IsBold = true;//粗体 
+
+            var objType = typeof(T);
+
+            PropertyInfo[] properties = objType.GetProperties();
+            //生成行1 标题行    
+            sheet.Cells.Merge(0, 0, 1, properties.Length);//合并单元格 
+            sheet.Cells[0, 0].PutValue(excelName);//填写内容 
+            sheet.Cells[0, 0].SetStyle(styleTitle);
+            sheet.Cells.SetRowHeight(0, 20);
+
+
+            if (!string.IsNullOrEmpty(param1))
+            {
+                sheet.Cells[1, 0].PutValue("账单开始日");//填写内容 
+                sheet.Cells[1, 1].PutValue(param1);
+            }
+            if (!string.IsNullOrEmpty(param2))
+            {
+                sheet.Cells[1, 4].PutValue("账单结束日");//填写内容 
+                sheet.Cells[1, 5].PutValue(param2);
+            }
+
+            int i = 2;
+            int j = 0;
+            foreach (PropertyInfo propInfo in properties)
+            {
+                var attrName = propInfo.Name;
+                DescriptionAttribute attr = (DescriptionAttribute)Attribute.GetCustomAttribute(propInfo, typeof(DescriptionAttribute));
+                if (attr != null)
+                {
+                    attrName = attr.Description;
+                    sheet.Cells[i, j].PutValue(attrName);
+                    int ii = i + 1;
+                    foreach (var d in data)
+                    {
+                        sheet.Cells[ii, j].PutValue(propInfo.GetValue(d, null));
+                        ii++;
+                    }
+                    sheet.Cells.SetColumnWidth(j, 15);
+                    j++;
+                }
+            }
+            response.Clear();
+            response.Buffer = true;
+            response.Charset = "utf-8";
+            response.AppendHeader("Content-Disposition", string.Format("attachment;filename={0}.xls", excelName));
+            response.ContentEncoding = System.Text.Encoding.UTF8;
+            response.ContentType = "application/ms-excel";
+            response.BinaryWrite(workbook.SaveToStream().ToArray());
+            response.End();
+        }
+
+        #region Excel上传
+        /// <summary>
+        /// 将excel中的数据导入到DataTable中
+        /// </summary>
+        /// <param name="sheetName">excel工作薄sheet的名称</param>
+        /// <param name="isFirstRowColumn">第一行是否是DataTable的列名</param>
+        /// <returns>返回的DataTable</returns>
+        public static DataTable ExcelToDataTable(Stream fs, string fileName, string sheetName, bool isFirstRowColumn)
+        {
+            ISheet sheet = null;
+            IWorkbook workbook = null;
+            DataTable data = new DataTable();
+            int startRow = 0;
+            try
+            {
+                if (fileName.IndexOf(".xlsx") > 0) // 2007版本
+                    workbook = new XSSFWorkbook(fs);
+                else if (fileName.IndexOf(".xls") > 0) // 2003版本
+                    workbook = new HSSFWorkbook(fs);
+
+                if (!string.IsNullOrEmpty(sheetName))
+                {
+                    sheet = workbook.GetSheet(sheetName);
+                    if (sheet == null) //如果没有找到指定的sheetName对应的sheet，则尝试获取第一个sheet
+                    {
+                        sheet = workbook.GetSheetAt(0);
+                    }
+                }
+                else
+                {
+                    sheet = workbook.GetSheetAt(0);
+                }
+                if (sheet != null)
+                {
+                    IRow firstRow = sheet.GetRow(0);
+                    int cellCount = firstRow.LastCellNum; //一行最后一个cell的编号 即总的列数
+
+                    if (isFirstRowColumn)
+                    {
+                        for (int i = firstRow.FirstCellNum; i < cellCount; ++i)
+                        {
+                            ICell cell = firstRow.GetCell(i);
+                            if (cell != null)
+                            {
+                                string cellValue = cell.StringCellValue;
+                                if (cellValue != null)
+                                {
+                                    DataColumn column = new DataColumn(cellValue);
+                                    data.Columns.Add(column);
+                                }
+                            }
+                        }
+                        startRow = sheet.FirstRowNum + 1;
+                    }
+                    else
+                    {
+                        startRow = sheet.FirstRowNum;
+                    }
+                    //data.Columns.Add("Creator");
+                    //data.Columns.Add("CreateDate");
+
+                    //最后一列的标号
+                    int rowCount = sheet.LastRowNum;
+                    for (int i = startRow; i <= rowCount; ++i)
+                    {
+                        IRow row = sheet.GetRow(i);
+                        if (row == null) continue; //没有数据的行默认是null　　　　　　　
+                        DataRow dataRow = data.NewRow();
+                        for (int j = row.FirstCellNum; j < cellCount; ++j)
+                        {
+                            if (row.Cells[j] != null) //同理，没有数据的单元格都默认是null
+                                dataRow[j] = row.Cells[j].ToString();
+                        }
+                        //dataRow["Creator"] = Creator;
+                        //dataRow["CreateDate"] = DateTime.Now;
+                        data.Rows.Add(dataRow);
+                    }
+                }
+
+                return data;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception: " + ex.Message);
+                return null;
+            }
+        }
+        #endregion
+
+
+        /// <summary>
+        /// DataSet直接导出Excel,此方法会把DataSet的数据用Excel打开,再自己手动去保存到确切的位置
+        /// </summary>
+        /// <param name="ds">要导出Excel的DataSet</param>
+        /// <returns></returns>
+        public static void DoExportForDataSet(DataSet ds, List<string> sheetslist, HttpResponseBase response, string excelName)
+        {
+            Workbook workbook = new Workbook();
+            workbook.Worksheets.Clear();
+            foreach (string s in sheetslist)
+            {
+                workbook.Worksheets.Add(s);
+
+            }
+            if (ds != null)
+            {
+                int t = 0;
+                foreach (DataTable dt in ds.Tables)
+                {
+                    Worksheet sheet = (Worksheet)workbook.Worksheets[t];
+                    var colIndex = "A";
+                    int cnt = dt.Rows.Count;
+                    int columncnt = dt.Columns.Count;
+                    //写入excel
+                    for (int j = 0; j < dt.Columns.Count; j++)
+                    {
+                        sheet.Cells[colIndex + 1].PutValue(dt.Columns[j].ColumnName);
+                        colIndex = ((char)(colIndex[0] + 1)).ToString();
+                    }
+                    colIndex = "A";
+                    // 获取具体数据
+                    for (int i = 0; i < dt.Columns.Count; i++)
+                    {
+                        int k = 2;
+                        for (int j = 0; j < dt.Rows.Count; j++)
+                        {
+                            sheet.Cells[colIndex + k].PutValue(dt.Rows[j][i]);
+                            k++;
+                        }
+                        colIndex = ((char)(colIndex[0] + 1)).ToString();
+                    }
+                    t++;
+                }
+            }
+
+            response.Clear();
+            response.Buffer = true;
+            response.Charset = "utf-8";
+            response.ContentEncoding = System.Text.Encoding.UTF8;
+            response.ContentType = "application/ms-excel";
+            response.AppendHeader("Content-Disposition", string.Format("attachment;filename={0}.xls", excelName));
+            response.BinaryWrite(workbook.SaveToStream().ToArray());
+            response.End();
+        }
+    }
+}

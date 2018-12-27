@@ -1,0 +1,802 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工单明细列表</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="/Content/css/bootstrap.min14ed.css?v=3.3.6" rel="stylesheet">
+    <link href="/Content/css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet">
+    <link href="/Content/css/plugins/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
+    <link href="/Content/css/animate.min.css" rel="stylesheet">
+    <link href="/Content/css/style.min862f.css?v=4.1.0" rel="stylesheet">
+    <style>
+        .box-content {
+            padding: 10px 0;
+        }
+
+        .float-e-margins .btn {
+            margin-bottom: 0;
+        }
+        [v-cloak] {
+            display: none !important;
+        }
+        .btn-default, .btn-default:hover, .btn-default:active, .btn-default:link {
+            background: #fff;
+            color: #000;
+        }
+    </style>
+</head>
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInDown" id="main">
+        <!-- Panel Other -->
+        <div class="ibox float-e-margins">
+            <div class="ibox-content">
+                <div class="row row-lg">
+                    <div class="col-sm-12">
+                        <!-- Example Events -->
+                        <div class="example-wrap">
+                            <h4 class="example-title">
+                                工单明细列表 <span id="gongdandetail"></span>
+                                <a class="btn btn-primary " style="float:right;" href="javascript:location.reload();" title="页面刷新"><i class="fa fa-refresh"></i> </a>
+                                <a class="btn btn-primary " style="float:right;margin-right:10px;" href="/admin/WorkListInfo" title="返回上一级"><i class="fa fa-arrow-left"></i> </a>
+                            </h4>
+                            <div class="example">
+                                <div class="box-content form-inline">
+                                    <div class="topbtnbar">
+                                        <input type="text" class="form-control" id="KeyWord" onkeyup="if (event.keyCode == '13') $('#btnSearch').click()" placeholder="关键字">
+                                        工单名称：
+                                        @Html.DropDownList("WorkIdSel", (IEnumerable<SelectListItem>)ViewBag.WorkList, "全部",
+             new Dictionary<string, object>() {
+                                    { "class", "selectpicker show-tick form-control col-sm-1" },
+                                    { "data-live-search", "true" }
+             }
+         )
+                                        <button type="button" id="btnSearch" class="btn btn-success btn-sm " onclick="Search()">
+                                            查询
+                                        </button>
+
+
+                                        <button type="button" id="ImportExcel" onclick="$('#UploadUrl').click();" class="btn btn-warning btn-sm">
+                                            导入
+                                        </button>
+                                        <a href="~/Upload/Template/工单明细表.xls">Excel模板</a>
+
+                                        <form style="display:none;" id="uploadForm" method="post" enctype="multipart/form-data">
+                                            <input type="file" name="upfile" id="UploadUrl" onchange="ImportExcel()" class="btn btn-info productInput" style="width: inherit" />
+                                        </form>
+                                    </div>
+
+                                    <div class="row" style="margin-top:15px;margin-bottom:15px;">
+                                        <div class="col-sm-6">
+                                            <button type="button" class="btn btn-primary btn-sm"
+                                                    v-on:click="checkMember(item,'search')"
+                                                    style="margin:5px" v-cloak v-for="item in UserList">
+                                                <i class="fa fa-check" v-if="item.Checked"></i>
+                                                <span>{{item.Name}}</span>
+                                            </button>
+                                            <input type="hidden" id="checkMember" />
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <button type="button" class="btn btn-success btn-sm"
+                                                    v-on:click="checkStatus(item,'status')"
+                                                    v-on:contextmenu.prevent="memberDate(item)"
+                                                    style="margin:5px" v-cloak v-for="item in StatusList">
+                                                <i class="fa fa-check" v-if="item.Checked"></i>
+                                                <span>{{item.Name}}</span>
+                                            </button>
+                                            <input type="hidden" id="checkStatus" />
+                                        </div>
+                                        <div id="divuser" style="display:none;padding:20px;">
+                                            <button type="button" class="btn btn-primary btn-sm"
+                                                    v-on:click="AddMember(item)"
+                                                    style="margin:5px" v-cloak v-for="item in AddUserList">
+                                                <i class="fa fa-check" v-if="item.Checked"></i>
+                                                <span>{{item.Name}}</span>
+                                            </button>
+                                            <div class="modal-footer">
+                                                <button class="btn btn-warning btn-sm" v-on:click="ModifyMember()">
+                                                    <i class="fa fa-edit"></i> 修改
+                                                </button>
+                                            </div>
+                                            <input type="hidden" id="modifyusrid" :value="EditMemberId" />
+                                            <input type="hidden" id="modifyusrname" :value="EditMember" />
+                                        </div>
+                                        <div id="divtype" style="display:none;padding:20px;">
+                                            <div class="row">
+                                                <label class="col-sm-6">
+                                                    工单类型
+                                                </label>
+                                                <div class="col-sm-6">
+                                                    <select id="typeSel" class="form-control">
+                                                        <option v-cloak v-for="item in TypeList" :value="item.Id">
+                                                            {{item.Name}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row" style="margin-top:30px">
+                                                <label class="col-sm-6">
+                                                </label>
+                                                <div class="col-sm-6">
+                                                    <button class="btn btn-warning btn-sm" v-on:click="ModifyType()">
+                                                        <i class="fa fa-edit"></i> 修改
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="divstatus" style="display:none;padding:20px;">
+                                            <div class="row">
+                                                <label class="col-sm-3">
+                                                    工单状态
+                                                </label>
+                                                <div class="col-sm-4">
+                                                    <select id="statusSel" class="form-control">
+                                                        <option v-cloak v-for="item in StatusList" :value="item.Id">
+                                                            {{item.Name}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <button v-on:click="modifyStatus()" class="btn btn-success btn-sm">确定</button>
+                                                    <input type="hidden" id="modifyId" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="divinfos" style="display:none;padding:20px;">
+                                            <div class="form-body" style="  ">
+                                                <div class="row">
+                                                    <div class="col-sm-8">
+                                                        <textarea id="txtmodifyifno" style="width:450px;height:200px;" class="form-control"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                         
+                                            <div class="modal-footer" style="margin-top:20px;">
+                                                <button v-on:click="modifyInfo()" class="btn btn-success btn-sm">确定</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <table id="table"></table>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table class="table fixed-table-container">
+                            <thead>
+                                <tr><th>等级</th><th>耗时</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr v-cloak v-for="item in DayCount">
+                                    <td>{{item.Level}}</td>
+                                    <td>{{item.DayCount}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Panel Other -->
+    </div>
+
+    <script src="/Content/js/jquery.min.js?v=2.1.4"></script>
+    <script src="/Content/js/bootstrap.min.js?v=3.3.6"></script>
+    <script src="/Content/js/jquery-migrate-1.1.0.js"></script>
+    <script src="/Content/js/jquery.form.js"></script>
+    <script src="/Content/js/content.min.js?v=1.0.0"></script>
+    <script src="/Content/js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+    <script src="/Content/js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+    <script src="/Content/js/plugins/layer/layer.min.js"></script>
+    <script src="/Content/js/plugins/layer/extend/layer.ext.js"></script>
+    <script src="/Content/js/config.js"></script>
+    <script src="/Content/js/ajax.js"></script>
+    <script src="/Content/js/plugins/vue/vue.min.js"></script>
+    <script src="/Content/js/My97DatePicker/WdatePicker.js"></script>
+    <script src="/Content/js/plugins/iCheck/icheck.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
+    @*@Html.Partial("_WorkListItemsAdd")*@
+</body>
+</html>
+<script>
+  
+    var v = new Vue({
+        el: "#main",
+        data: {
+            UserList: [],
+            CheckedMember: "",
+            StatusList: [],
+            Status: "",
+            DayCount: [],
+            AddUserList: [],
+            EditMember: "",
+            EditMemberId: "",
+            TypeList: []
+        },
+        created: function () {
+            this.getUser();
+            this.getEnum('ItemStatus');
+            this.getEnum('ItemType');
+        },
+        watch: {
+            CheckedMember(val, oldval) {
+                var $this = this;
+                //console.log('val:' + val + ',old:' + oldval);
+                $('#checkMember').val(val);
+                Search();
+                $this.getDetail(val);
+            },
+            Status(val, oldval) {
+                //console.log('val:' + val + ',old:' + oldval);
+                $('#checkStatus').val(val);
+                Search();
+            }
+        },
+        methods: {
+            getDetail: function (val) {
+                var $this = this;
+                if (val != '') {
+                    var va = val.split(',');
+                    val = va[va.length - 2];
+                    //alert(val);
+                    var url = "@Url.Action("GetUserDayCount")";
+                    var Data = { user: val };
+                    ajaxGet.post(Data, url, function (json) {
+                        if (json.IsSuccess) {
+                            $this.DayCount = json.Data;
+                        }
+
+                    }, function (data) {
+                        ExceptionDeal(data);
+                    });
+                }
+                else {
+                    $this.DayCount = [];
+                }
+
+            },
+            modifyInfo: function () {
+                if ($("#txtmodifyifno").val() == "") { layer.msg("请输入功能描述", { icon: 2 }); }
+                if ($("#txtmodifyifno").val().length>500) { layer.msg("功能描述不能大于500字", { icon: 2 }); }
+                 var url = "@Url.Action("WorkListItemsAdd")";
+                var Data = { Id: $("#modifyId").val(), Infos: $("#txtmodifyifno").val() };
+                ajaxGet.post(Data, url, function (json) {
+                    if (json.IsSuccess) {
+                        layer.msg(json.Message, { icon: 1 });
+                    }
+                    setTimeout(function () {
+                        layer.closeAll();
+                        $("#modifyId").val('0');
+                        Search();
+                    }, 2000)
+
+                }, function (data) {
+                    ExceptionDeal(data);
+                });
+            },
+            modifyStatus: function () {
+                var url = "@Url.Action("WorkListItemsAdd")";
+                var Data = { Id: $("#modifyId").val(), Status: $("#statusSel").val() };
+                ajaxGet.post(Data, url, function (json) {
+                    if (json.IsSuccess) {
+                        layer.msg(json.Message, { icon: 1 });
+                    }
+                    setTimeout(function () {
+                        layer.closeAll();
+                        $("#modifyId").val('0');
+                        Search();
+                    }, 2000)
+
+                }, function (data) {
+                    ExceptionDeal(data);
+                });
+            },
+            ModifyType : function () {
+                var url = "@Url.Action("WorkListItemsAdd")";
+                var Data = { Id: $("#modifyId").val(), Type: $("#typeSel").val() };
+                ajaxGet.post(Data, url, function (json) {
+                    if (json.IsSuccess) {
+                        layer.msg(json.Message, { icon: 1 });
+                    }
+                    setTimeout(function () {
+                        layer.closeAll();
+                        $("#modifyId").val('0');
+                        Search();
+                    }, 2000)
+
+                }, function (data) {
+                    ExceptionDeal(data);
+                });
+            },
+            getUser: function () {
+                var $this = this;
+                var url = "@Url.Action("CompanyUserListNotPager")";
+                var Data = {};
+                ajaxGet.post(Data, url, function (json) {
+                    if (json.IsSuccess) {
+                        $this.UserList = json.Data;
+                        var addUser = [];
+                        for (var i = 0; i < json.Data.length; i++) {
+                            addUser.push({ Name: json.Data[i].Name, Checked: false, UserName: json.Data[i].UserName });
+                        }
+                        //console.log(addUser);
+                        $this.AddUserList = addUser;
+                    }
+                    else {
+                    }
+                }, function (data) {
+                    ExceptionDeal(data);
+                })
+            },
+            memberDate: function (item) {
+                console.log(item);
+            },
+            checkMember: function (item, type) {
+                item.Checked = !item.Checked;
+                var $this = this;
+                if (type == 'search') {
+                    if (item.Checked) {
+                        $this.CheckedMember += item.UserName + ",";
+                    }
+                    else {
+                        $this.CheckedMember = $this.CheckedMember.replace(item.UserName + ",", "");
+                    }
+                }
+            },
+            AddMember: function (item, type) {
+                item.Checked = !item.Checked;
+                var $this = this;
+                if (item.Checked) {
+                    $this.EditMemberId += item.UserName + ",";
+                    $this.EditMember += item.Name + ",";
+                }
+                else {
+                    $this.EditMemberId = $this.EditMemberId.replace(item.UserName + ",", "");
+                    $this.EditMember = $this.EditMember.replace(item.Name + ",", "");
+                }
+
+            },
+            checkStatus: function (item, type) {
+                item.Checked = !item.Checked;
+                var $this = this;
+                if (type == 'status') {
+                    if (item.Checked) {
+                        $this.Status += item.Id + ",";
+                    }
+                    else {
+                        $this.Status = $this.Status.replace(item.Id + ",", "");
+                    }
+                }
+                Search();
+            },
+            getEnum: function (type) {
+                var $this = this;
+                var url = "@Url.Action("GetEnum")";
+                var Data = { type: type };
+                ajaxGet.post(Data, url, function (json) {
+                    for (var items in json) {
+                        var item = new Object();
+                        item.Checked = false;
+                        item.Name = json[items]
+                        item.Id = items;
+                        if (type == 'ItemStatus') {
+                            $this.StatusList.push(item);
+                        }
+                        else if (type == 'ItemType') {
+                            $this.TypeList.push(item);
+                        }
+                    }
+                }, function (data) {
+                    ExceptionDeal(data);
+                })
+            },
+            ModifyMember: function () {
+                 var url = "@Url.Action("WorkListItemsAdd")";
+                var Data = { Id: $("#modifyId").val(), UserId: $("#modifyusrid").val(), UserName: $("#modifyusrname").val() };
+                ajaxGet.post(Data, url, function (json) {
+                    layer.closeAll();
+                    Search();
+                    if (json.IsSuccess) {
+                        layer.msg(json.Message, { icon: 1 });
+                    }
+                    clearEditMember();
+                    setTimeout(function () {
+                    }, 2000)
+
+                }, function (data) {
+                    ExceptionDeal(data);
+                });
+            }
+        }
+    });
+       
+    $(function () {
+        var pid = GetQueryString("pid");
+        if (!isNullOrEmpty(pid)) {
+            $('#WorkIdSel').val(pid)
+            $("#gongdandetail").html('<b class="text-danger">' + $('#WorkIdSel option:selected').text() + '</b>')
+        } 
+        //$(".i-checks").iCheck({ checkboxClass: "icheckbox_square-green", radioClass: "iradio_square-green", })
+        $('#table').bootstrapTable({
+            method: 'POST',
+            url: "@Url.Action("WorkListItemsList")",
+            height: 500,
+            pagination: true,
+            striped: true,
+            pageSize: 10,
+            pageNumber: 1,
+            pageList: [10, 25, 50, 100, 200],
+            queryParams: QueryParams,
+            contentType: "application/x-www-form-urlencoded",
+            sidePagination: "server",
+            sortable: true,
+            sortOrder: "asc",
+            sortName : "Level",
+           // showColumns: true, // 开启自定义列显示功能
+            columns: [
+              {
+                field: 'ProjectName',
+                title: '项目/工单名称',
+                align: 'center',
+                valign: 'middle' ,
+                formatter: function (value, row, index) {
+                    return value+"/"+row.WorkName;
+                }
+            }, {
+                field: 'Name',
+                title: '条目名称',
+                align: 'center',
+                valign: 'middle',
+                    formatter: function (value, row, index) {
+                        if (isNullOrEmpty(value)) value = '-';
+                        else {
+                            if (value.length > 10) {
+                                return '<a onclick="layer.alert(\'' + value + '\')">' + value.substr(0, 10) + '...' + '</a>';
+                            }
+                        }
+                        return value;
+                }
+            },
+            {
+                field: 'Infos',
+                title: '功能描述',
+                align: 'center',
+                valign: 'middle',
+                formatter: function (value, row, index) {
+                    var html = value;
+                    if (isNullOrEmpty(html)) html = '-';
+                    else {
+                        if (value.length > 10) {
+                            html = value.substr(0, 10) + "...";
+                        }
+                    }
+                    
+                  
+                    return '<a class="infos">' + html + '</a>';;
+                },
+                events: operateEvents
+            },
+            //{
+            //    field: 'StartDate',
+            //    title: '开始时间',
+            //    align: 'center',
+            //    valign: 'middle',
+            //    formatter: function (value, row, index) {
+            //          var start = ChangeDt(value);
+            //          var rel = ChangeDt(row.RelStartDate);
+            //          return start + '<br />' + rel;
+            //    }
+            //}, {
+            //    field: 'EndDate',
+            //    title: '结束时间',
+            //    align: 'center',
+            //    valign: 'middle',
+            //    formatter: function (value, row, index) {
+            //        var start = ChangeDt(value);
+            //        var rel = ChangeDt(row.RelEndDate);
+            //        return start + '<br />' + rel;
+            //    }
+            //    },
+                {
+                    field: 'UserName',
+                    title: '负责人',
+                    align: 'center',
+                    valign: 'middle',
+                    formatter: function (value, row, index) {
+                        var html = '';
+                        if (isNullOrEmpty(value)) {
+                            html = '-';
+                        }
+                        else {
+                            html = value.substr(0, value.length - 1);
+                        }
+                        return '<a class="editUser">' + html + '</a>';
+                    },
+                    events: operateEvents
+                },  
+                {
+                    field: 'Level',
+                    title: '工单等级',
+                    align: 'center',
+                    valign: 'middle',
+                    sortable: true,
+                    formatter: function (value, row, index) {
+                        return '<a class="text-danger level">' + value + "</a>";
+                    },
+                    events: operateEvents
+                }, {
+                    field: 'DayCount',
+                    title: '工单耗时',
+                    align: 'center',
+                    valign: 'middle',
+                    sortable: true,
+                    formatter: function (value, row, index) {
+                        return '<a class="text-danger daycount">' + value + "</a>";
+                    },
+                    events: operateEvents
+                }, {
+                    field: 'Type',
+                    title: '工单类型',
+                    align: 'center',
+                    valign: 'middle',
+                    formatter: function (value, row, index) {
+                        var html = '';
+                        if (isNullOrEmpty(value)) {
+                            html = '-';
+                        }
+                        else {
+                            html = value;//.substr(0, value.length - 1);
+                        }
+                        return '<a class="editType">' + html + '</a>';
+                    },
+                    events: operateEvents
+                }, {
+                    field: 'StatusName',
+                    title: '工单状态',
+                    align: 'center',
+                    valign: 'middle',
+                    formatter: function (value, row, index) {
+                        return '<a class="status">' + value + "</a>";
+                    },
+                    events: operateEvents
+                },  
+                //{
+                //    field: 'Status',
+                //    title: '项目状态',
+                //    align: 'center',
+                //    valign: 'middle',
+                //    formatter: function (value, row, index) {
+                //        return '<span class="label ' + row.StatusClass + '">' + row.StatusName;
+                //    }
+                //}, 
+            {
+                field: 'Id',
+                title: '操作',
+                align: 'center',
+                valign: 'middle',
+                formatter: function (value, row, index) {
+                    var operate = '';
+                    //operate += '<button  class="edit btn btn-warning btn-sm"><i class="fa fa-edit"></i> 修改</button>';
+                    operate += '<button  class="delete btn btn-danger btn-sm"><i class="fa fa-trash"></i> 删除</button>';
+                    return operate;
+                },
+                events: operateEvents
+            }
+            ]
+        });
+    });
+      function ImportExcel() {
+        $("#uploadForm").ajaxSubmit({
+            type: "GET",
+            url: '@Url.Action("ImportDetailItemsReport")',
+            dataType: "json",
+            data: {  },
+            success: function (msg) {
+                var data = msg;
+                if (msg.IsSuccess) {
+                    layer.msg("批量导入成功", { icon: 1 });
+                    Search();
+                } else {
+                    layer.msg(data.Message, { icon: 2 });
+                }
+                var obj = $("#UploadUrl");
+                var o = obj.prop("outerHTML");
+                obj.prop("outerHTML", o);
+            },
+            error: function (msg) {
+                layer.msg("批量导入失败!请按照模板批量导入", { icon: 2 });
+                var obj = $("#UploadUrl");
+                var o = obj.prop("outerHTML");
+                obj.prop("outerHTML", o);
+            }
+        })
+    }
+    function QueryParams(parma) {
+        parma["KeyWord"] = $("#KeyWord").val();
+        offset = parma["offset"] = parma.offset;
+        limit = parma["limit"] = parma.limit;
+        parma["Status"] = $("#StatusSel").val();
+        parma["Level"] = $("#LevelSel").val();
+        parma["WorkId"] = $("#WorkIdSel").val();
+        parma["User"] = $("#checkMember").val();
+        parma["Status"] = $("#checkStatus").val();
+        //parma["StartTime"] = #("#stratTime").val();
+        //parma["EndTime"] = #("#endTime").val();
+        return parma;
+    }
+    //查询按钮
+    function Search() {
+        $('#table').bootstrapTable("refresh");
+    }
+     //列事件
+    window.operateEvents = {
+        'click .infos': function (e, value, row, index) {
+            $('#modifyId').val(row.Id);
+            $('#txtmodifyifno').val(value);
+            layer.open({
+                type: 1,
+                skin: 'layui-layer-demo', //样式类名
+                shade: false,
+                area: ['500px', '400px'],
+                title: '功能描述修改', //不显示标题
+                content: $('#divinfos'), //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响
+                cancel: function () {
+                    $('#modifyId').val('0');
+                }
+            });
+        },
+        'click .status': function (e, value, row, index) {
+            $('#modifyId').val(row.Id);
+            layer.open({
+                type: 1,
+                skin: 'layui-layer-demo', //样式类名
+                shade: false,
+                area: ['400px', '200px'],
+                title: '工单状态修改', //不显示标题
+                content: $('#divstatus'), //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响
+                cancel: function () {
+                    $('#modifyId').val('0');
+                }
+            });
+        },
+        'click .delete': function (e, value, row, index) {
+                layer.confirm('确定删除['+row.Name+']?', {
+                    btn: ['确定', '取消'] //按钮
+                }, function () {
+                    var url = "@Url.Action("WorkListItemsDelete")";
+                    var Data = {};
+                    Data.Id = row.Id;
+                    Data.IsDeleted = 1;
+                    ajaxGet.post(Data, url, function (data) {
+                        if (data.IsSuccess) {
+                            layer.msg(data.Message, { icon: 1 });
+                            Search();
+                        }
+                        else {
+                            layer.msg(data.Message, { icon: 2 });
+                        }
+                        // Search();
+                    }, function (data) { ExceptionDeal(data); })
+                    // layer.msg('的确很重要', { icon: 1 });
+                }, function () {
+
+                });
+        },
+        'click .edit': function (e, value, row, index) {
+            console.log(row);
+            GetInfo(row);
+        },
+        'click .level': function (e, value, row, index) {
+            //GetInfo(row);
+            layer.prompt({ title: '修改工单等级', formType: 3 }, function (val, index) {
+                //layer.msg('得到了' + val);
+                if (!isNumber(val)) {
+                    layer.msg("请输入数字", { icon: 2 });
+                    return;
+                }
+                var url = "@Url.Action("WorkListItemsAdd")";
+                var Data = { Id: row.Id, LevelModify: val };
+                ajaxGet.post(Data, url, function (json) {
+                    if (json.IsSuccess) {
+                        layer.msg(json.Message, { icon: 1 });
+                    }
+                    layer.close(index);
+                    Search();
+                }, function (data) {
+                    ExceptionDeal(data);
+                });
+            });
+        },
+        'click .daycount': function (e, value, row, index) {
+            //GetInfo(row);
+            layer.prompt({ title: '修改工单耗时', formType: 3 }, function (val, index) {
+                //layer.msg('得到了' + val);
+                if (!isNumber(val)) {
+                    layer.msg("请输入数字", { icon: 2 });
+                    return;
+                }
+                var url = "@Url.Action("WorkListItemsAdd")";
+                var Data = { Id: row.Id, DayCount: val };
+                ajaxGet.post(Data, url, function (json) {
+                    if (json.IsSuccess) {
+                        layer.msg(json.Message, { icon: 1 });
+                    }
+                    layer.close(index);
+                    Search();
+                }, function (data) {
+                    ExceptionDeal(data);
+                });
+            });
+        },
+        'click .editUser': function (e, value, row, index) {
+            $('#modifyId').val(row.Id);
+            if (!isNullOrEmpty(row.UserId)) {
+                $('#EditMemberId').val(row.UserId);
+                $('#EditMember').val(row.UserName);
+                v.EditMemberId = row.UserId;
+                v.EditMember = row.UserName;
+                for (var i = 0; i < v.AddUserList.length; i++) {
+                    v.AddUserList[i].Checked = row.UserId.indexOf(v.AddUserList[i].UserName) > -1;// = true;
+                }
+            }
+            layer.open({
+                type: 1,
+                skin: 'layui-layer-demo', //样式类名
+                shade: false,
+                area: ['500px', '250px'],
+                title: '工单参与人员修改', //不显示标题
+                content: $('#divuser'), //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响
+                cancel: function () {
+                    clearEditMember();
+                }
+            });
+        },
+        'click .editType': function (e, value, row, index) {
+            $('#modifyId').val(row.Id);
+            layer.open({
+                type: 1,
+                skin: 'layui-layer-demo', //样式类名
+                shade: false,
+                area: ['500px', '250px'],
+                title: '工单类型修改', //不显示标题
+                content: $('#divtype'), //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响
+                cancel: function () {
+                    $('#modifyId').val('0');
+                }
+            });
+        },
+    };
+    function clearEditMember() {
+        $('#modifyId').val('0');
+        v.EditMemberId = '';
+        v.EditMember = '';
+        for (var i = 0; i < v.AddUserList.length; i++) {
+            v.AddUserList[i].Checked = false;
+        }
+    }
+      //修改
+    function GetInfo(json) {
+        $('#DivAdd').modal("show");
+        $("#hiddenId").val(json.Id);
+        $('#ProjectId').val(json.ProjectId);
+        $('#WorkId').val(json.WorkId);
+        $('#Name').val(json.Name);
+        $('#Level').val(json.Level);
+        $('#Status').val(json.Status);
+        $('#UserId').val(json.UserId);
+        $('#UserName').val(json.UserName);
+        $('#StartDate').val(ChangeDt(json.StartDate));
+        $('#EndDate').val(ChangeDt(json.EndDate));
+        $('#Infos').val(json.Infos);
+    }
+</script>

@@ -1,0 +1,55 @@
+﻿<div class="modal fade" id="DivFinanceConfig" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none">
+    <form class="modal-dialog" id="commentForm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="btnClosePermission()"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="PermissionName"></h4>
+            </div>
+            <div class="modal-body" style="overflow-y:auto;max-height:500px;">
+                <input type="button" value="全选" class="btn btn-sm  btn-primary " onclick="CheckAllNodes(this)" id="checkAll" attr-status="0" />
+                <ul id="treeDemo" class="ztree"></ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="btnCloseConfig()">关闭</button>
+                <button type="button" class="btn btn-primary" id="btnComfirm" onclick="btnConfigClick()">确定</button>
+            </div>
+        </div>
+    </form>
+</div>
+<input type="hidden" id="FinanceConfigDepartId" value="0" />
+
+<script>
+    function btnCloseConfig() {
+        $('#DivFinanceConfig').modal("hide");
+        var treeObj = $.fn.zTree.getZTreeObj("treeDemo")
+        treeObj.checkAllNodes(false);
+    }
+    function btnConfigClick() {
+        var IDS = GetTreeChoose();
+        var DepartId = $("#FinanceConfigDepartId").val();
+        if (IDS.length == 0) { layer.msg("请至少选择一项", { icon: 2 }); return; }
+        var url ="@Url.Action("FinancePermissionSet")"
+        var Data = { DepartId: DepartId, Ids: IDS.join(",") };
+
+        ajaxGet.post(Data, url, function (data) {
+            FinancePermissionSetSuccess(data);
+        }, function (data) { ExceptionDeal(data); })
+
+    }
+    /* 设置成功 */
+    function FinancePermissionSetSuccess(data) {
+        if (data.IsSuccess) {
+            layer.msg(data.Message, { icon: 1 });
+            
+            setTimeout(function () { btnCloseConfig(); }, 1500)      
+
+            return;
+        }
+    }
+</script>
+<script type="text/javascript">
+    $(function () {
+        CreateTree("@Url.Action("FinanceConfigTreeList")");
+    })
+   
+</script>

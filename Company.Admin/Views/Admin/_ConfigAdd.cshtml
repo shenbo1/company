@@ -1,0 +1,75 @@
+﻿<div class="modal fade" id="DivAdd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none">
+    <form id="commentForm" class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="btnClose()"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">新增/修改信息</h4>
+            </div>
+            <div class="modal-body" style="overflow-y:auto;max-height:500px">
+                <span class="label label-warning" id="bErrorInfo" style="display:none;"></span>
+                <div class="form-group">
+                    <label for="KeyWord">Key</label>
+                    <input type="text" class="form-control" id="KeyWords" placeholder="Key">
+                </div>
+                <div class="form-group">
+                    <label for="Value">Value</label>
+                    <input type="text" class="form-control" id="Value" placeholder="Value">
+                </div>
+                <div class="form-group">
+                    <label for="Remark">Remark</label>
+                    <input type="text" class="form-control" id="Remark" placeholder="Remark">
+                </div>
+                <div class="form-group">
+                    <label for="Type">类别</label>
+                    <select id="Type" class="form-control">
+                        <option value="Report">报表</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="btnClose()">关闭</button>
+                <button type="button" class="btn btn-primary" id="btnComfirm" onclick="btnAddClick()">确定</button>
+            </div>
+        </div>
+    </form>
+</div>
+<input type="hidden" id="hiddenId" value="0" />
+<script>
+    function btnClose() {
+        $('#DivAdd').modal("hide");
+        $("#hiddenId").val('0');
+        $('#KeyWords').val('');
+        $('#Value').val('');
+        $('#Remark').val('');
+    }
+    function btnAddClick() {
+        var ID = $("#hiddenId").val();
+        var Data = {};
+        Data.Id = ID;
+
+        var KeyWord = $("#KeyWords").val();//关键词
+        if (KeyWord == "") { layer.msg("请输入关键词", { icon: 2 }); return; }
+        Data.KeyWord = KeyWord;
+        var Value = $("#Value").val();//值
+        if (Value == "") { layer.msg("请输入值", { icon: 2 }); return; }
+        Data.Value = Value;
+        var Remark = $("#Remark").val();//备注
+        //if (Remark == "") { layer.msg("请输入备注", { icon: 2 }); return; }
+        Data.Remark = Remark;
+        var Type = $("#Type").val();//类别(Report 报表)
+        //if (Type == "") { layer.msg("请输入类别(Report 报表)", { icon: 2 }); return; }
+        Data.Type = Type;
+        //var CompanyId = $("#CompanyId").val();//公司编号
+        //if (CompanyId == "") { layer.msg("请输入公司编号", { icon: 2 }); return; }
+        //Data.CompanyId = CompanyId;
+        var url = "@Url.Action("ConfigAdd")";
+        ajaxGet.post(Data, url, function (data) { AddDataSuccess(data); }, function (data) { ExceptionDeal(data); })
+    }
+    function AddDataSuccess(json) {
+        if (json.IsSuccess) {
+            layer.msg(json.Message, { icon: 1 });
+            btnClose();
+            Search();
+        }
+    }
+</script>

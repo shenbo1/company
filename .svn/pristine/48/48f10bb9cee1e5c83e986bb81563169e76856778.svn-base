@@ -1,0 +1,108 @@
+﻿<div class="modal fade" id="DivAdd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none">
+    <form id="commentForm" class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="btnClose()"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">新增/修改信息</h4>
+            </div>
+            <div class="modal-body" style="overflow-y:auto;max-height:400px">
+                <span class="label label-warning" id="bErrorInfo" style="display:none;"></span>
+                <div class="form-group">
+                    <label for="Name">登录名</label>
+                    <input type="text" class="form-control" id="UserName" placeholder="登录名">
+                </div>
+                <div class="form-group">
+                    <label for="Name">密码</label>
+                    <input type="password" class="form-control" id="PasssWord" placeholder="密码">
+                </div>
+                <div class="form-group">
+                    <label for="Name">确认密码</label>
+                    <input type="password" class="form-control" id="RePassWord" placeholder="确认密码">
+                </div>
+                <div class="form-group">
+                    <label for="Name">姓名</label>
+                    <input type="text" class="form-control" id="Name" placeholder="姓名">
+                </div>
+                <div class="form-group">
+                    <label for="Mobile">手机号</label>
+                    <input type="text" maxlength="11" class="form-control" id="Mobile" placeholder="手机号">
+                </div>
+                <div class="form-group">
+                    <label for="Email">邮箱</label>
+                    <input type="text" class="form-control" id="Email" placeholder="邮箱">
+                </div>
+                <div class="form-group">
+                    <label for="DepartId">部门编号</label>
+                    @Html.DropDownList("DepartId", (IEnumerable<SelectListItem>)ViewBag.DepartMent, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="btnClose()">关闭</button>
+                <button type="button" class="btn btn-primary" id="btnComfirm" onclick="btnAddClick()">确定</button>
+            </div>
+        </div>
+    </form>
+</div>
+<input type="hidden" id="hiddenId" value="0" />
+<script>
+    function btnClose() {
+        $('#DivAdd').modal("hide");
+        $("#hiddenId").val('0');
+        $('#Name').val('');
+        $('#Mobile').val('');
+        $('#Email').val('');
+        $('#UserName').val('');
+        $('#RePassWord,#PasssWord').parent().show();
+        $('#UserName').removeAttr("disabled");
+        //$('#WeChatOpenId').val('');
+        //$('#WeChatNickName').val('');
+        //$('#WeChatHeadUrl').val('');
+        //$('#IsBindWeChat').val('');
+        //$('#CompanyId').val('');
+        //$('#CompanyName').val('');
+
+    }
+    function btnAddClick() {
+        var ID = $("#hiddenId").val();
+        var Data ={};
+        Data.Id = ID;
+        var UserName = $("#UserName").val();//登录名
+        if (ID == 0) {
+            if (UserName == "") { layer.msg("请输入登录名", { icon: 2 }); return; }
+            Data.UserName = UserName;
+            var pwd = $("#PasssWord").val();//密码
+            if (pwd == "") { layer.msg("请输入密码", { icon: 2 }); return; }
+            var repwd = $("#RePassWord").val();//密码
+            if (pwd != repwd) { layer.msg("重复密码不一致", { icon: 2 }); return; }
+            Data.PassWord = pwd;
+        }
+        var Name = $("#Name").val();//姓名
+        if (Name == "") { layer.msg("请输入姓名", { icon: 2 }); return; }
+        Data.Name=Name;
+        var Mobile = $("#Mobile").val();//手机号
+        if (Mobile == "") { layer.msg("请输入手机号", { icon: 2 }); return; }
+        if (!checkMobile(Mobile)) {
+            layer.msg("手机号格式错误", { icon: 2 }); return;
+        }
+        Data.Mobile=Mobile;
+        var Email = $("#Email").val();//邮箱
+        if (Email == "") { layer.msg("请输入邮箱", { icon: 2 }); return; }
+        if (!isEmail(Email)) {
+            layer.msg("邮箱格式错误", { icon: 2 }); return;
+        }
+        Data.Email=Email;
+
+        var DepartId = $("#DepartId").val();//部门编号
+        if (DepartId == "") { layer.msg("请输入部门编号", { icon: 2 }); return; }
+        Data.DepartId=DepartId;
+        var url = "@Url.Action("CompanyUserAdd")";
+        ajaxGet.post(Data, url, function (data) { AddDataSuccess(data); }, function (data) { ExceptionDeal(data); })
+    }
+    function AddDataSuccess(json) {
+        if (json.IsSuccess) {
+            layer.msg(json.Message, { icon: 1 });
+            btnClose();
+            Search();
+        }
+    }
+</script>

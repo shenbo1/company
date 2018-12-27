@@ -1,0 +1,154 @@
+﻿<div class="modal fade" id="AuditStep" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none">
+    <form  class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="btnClose()"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">审批设置--审批人</h4>
+            </div>
+            <div class="modal-body" style="overflow-y:auto;max-height:500px">
+                <span class="label label-warning" id="bErrorInfo" style="display:none;"></span>
+                <div id="AuditContent"></div>
+                @*<div class="row">
+                    <div class="col-sm-6">
+                        <label for="UserName">审核人账号</label>
+                        <input type="text" class="form-control" id="UserName" placeholder="审核人账号">
+                    </div>
+                    <div class="col-sm-3">
+                        <label for="Step">审核顺序</label>
+                        <input type="text" onkeyup="OnlyNum(this)" class="form-control" id="Step" placeholder="顺序">
+                    </div>
+                    <div class="col-sm-3">
+                        <label for="操作">操作</label>
+                        <div class="form-control">
+                            <a class="plus" title="添加审核人">
+                                <i class="fa fa-plus"></i>
+                            </a>
+                            <a class="del" title="删除">
+                                <i class="fa fa-minus"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>*@    
+                <div class="row" style="display:none;">
+                    <div class="col-sm-6">
+                        @Html.DropDownList("UserSelect", (IEnumerable<SelectListItem>)ViewBag.CompanyUserList, "未选择", new { @class = "form-control" })
+                    </div>
+                </div>            
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="btnStepClose()">关闭</button>
+                <button type="button" class="btn btn-primary" id="btnComfirm" onclick="btnStepSet()">确定</button>
+            </div>
+        </div>
+    </form>
+</div>
+<input type="hidden" id="hidDepartMent" value="0" />
+<input type="hidden" id="AuditLength" value="0" />
+<script>
+   
+    function btnStepClose() {
+        Audit.Clear();
+    }
+    function CreateAudit() {
+        Audit.Create();
+    }
+    function DeleteAudit(id) {
+        Audit.Delete(id);
+    }
+    function btnStepSet() {
+        Audit.SetAudit();
+    }
+    var Audit = {
+        SetAudit: function () {
+            var AuditContent = "";
+            var Right = true;
+            $(".AuditRow").each(function () {
+                if ($(this).find(".UserSelect").val() == "") { Right = false; layer.msg("请选择审核人", { icon: 2 }); return; }
+                var content = $(this).find(".UserSelect").val() + "," + $(this).find(".UserSelect").find("option:selected").text() + "," + $(this).find(".Step").val() + "|";
+                if (AuditContent.indexOf(content.split(',')[0]) > -1) {
+                    Right = false; layer.msg("审核人重复", { icon: 2 }); return;
+                }
+                AuditContent += content;
+            })
+            if (!Right) { return; }
+           // alert(AuditContent);
+            var url = "@Url.Action("AuditStepAdd")";
+            ajaxGet.post({ Content: AuditContent, DepartMent: $("#hidDepartMent").val() }, url, function (data) { AuditAddSuccess(data); }, function (data) { ExceptionDeal(data); })
+            layer.load(1, {
+                shade: [0.1, '#fff'] //0.1透明度的白色背景
+            });
+        },
+        GetAudit: function () {
+            var url = "@Url.Action("AuditStepGet")";
+            ajaxGet.post({ DepartMent: $("#hidDepartMent").val() }, url, function (data) { AuditStepGetSuccess(data); }, function (data) { ExceptionDeal(data); })
+        },
+        Clear: function () {
+            $("#AuditContent").html('');
+            $("#hidDepartMent").val('');
+            $("#AuditStep").modal('hide');
+            $("#AuditLength").val(0);
+            layer.closeAll();
+        },
+        Create: function () {
+            $("#AuditLength").val(Number($("#AuditLength").val()) + 1);
+            var AuditLength = $("#AuditLength").val();
+            this.AppendHtml(AuditLength, '')
+        },
+        Delete: function (id) {
+            $("#AuditLength").val(Number($("#AuditLength").val()) - 1);
+            $(".row" + id).remove();
+        },
+        AppendHtml: function (AuditLength, UserId) {
+            var html = '<div class="form-group row row' + AuditLength + ' AuditRow">';
+            html += ' <div class="col-sm-6">';
+            html += '<label for="UserName">审核人账号</label>';
+            html += '<select class="form-control UserSelect" id="UserSelect' + AuditLength + '">' + $("#UserSelect").html() + '</select>'
+            html += '</div>';
+            html += '<div class="col-sm-3">';
+            html += '<label for="Step">审核顺序</label>';
+            html += '<input type="text" onkeyup="OnlyNum(this)" disabled="disabled" class="form-control Step" value="' + AuditLength + '" id="Step' + AuditLength + '" placeholder="顺序">';
+            html += '</div>';
+            html += '<div class="col-sm-3">';
+            html += '<label for="操作">操作</label>';
+            html += ' <div class="form-control">';
+            if (AuditLength != 1) {
+                html += ' <a class="del" onclick="DeleteAudit(\'' + AuditLength + '\')" title="删除">';
+                html += ' <i class="fa fa-minus"></i>';
+                html += '  </a>';
+            }
+            else {
+                html += '  <a class="plus" onclick="CreateAudit()" title="添加审核人">';
+                html += '   <i class="fa fa-plus"></i>';
+                html += ' </a>';
+            }
+            html += ' </div>';
+            html += ' </div>';
+            html += '</div>';
+            $("#AuditContent").append(html);
+            $("#UserSelect" + AuditLength).val(UserId);
+        }
+    }
+    function AuditAddSuccess(json) {
+        if (json.IsSuccess) {
+            layer.msg(json.Message, { icon: 1 });
+            setTimeout(function () {
+                btnStepClose();
+                Search();
+            }, 1000)
+        }
+    }
+    function AuditStepGetSuccess(data) {
+        if (data.IsSuccess) {
+            var json = data.Data;
+            for (var i = 0; i < json.length; i++) {
+                Audit.AppendHtml(json[i].Step, json[i].UserId);
+            }
+            $("#AuditLength").val(json.length);
+        }
+        else {
+            Audit.Create();
+        }
+        $("#AuditStep").modal('show');
+    }
+</script>

@@ -1,0 +1,103 @@
+﻿<div class="modal fade" id="DivAdd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none">
+    <form id="commentForm" class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="btnClose()"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">新增/修改信息</h4>
+            </div>
+            <div class="modal-body" style="overflow-y:auto;max-height:500px">
+                <span class="label label-warning" id="bErrorInfo" style="display:none;"></span>
+                <div class="form-group">
+                    <label for="UserName">账号</label>
+                    <input type="text" class="form-control" id="UserName" placeholder="账号">
+                </div>
+                <div class="form-group">
+                    <label for="Name">名字</label>
+                    <input type="text" class="form-control" id="Name" placeholder="名字">
+                </div>
+                <div class="form-group">
+                    <label for="PassWord">密码</label>
+                    <input type="password" class="form-control" id="PassWord" placeholder="密码">
+                </div>
+                <div class="form-group">
+                    <label for="RePassWord">重复密码</label>
+                    <input type="password" class="form-control" id="RePassWord" placeholder="重复密码">
+                </div>
+                <div class="form-group">
+                    <label for="Mobile">联系手机号</label>
+                    <input type="text" class="form-control" id="Mobile" placeholder="联系手机号">
+                </div>
+                <div class="form-group">
+                    <label for="Canceer">岗位职能</label>
+                    <input type="text" class="form-control" id="Canceer" placeholder="岗位职能">
+                </div>
+                <div class="form-group">
+                    <label for="CompanyId">公司</label>
+                    @Html.DropDownList("CompanyId", (IEnumerable<SelectListItem>)ViewBag.CompanyList, "全部", new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    <label for="RoleId">角色</label>
+                    @Html.DropDownList("RoleId", (IEnumerable<SelectListItem>)ViewBag.RoleList, "未选择", new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="btnClose()">关闭</button>
+                <button type="button" class="btn btn-primary" id="btnComfirm" onclick="btnAddClick()">确定</button>
+            </div>
+        </div>
+    </form>
+</div>
+<input type="hidden" id="hiddenId" value="0" />
+<script>
+    function btnClose() {
+        $('#DivAdd').modal("hide");
+        $("#hiddenId").val('0');
+        $('#UserName').val('');
+        $('#PassWord,#RePassword,#Name').val('');
+        $('#Mobile').val('');
+        $('#Canceer').val('');
+        $('#PassWord').parent().show();
+        $('#RePassWord').parent().show();
+    }
+    function btnAddClick() {
+        var ID = $("#hiddenId").val();
+        var Data = {};
+        Data.Id = ID;
+        var UserName = $("#UserName").val();//账号
+        if (UserName == "") { layer.msg("请输入账号", { icon: 2 }); return; }
+        Data.UserName = UserName;
+        if (ID == 0) {
+            var PassWord = $("#PassWord").val();//密码
+            if (PassWord == "") { layer.msg("请输入密码", { icon: 2 }); return; }
+            if (PassWord.length < 6) { layer.msg("密码长度至少6位数", { icon: 2 }); return; }
+            if (PassWord != $("#RePassWord").val()) { layer.msg("重复密码不一致", { icon: 2 }); return; }
+            Data.PassWord = PassWord;
+        }
+        var Name = $("#Name").val();//名字
+        if (Name == "") { layer.msg("请输入名字", { icon: 2 }); return; }
+        Data.Name = Name;
+        var Mobile = $("#Mobile").val();//
+        if (Mobile == "") { layer.msg("请输入手机号", { icon: 2 }); return; }
+        Data.Mobile = Mobile;
+        var Canceer = $("#Canceer").val();//职能
+        if (Canceer == "") { layer.msg("请输入职能", { icon: 2 }); return; }
+        Data.Canceer = Canceer;
+        var CompanyId = $("#CompanyId").val();//公司编号（如果是0 则是总管理员）
+        if (CompanyId == "") { layer.msg("请选择公司", { icon: 2 }); return; }
+        Data.CompanyId = CompanyId;
+        var RoleId = $("#RoleId").val();//角色编号
+        if (RoleId == "") { layer.msg("请选择角色", { icon: 2 }); return; }
+        Data.RoleId = RoleId;
+        var url = "@Url.Action("AdminInfoAdd")";
+        ajaxGet.post(Data, url, function (data) { AddDataSuccess(data); }, function (data) { ExceptionDeal(data); })
+    }
+    function AddDataSuccess(json) {
+        if (json.IsSuccess) {
+            layer.msg(json.Message, { icon: 1 });
+            btnClose();
+            Search();
+        } else {
+            layer.msg(json.Message, { icon: 2 });
+        }
+    }
+</script>

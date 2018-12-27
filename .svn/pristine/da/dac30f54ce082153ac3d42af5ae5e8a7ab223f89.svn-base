@@ -1,0 +1,100 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+    <div> 
+        @ViewBag.Name
+
+    </div>
+    <div class="com_con" id="main">
+        <a class="img_div">
+            <span class="span_comm">{{User.Name}}</span>
+            <span class="span_comm">{{User.Mobile}}</span>
+            <input v-model="User.Name">     
+            <img style="width:50px;" :src="User.WeChatHeadUrl" />
+            <div>菜鸟教程</div>
+            <div v-html="User.Html" :id="'User-' + User.Id">菜鸟教程</div>
+        </a>
+        <ul>
+            <template v-for="(json,index) in UserList">
+                <li>{{index+1}}</li>
+                <li>编号：{{json.Id}}</li>
+                <li>名字：{{json.Name}}</li>
+                <li>部门：{{json.DepartName}}</li>
+                <li>
+                    <a v-on:click='Modify(json.Id)'>修改</a>
+                </li>
+                <li>----</li>
+            </template>
+        </ul>
+    </div> 
+
+</body>
+</html>
+<script src="~/Content/js/jquery.min.js"></script>
+<script src="~/Content/js/plugins/vue/vue.min.js"></script>
+<script>
+    var v = new Vue({
+        el: "#main",
+        data: {
+            User: "",
+            UserList:""
+        },
+        methods: {
+            GetMemberInfo: function () {
+                $.ajax({
+                    type: "post",
+                    url: "/Member/GetMemberInfo",
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.IsSuccess) {
+                            v.User = data.Data;
+                            v.User.Html = '<p><h2>111</h2></p>';
+                            //alert(v.User.Html);
+                        }
+                    }
+                });
+            },
+            GetMemberList: function () {
+                $.ajax({
+                    type: "post",
+                    url: "/Member/MemberList",
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.IsSuccess) {
+                            v.UserList = data.Data;
+                        }
+                    }
+                });
+            },
+            Modify: function (event) {
+                alert(event)
+            }
+        }
+    });
+    v.GetMemberInfo(); //加载事件
+    v.GetMemberList();
+    //$(function () {
+    //    getuser();
+    //})
+    //function getuser() {
+    //    $.ajax({
+    //        type: "post",
+    //        url: "/Member/GetMemberInfo",
+    //        dataType: "json",
+    //        success: function (data) {
+    //            console.log(data);
+    //        }
+    //    });
+    //}
+    
+</script>

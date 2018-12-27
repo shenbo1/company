@@ -1,0 +1,142 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="lib/html5shiv.js"></script>
+    <script type="text/javascript" src="lib/respond.min.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" type="text/css" href="/Template/HAdmin/static/h-ui/css/H-ui.min.css" />
+    <link rel="stylesheet" type="text/css" href="/Template/HAdmin/static/h-ui.admin/css/H-ui.admin.css" />
+    <link rel="stylesheet" type="text/css" href="/Template/HAdmin/lib/Hui-iconfont/1.0.8/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="/Template/HAdmin/static/h-ui.admin/skin/default/skin.css" id="skin" />
+    <link rel="stylesheet" type="text/css" href="/Template/HAdmin/static/h-ui.admin/css/style.css" />
+    <!--[if IE 6]>
+    <script type="text/javascript" src="lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+    <script>DD_belatedPNG.fix('*');</script>
+    <![endif]-->
+    <title>新增项目</title>
+    <link href="/Template/HAdmin/lib/webuploader/0.1.5/webuploader.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <div class="page-container">
+        <form class="form form-horizontal" id="form-article-add">
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>项目名称：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" value="" placeholder="项目名称" id="Name" name="">
+                </div>
+            </div>
+
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>项目期望开始时间：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" value=""
+                           onfocus="WdatePicker({ dateFmt:'yyyy-MM-dd HH:mm:ss'})"
+                           placeholder="项目期望开始时间" id="StartTime" name="">
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>项目简介：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <textarea class="textarea" id="Infos" placeholder="项目简介"></textarea>
+                </div>
+            </div>
+            @*<div class="row cl">
+                    <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>合作方式：</label>
+                    <div class="formControls col-xs-8 col-sm-9">
+                        <span class="select-box">
+                            <select name="" class="select">
+                                <option value="0">全部栏目</option>
+                                <option value="1">新闻资讯</option>
+                                <option value="11">├行业动态</option>
+                                <option value="12">├行业资讯</option>
+                                <option value="13">├行业新闻</option>
+                            </select>
+                        </span>
+                    </div>
+                </div>*@
+            <div class="row cl">
+                <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+                    <input type="hidden" id="hiddenId" />
+                    <button onClick="save();" class="btn btn-secondary radius" type="button"><i class="Hui-iconfont">&#xe632;</i> 保存</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+    <!--_footer 作为公共模版分离出去-->
+    <script type="text/javascript" src="/Template/HAdmin/lib/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="/Template/HAdmin/lib/layer/2.4/layer.js"></script>
+    <script type="text/javascript" src="/Template/HAdmin/static/h-ui/js/H-ui.min.js"></script>
+    <script type="text/javascript" src="/Template/HAdmin/static/h-ui.admin/js/H-ui.admin.js"></script> <!--/_footer /作为公共模版分离出去-->
+    <!--请在下方写此页面业务相关的脚本-->
+    <script type="text/javascript" src="/Template/HAdmin/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+    <script type="text/javascript" src="/Template/HAdmin/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+    <script type="text/javascript" src="/Template/HAdmin/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+    <script type="text/javascript" src="/Template/HAdmin/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+    <script type="text/javascript" src="/Template/HAdmin/lib/webuploader/0.1.5/webuploader.min.js"></script>
+    <script src="~/Content/js/ajax.js"></script>
+    <script>
+        $(function () {
+            var id = GetQueryString("id");
+            if (!isNullOrEmpty(id)) {
+                var Data = {};
+                Data.Id = id;
+                $("#hiddenId").val(id);
+             var url = "@Url.Action("ProjectManageGetModel")";
+                ajaxGet.post(Data, url, function (data) {
+                    //console.log(data);
+                    var data = data.Data;
+                    $("#Name").val(data.Name);
+                    $("#StartTime").val(ChangeDt( data.StartTime));
+                    $("#Infos").val(data.Infos);
+                }, function (data) { ExceptionDeal(data); });
+            }
+        })
+        var submit = false;
+        function save() {
+
+            if (submit) {
+                layer.msg("保存中...请耐心等待", { icon: 2 });
+                return;
+            }
+            var Data = {};
+            Data.Id = $("#hiddenId").val();
+            var Name = $("#Name").val();//项目简称
+            if (Name == "") { layer.msg("请输入项目名称", { icon: 2 }); return; }
+            Data.Name = Name;
+            var StartTime = $("#StartTime").val();//项目开始时间
+            if (StartTime == "") { layer.msg("请输入项目预计开始时间", { icon: 2 }); return; }
+            Data.StartTime = StartTime;
+            var Infos = $("#Infos").val();//项目简介
+            if (Infos == "") { layer.msg("请输入项目简介", { icon: 2 }); return; }
+            Data.Infos = Infos;
+        
+            var url = "@Url.Action("ProjectManageAddModel")";
+            ajaxGet.post(Data, url, function (data) { AddDataSuccess(data); }, function (data) { ExceptionDeal(data); });
+        }
+        function AddDataSuccess(json) {
+            submit = false;
+            if (json.IsSuccess) {
+                layer.msg(json.Message, { icon: 1 });
+                setTimeout(function () {
+                    parent.location.reload();
+
+                }, 1500);
+                return;
+            }
+        }
+    </script>
+</body>
+</html>

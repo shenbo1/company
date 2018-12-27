@@ -1,0 +1,190 @@
+﻿
+@{
+    Layout = null;
+}
+
+
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="lib/html5shiv.js"></script>
+    <script type="text/javascript" src="lib/respond.min.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" type="text/css" href="/Template/HAdmin/static/h-ui/css/H-ui.min.css" />
+    <link rel="stylesheet" type="text/css" href="/Template/HAdmin/static/h-ui.admin/css/H-ui.admin.css" />
+    <link rel="stylesheet" type="text/css" href="/Template/HAdmin/lib/Hui-iconfont/1.0.8/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="/Template/HAdmin/static/h-ui.admin/skin/default/skin.css" id="skin" />
+    <link rel="stylesheet" type="text/css" href="/Template/HAdmin/static/h-ui.admin/css/style.css" />
+    <!--[if IE 6]>
+    <script type="text/javascript" src="lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+    <script>DD_belatedPNG.fix('*');</script>
+    <![endif]-->
+    <title>公司信息</title>
+    <link href="/Template/HAdmin/lib/webuploader/0.1.5/webuploader.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <div class="page-container">
+        <form class="form form-horizontal" id="form-article-add">
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>企业名称：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" value="" placeholder="企业名称" id="Name" name="">
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>税号：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" value="" placeholder="税号" id="Tax" name="">
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>开户行：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" value="" placeholder="开户行" id="BankName" name="">
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>银行账户：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" value="" placeholder="银行账户" id="BankNo" name="">
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>营业执照：</label>
+                <div class="formControls col-xs-4 col-sm-7">
+                    <input type="text" class="input-text imgview" value="" placeholder="营业执照" id="License" name="">
+                </div>
+                <input type="file" style="display:none;" name="file" id="file_upload2" value="" accept="image/jpg,image/jpeg,image/png" />
+                <a class=" col-xs-4 col-sm-2" id="upload2"> 上传</a>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>经营地址：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" value="" placeholder="经营地址" id="Address" name="">
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>联系人：</label>
+                <div class="formControls col-xs-8 col-sm-9 skin-minimal">
+                    <input type="text" class="input-text" value="" placeholder="联系人" id="ContactName" name="">
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>联系方式：</label>
+                <div class="formControls col-xs-8 col-sm-9 skin-minimal">
+                    <input type="text" class="input-text" value="" placeholder="联系方式" id="ContactMobile" name="">
+                </div>
+            </div>
+            <div class="row cl">
+                <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+                    <button onClick="save();" class="btn btn-primary radius" type="button"><i class="Hui-iconfont">&#xe632;</i> 保存</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+    <!--_footer 作为公共模版分离出去-->
+    <script type="text/javascript" src="/Template/HAdmin/lib/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="/Template/HAdmin/lib/layer/2.4/layer.js"></script>
+    <script type="text/javascript" src="/Template/HAdmin/static/h-ui/js/H-ui.min.js"></script>
+    <script type="text/javascript" src="/Template/HAdmin/static/h-ui.admin/js/H-ui.admin.js"></script> <!--/_footer /作为公共模版分离出去-->
+    <!--请在下方写此页面业务相关的脚本-->
+    <script type="text/javascript" src="/Template/HAdmin/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+    <script type="text/javascript" src="/Template/HAdmin/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+    <script type="text/javascript" src="/Template/HAdmin/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+    <script type="text/javascript" src="/Template/HAdmin/lib/webuploader/0.1.5/webuploader.min.js"></script>
+    <script src="/Content/js/ajax.js"></script>
+    <script src="/Content/js/UploadJs/upload.js"></script>
+</body>
+</html>
+ <script>
+     var upload2 = new UploadImages();
+     upload2.FileObj = $('#file_upload2');
+     upload2.EditObj = $('#upload2');
+     upload2.Success = function (src) {
+         layer.msg("上传成功", { icon: 1 });
+         $('#License').val(src);
+         //upload2.EditObj.parent().find('input').val(src);
+     };
+     upload2.Init();
+     upload2.MaxSize = 1024;
+
+     $(function () {
+         var url = "/member/GetCompanyInfo";
+         ajaxGet.post({}, url, function (data) { GetSuccess(data); }, function (data) { ExceptionDeal(data); })
+     })
+     function GetSuccess(json) {
+         json = json.Data;
+         $('#Name').val(json.Name);
+         $('#Tax').val(json.Tax);
+         $('#BankName').val(json.BankName);
+         $('#BankNo').val(json.BankNo);
+         $('#License').val(json.License);
+         $('#Address').val(json.Address);
+         $('#ContactName').val(json.ContactName);
+         $('#ContactMobile').val(json.ContactMobile);
+     }
+
+     var submit = false;
+     function save() {
+
+         if (submit) {
+             layer.msg("保存中...请耐心等待", { icon: 2 });
+             return;
+         }
+         var Data = {};
+         var Name = $("#Name").val();//公司名
+         if (Name == "") { layer.msg("请输入公司名", { icon: 2 }); return; }
+         if (Name.length > 20) { layer.msg("公司名最多20字", { icon: 2 }); return; }
+         Data.Name = Name;
+         var Tax = $("#Tax").val();//税号
+         if (Tax == "") { layer.msg("请输入税号", { icon: 2 }); return; }
+         if (Tax.length > 30) { layer.msg("税号最多30字", { icon: 2 }); return; }
+         Data.Tax = Tax;
+         var BankName = $("#BankName").val();//开户行名称
+         if (BankName == "") { layer.msg("请输入开户行名称", { icon: 2 }); return; }
+         if (BankName.length > 30) { layer.msg("开户行最多30字", { icon: 2 }); return; }
+         Data.BankName = BankName;
+         var BankNo = $("#BankNo").val();//银行账号
+         if (BankNo == "") { layer.msg("请输入银行账号", { icon: 2 }); return; }
+         Data.BankNo = BankNo;
+         if (BankNo.length > 30) { layer.msg("银行账号最多30字", { icon: 2 }); return; }
+         var License = $("#License").val();//营业执照
+         if (License == "") { layer.msg("请上传营业执照", { icon: 2 }); return; }
+         Data.License = License;
+         var Address = $("#Address").val();//具体地址
+         if (Address == "") { layer.msg("请输入经营地址", { icon: 2 }); return; }
+         if (Address.length > 200) { layer.msg("经营地址最多200字", { icon: 2 }); return; }
+         Data.Address = Address;
+         var ContactName = $("#ContactName").val();//联系人
+         if (ContactName == "") { layer.msg("请输入联系人", { icon: 2 }); return; }
+         if (ContactName.length > 20) { layer.msg("联系人最多20字", { icon: 2 }); return; }
+         Data.ContactName = ContactName;
+         var ContactMobile = $("#ContactMobile").val();//联系方式
+         if (ContactMobile == "") { layer.msg("请输入联系方式", { icon: 2 }); return; }
+         if (!checkMobile(ContactMobile)) {
+             layer.msg("手机号格式错误", { icon: 2 }); return;
+         }
+         Data.ContactMobile = ContactMobile;
+         var url = "/member/SaveCompanyInfo";
+         ajaxGet.post(Data, url, function (data) { AddSuccess(data); }, function (data) { ExceptionDeal(data); })
+         submit = true;
+     }
+     function AddSuccess(json) {
+         if (json.IsSuccess) {
+             layer.msg(json.Message, { icon: 1 });
+             setTimeout(function () {
+                 layer_close();
+             }, 1500);
+             return;
+         }
+         layer.msg(json.Message, { icon: 2 }); return;
+     }
+ </script>

@@ -1,0 +1,141 @@
+﻿<div class="modal fade" id="DivAdd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     style="display: none;width:100%;">
+    <form id="commentForm" class="modal-dialog" role="document" style="margin:0px;width:100%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="btnClose()"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">新增/修改信息</h4>
+            </div>
+            <div class="modal-body" style="overflow-y:auto;max-height:500px">
+                <span class="label label-warning" id="bErrorInfo" style="display:none;"></span>
+                <div class="form-group row">
+                    <div class="col-sm-4">
+                        <label for="WorkId"><span class="text-danger">*</span>工单名称</label>
+                        @Html.DropDownList("WorkId", (IEnumerable<SelectListItem>)ViewBag.WorkList, new { @class = "form-control" })
+                        @*<input type="text" class="form-control" id="WorkId" onkeyup="OnlyNum(this)" placeholder="工单编号">*@
+                    </div>
+                    <div class="col-sm-8">
+                        <label for="Name"><span class="text-danger">*</span>条目名称</label>
+                        <input type="text" class="form-control" id="Name" placeholder="条目名称">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-6">
+                        <label for="Level"><span class="text-danger">*</span>工单等级</label>
+                        <input id="Level" placeholder="工单等级(0,本周 1,下周)" value="0" onkeypress="OnlyNum(this)" class="form-control" />
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="Name"><span class="text-danger">*</span>工单耗时</label>
+                        <input type="text" class="form-control" id="DayCount" onkeypress="NumAndPoint(this)" placeholder="工单耗时">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-6">
+                        <label for="Status"><span class="text-danger">*</span>工单状态</label>
+                        @Html.DropDownList("Status", (IEnumerable<SelectListItem>)ViewBag.ItemStatus, new { @class = "form-control" })
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="Type">工单类型</label>
+                        <input type="text" class="form-control" id="Type" placeholder="工单类型">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-6">
+                        <label for="Status">开始时间</label>
+                        <input type="text" class="form-control"  onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm:ss' })" id="StartDate" placeholder="开始时间">
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="Type">结束时间</label>
+                        <input type="text" class="form-control"  onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm:ss' })" id="EndDate" placeholder="结束时间">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-sm-12">
+                        <label for="UserId"><span class="text-danger">*</span>负责人</label>
+                        <button type="button" class="btn btn-primary btn-sm"
+                                v-on:click="checkMember(item,'search')"
+                                style="margin-right:5px" v-cloak v-for="item in CheckUserList">
+                            <i class="fa fa-check" v-if="item.Checked"></i>
+                            <span>{{item.Name}}</span>
+                        </button>
+                        <input type="hidden" id="checkMember" :value="CheckedMember" />
+                    </div>
+
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-sm-12">
+                        <label for="Infos"><span class="text-danger">*</span>功能描述</label>
+                        <textarea class="form-control" id="Infos" placeholder="功能描述"></textarea>
+                    </div>
+
+                </div>
+
+                @*<div class="form-group">
+            <label for="Infos">功能描述</label>
+
+        </div>*@
+            </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="btnClose()">关闭</button>
+                    <button type="button" class="btn btn-primary" id="btnComfirm" onclick="btnAddClick()">确定</button>
+                </div>
+            </div>
+    </form>
+</div>
+<input type="hidden" id="hiddenId" value="0" />
+<script>
+   
+    function btnClose() {
+        $('#DivAdd').modal("hide");
+        $("#hiddenId").val('0');
+        $('#Name').val('');
+        $('#StartDate').val('');
+        $('#EndDate').val('');
+        $('#Infos').val('');
+
+    }
+    function btnAddClick() {
+        var ID = $("#hiddenId").val();
+        var Data = {};
+        Data.Id = ID;
+        var WorkId = $("#WorkId").val();//工单Id
+        if (WorkId == "") { layer.msg("请输入工单Id", { icon: 2 }); return; }
+        Data.WorkId = WorkId;
+        var Name = $("#Name").val();//详情
+        if (Name == "") { layer.msg("请输入详情", { icon: 2 }); return; }
+        Data.Name = Name;
+        var Level = $("#Level").val();//项目优先级
+        if (Level == "") { layer.msg("请输入项目优先级", { icon: 2 }); return; }
+        Data.Level = Level;
+        var Status = $("#Status").val();//项目状态
+        if (Status == "") { layer.msg("请输入项目状态", { icon: 2 }); return; }
+        Data.Status = Status;
+        var UserId = $("#UserId").val();//负责人
+        if (UserId == "") { layer.msg("请输入负责人", { icon: 2 }); return; }
+        Data.UserId = UserId;
+        var UserName = $("#UserName").val();//负责人名称
+        if (UserName == "") { layer.msg("请输入负责人名称", { icon: 2 }); return; }
+        Data.UserName = UserName;
+        var StartDate = $("#StartDate").val();//开始时间
+        if (StartDate == "") { layer.msg("请输入开始时间", { icon: 2 }); return; }
+        Data.StartDate = StartDate;
+        var EndDate = $("#EndDate").val();//结束时间
+        if (EndDate == "") { layer.msg("请输入结束时间", { icon: 2 }); return; }
+        Data.EndDate = EndDate;
+        var Infos = $("#Infos").val();//备注
+        if (Infos == "") { layer.msg("请输入功能描述", { icon: 2 }); return; }
+        if (Infos.length > 200) { layer.msg("功能描述长度不超过500字", { icon: 2 }); return; }
+        Data.Infos = Infos;
+        var url = "@Url.Action("WorkListItemsAdd")";
+        ajaxGet.post(Data, url, function (data) { AddDataSuccess(data); }, function (data) { ExceptionDeal(data); })
+    }
+    function AddDataSuccess(json) {
+        if (json.IsSuccess) {
+            layer.msg(json.Message, { icon: 1 });
+            btnClose();
+            Search();
+        }
+    }
+</script>

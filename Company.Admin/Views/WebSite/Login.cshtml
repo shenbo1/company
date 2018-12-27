@@ -1,0 +1,111 @@
+﻿
+@{
+    Layout = "~/Layout/_LayoutWebSite.cshtml";
+    Page.Title = "eeeYooo登录";
+    Page.Key = "软件开发，技术支持，智能硬件，智能名宿";
+    Page.Desc = "微信开发，小程序开发，智能展厅，智能酒店，智能民宿，智能家居，智能办公, 技术孵化，技术合伙人，硬件开发，智能硬件";
+
+    Page.AccountName = ViewBag.AccountName;
+}
+}
+
+<div class="main-container container">
+    <ul class="breadcrumb">
+        <li><a href="#"><i class="fa fa-home"></i></a></li>
+        <li><a href="#">账户</a></li>
+        <li><a href="#">登录</a></li>
+    </ul>
+
+    <div class="row">
+        <div id="content" class="col-sm-12">
+            <div class="page-login">
+                <div class="account-border">
+                    <div class="row">
+                        <div class="col-sm-12 customer-login">
+                            <div class="well">
+                                <h2 style="">
+                                    <i class="fa fa-file-text-o" aria-hidden="true"></i>
+                                    <label>eeeYooo服务平台</label>
+                                    <a href="/WebSite/Register" class="pull-right">没有eeeYooo账号</a>
+                                </h2>
+                                <p><strong>eeeYooo技术孵化，旨在携手初创企业，为企业提供技术与服务，与企业共同面对风险与挑战，支持微小中型企业团队从0到1的成长，帮助新型互联网企业提供智能物联网体系的搭建与硬件支持。 eeeyooo专注于移动数字开发与运维，身为初创企业的技术合伙人，为孵化的团队提供 产品-开发-运营 的一站式技术技术解决方案，核心业务包括项目前期 分析，规划，数字平台搭建与物联网模块开发，项目上线后有效运营，并予以可行性的市场与推广建议。</strong></p>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-sm-2 control-label " for="input-account">用户名</label>
+                                        <div class="col-sm-4">
+                                            <input type="text" class="form-control" id="input-account"
+                                                   onkeyup="CheckInfo();"
+                                                   placeholder="用户名(邮箱或者手机号)" autocomplete="off">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-sm-2 control-label " for="input-pwd">密码</label>
+                                        <div class="col-sm-4">
+                                            <input type="password" placeholder="密码"
+                                                   onkeyup="CheckInfo();"
+                                                   id="input-pwd" class="form-control" autocomplete="off">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bottom-form">
+                                <a href="#" class="forgot">忘记密码?</a>
+                                <input type="button" value="登录" id="login" onclick="login()" class="btn btn-default pull-right">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function CheckInfo() {
+        if (event.keyCode == 13) {
+            login();
+        }
+    }
+    function login() {
+        if ($("#login").val() != '登录') return;
+        var Data = {};
+        var Name = $("#input-account").val();//姓名
+        if (Name == "") { layer.msg("请输入账户", { icon: 2 }); return; }
+        Data.name = Name;
+        var pwd = $("#input-pwd").val();//所在城市
+
+        if (pwd == "") { layer.msg("请输入密码", { icon: 2 }); return; }
+        Data.pwd = pwd;
+        var url = "/Account/Login";
+        $('#login').val('登录中...')
+        ajaxGet.post(Data, url, function (data) { AddDataSuccess(data); }, function (data) { ExceptionDeal(data); })
+    }
+
+    function AddDataSuccess(json) {
+        $('#login').val('登录')
+        if (json.IsSuccess) {
+            layer.msg("登录成功,页面即将跳转", { icon: 1 });
+            var url = GetQueryString("redirtUrl");
+            if (isNullOrEmpty(url)) url = '/Member/Center';
+            setTimeout(function () {
+                location = url;
+            }, 1500);
+        } else {
+            layer.msg(json.Message, { icon: 2 });
+        }
+    }
+    //function AddDataSuccess(json) {
+    //    $('#login').val('登录')
+    //    if (json.IsSuccess) {
+    //        layer.msg("登录成功,页面即将跳转", { icon: 1 });
+    //        var url = GetQueryString("redirtUrl");
+    //        if (isNullOrEmpty(url)) url = '/Member/Center';
+    //        setTimeout(function () {
+    //            location = url;
+    //        }, 1500);
+    //    } else {
+    //        layer.msg(json.Message, { icon: 2 });
+    //    }
+    //}
+</script>
