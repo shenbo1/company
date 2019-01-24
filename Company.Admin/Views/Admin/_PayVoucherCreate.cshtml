@@ -1,0 +1,217 @@
+﻿<div class="modal fade" id="DivCreate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none">
+    <form id="commentFormCreate" class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="btnCreateClose()"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">创建账单</h4>
+            </div>
+            <div class="modal-body" style="overflow-y:auto;max-height:500px">
+                <span class="label label-warning" id="bErrorInfo" style="display:none;"></span>
+                <div class="form-group">
+                    <label for="ProjectName">项目名称</label>
+                    @Html.DropDownList("ProjectIdSel", (IEnumerable<SelectListItem>)ViewBag.Project, "全部",
+                        new Dictionary<string, object>() {
+                            { "class", " form-control" },
+                    })
+                </div>
+                <div class="form-group">
+                    <label for="NeedPayDate">支付日期(从当前日期开始算)</label>
+                    <input type="text" class="form-control" id="PayDate" onfocus="WdatePicker({dateFmt:'yyyy/MM/dd'})" placeholder="支付日期">
+                </div>
+                <div class="form-group">
+                    <label for="NeedPayDate">账单开始日期</label>
+                    <input type="text" class="form-control" id="BillDate" onfocus="WdatePicker({dateFmt:'yyyy/MM/dd'})" placeholder="支付日期">
+                </div>
+                <div class="form-group">
+                    <label for="NeedPayMoeny">付款周期</label>
+                    @Html.DropDownList("PayPeriodCreate", (IEnumerable<SelectListItem>)ViewBag.PayWay, "全部",
+                     new Dictionary<string, object>() {
+                         { "class", "form-control" },
+                 })
+                </div>
+                <div class="form-group">
+                    <label for="NeedPayMoeny">付款类别</label>
+                    @Html.DropDownList("PayConfigCreate", (IEnumerable<SelectListItem>)ViewBag.ReportConfig, "全部",
+                     new Dictionary<string, object>() {
+                         { "class", "form-control" },
+                 })
+                </div>
+                <div class="form-group">
+                    <label for="NeedPayMoeny">需支付金额</label>
+                    <input type="text" class="form-control" id="PayMoeny" onkeyup="NumAndPoint(this)" placeholder="需支付金额">
+                </div>
+                <div class="form-group">
+                    <label for="RelPayMoeny">生成期数</label>
+                    <input type="text" class="form-control" id="PayPeriod" onkeyup="OnlyNum(this)" placeholder="生成期数">
+                </div>
+                <span class="label label-warning">
+                    生成规则:根据支付日期和生成期数和金额生成相应账单。<br />
+                    如已生成账单日期大于现有账单日期，会自动更新支付日期和金额
+                </span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="btnCreateClose()">关闭</button>
+                <button type="button" class="btn btn-primary" id="btnComfirm"  v-on:click="btnConfirm()" >确定</button>
+                <button type="button" class="btn btn-danger" v-on:click="btnReview()">预览</button>
+            </div>
+        </div>
+    </form>
+    <div class="ibox-content billContent" style="display:none;">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>需支付时间</th>
+                    <th>账期</th>
+                    <th>需支付金额</th>
+                </tr>
+                <button type="button" class="close" onclick="$('.billContent').hide();"><span aria-hidden="true">&times;</span></button>
+            </thead>
+            <tbody>
+                <tr v-cloak v-for="item in BillData">
+                    <td>{{item.NeedPayDate | FormatDate}}</td>
+
+                    <td> {{item.BillContent}}</td>
+
+                    <td>{{item.NeedPayMoeny}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<input type="hidden" id="hiddenId" value="0" />
+<script>
+    var v = new Vue({
+        el: "#DivCreate",
+        data: {
+            BillData: [],
+            Preview: false
+        },
+        created: function () {
+
+        },
+        watch: {
+
+        },
+        methods: {
+            btnConfirm: function () {
+                var $this = this;
+                if (checkVoucher()) {
+                    if (!$this.Preview) { layer.msg("生成之前必须预览账单", { icon: 2 }); return; }
+                    var Data = {};
+                    var ProjectIdSel = $('#ProjectIdSel').val();
+                    Data.ProjectId = ProjectIdSel;
+                    var PayDate = $('#PayDate').val();
+                    Data.StartDate = PayDate;
+                    var BillDate = $('#BillDate').val();
+                    Data.BillDate = BillDate;
+                    var PayPeriodCreate = $('#PayPeriodCreate').val();
+                    Data.PayWay = PayPeriodCreate;
+                    var PayMoeny = $('#PayMoeny').val();
+                    Data.Money = PayMoeny;
+                    var PayPeriod = $('#PayPeriod').val();
+                    Data.PayPeriod = PayPeriod;
+                    Data.BillType = $('#PayConfigCreate').val();
+                    var url = "@Url.Action("PayVoucherCreate")";
+                    ajaxGet.post(Data, url, function (data) {
+                        if (data.IsSuccess) {
+                            layer.msg("新增成功", { icon: 1 });
+                            btnCreateClose();
+                            setTimeout(function () { Search(); }, 1000);
+                        }
+                        else {
+                            layer.msg("新增失败", { icon: 2 });
+                        }
+                        //console.log(data)
+                        //$this.BillData = data;
+                        //$this.Preview = true;
+                        //$('.billContent').show();
+                        //layer.open($('.billContent'));
+                        //console.log($this.BillData)
+                    }, function (data) { ExceptionDeal(data); })
+                }
+
+            },
+            btnReview: function () {
+                var $this = this;
+                if (checkVoucher()) {
+                    var Data = {};
+                    var ProjectIdSel = $('#ProjectIdSel').val();
+                    Data.ProjectId = ProjectIdSel;
+                    var PayDate = $('#PayDate').val();
+                    Data.StartDate = PayDate;
+                    var BillDate = $('#BillDate').val();
+                    Data.BillDate = BillDate;
+                    var PayPeriodCreate = $('#PayPeriodCreate').val();
+                    Data.PayWay = PayPeriodCreate;
+                    var PayMoeny = $('#PayMoeny').val();
+                    Data.Money = PayMoeny;
+                    var PayPeriod = $('#PayPeriod').val();
+                    Data.PayPeriod = PayPeriod;
+                    var url = "@Url.Action("PayVoucherPreview")";
+                    ajaxGet.post(Data, url, function (data) {
+                        var data = data.Data;
+                        console.log(data)
+                        $this.BillData = data;
+                        $this.Preview = true;
+                        $('.billContent').show();
+                        //layer.open($('.billContent'));
+                        console.log($this.BillData)
+                    }, function (data) { ExceptionDeal(data); })
+                }
+            }
+        },
+        filters: {
+            FormatDate: function (value) {
+                if (!isNullOrEmpty(value)) {
+                    return ChangeDt(value);
+                }
+            }
+        }
+    });
+    $('#ProjectIdSel').change(function () {
+        var url = "@Url.Action("ProjectManageGetOne")";
+        ajaxGet.post({ id: $(this).val() }, url, function (data) {
+            console.log(data);
+            var data = data.Data;
+            $('#PayMoeny').val(data.Money);
+            $('#PayPeriodCreate').val(data.PayWay);
+        }, function (data) { ExceptionDeal(data); })
+    });
+    function btnCreateClose() {
+        $('#DivCreate').modal("hide");
+    }
+    function btnAddClick() {
+        var ID = $("#hiddenId").val();
+        
+        var url = "@Url.Action("PayVoucherAdd")";
+        ajaxGet.post(Data, url, function (data) { AddDataSuccess(data); }, function (data) { ExceptionDeal(data); })
+    }
+    function btnReview() {
+        
+    }
+    function checkVoucher() {
+        var ProjectIdSel = $('#ProjectIdSel').val();
+        if (ProjectIdSel == "") { layer.msg("请选择项目", { icon: 2 }); return false; }
+        var PayDate = $('#PayDate').val();
+        if (PayDate == "") { layer.msg("请输入支付日期", { icon: 2 }); return false; }
+        var BillDate = $('#BillDate').val();
+        if (BillDate == "") { layer.msg("请输入账单开始日期", { icon: 2 }); return false; }
+        var PayPeriodCreate = $('#PayPeriodCreate').val();
+        if (PayPeriodCreate == "") { layer.msg("请选择支付周期", { icon: 2 }); return false; }
+        var PayConfigCreate = $('#PayConfigCreate').val();
+        if (PayConfigCreate == "") { layer.msg("请选择付款类别", { icon: 2 }); return false; }
+        var PayMoeny = $('#PayMoeny').val();
+        if (PayMoeny == "") { layer.msg("请输入需支付金额", { icon: 2 }); return false; }
+        var PayPeriod = $('#PayPeriod').val();
+        if (PayPeriod == "") { layer.msg("请输入支付期数", { icon: 2 }); return false; }
+        return true;
+    }
+    function AddDataSuccess(json) {
+        if (json.IsSuccess) {
+            layer.msg(json.Message, { icon: 1 });
+            btnClose();
+            Search();
+        }
+    }
+</script>

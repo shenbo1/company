@@ -2272,6 +2272,11 @@
     <Content Include="Views\Admin\JobListInfo.cshtml" />
     <Content Include="Views\Admin\_JobListAdd.cshtml" />
     <Content Include="Views\WebSite\FirstSign - 复制.cshtml" />
+    <Content Include="Views\Admin\PayVoucherInfo.cshtml" />
+    <Content Include="Views\Admin\_PayVoucherAdd.cshtml" />
+    <Content Include="Views\Admin\_PayVoucherCreate.cshtml" />
+    <Content Include="Views\Admin\_PayVoucherPay.cshtml" />
+    <Content Include="Views\Admin\WorkItemFileAdd.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -1,0 +1,160 @@
+﻿<div class="modal fade" id="DivAdd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none">
+    <form id="commentForm" class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="btnClose()"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">新增/修改信息</h4>
+            </div>
+            <div class="modal-body" style="overflow-y:auto;max-height:500px">
+                <span class="label label-warning" id="bErrorInfo" style="display:none;"></span>
+                <div class="form-group">
+                    <label for="ProjectId"></label>
+                    <input type="text" class="form-control" id="ProjectId" onkeyup="OnlyNum(this)" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label for="ProjectName"></label>
+                    <input type="text" class="form-control" id="ProjectName" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label for="CusMemberId">客户名称</label>
+                    <input type="text" class="form-control" id="CusMemberId" onkeyup="OnlyNum(this)" placeholder="客户名称">
+                </div>
+                <div class="form-group">
+                    <label for="CusCompanyId"></label>
+                    <input type="text" class="form-control" id="CusCompanyId" onkeyup="OnlyNum(this)" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label for="Guid"></label>
+                    <input type="text" class="form-control" id="Guid" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label for="CreateBy"></label>
+                    <input type="text" class="form-control" id="CreateBy" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label for="ModifyBy">需支付</label>
+                    <input type="text" class="form-control" id="ModifyBy" placeholder="需支付">
+                </div>
+                <div class="form-group">
+                    <label for="NeedPayDate">支付时间</label>
+                    <input type="text" class="form-control" id="NeedPayDate" onfocus="WdatePicker({minDate:'%y-%M-%d'})" placeholder="支付时间">
+                </div>
+                <div class="form-group">
+                    <label for="RelPayDate">实际支付时间</label>
+                    <input type="text" class="form-control" id="RelPayDate" onfocus="WdatePicker({minDate:'%y-%M-%d'})" placeholder="实际支付时间">
+                </div>
+                <div class="form-group">
+                    <label for="NeedPayMoeny">需支付金额</label>
+                    <input type="text" class="form-control" id="NeedPayMoeny" placeholder="需支付金额">
+                </div>
+                <div class="form-group">
+                    <label for="RelPayMoeny">实际支付金额</label>
+                    <input type="text" class="form-control" id="RelPayMoeny" placeholder="实际支付金额">
+                </div>
+                <div class="form-group">
+                    <label for="PayWay">支付方式</label>
+                    <input type="text" class="form-control" id="PayWay" placeholder="支付方式">
+                </div>
+                <div class="form-group">
+                    <label for="PayVouchers">支付凭证</label>
+                    <input type="text" class="form-control" id="PayVouchers" placeholder="支付凭证">
+                </div>
+                <div class="form-group">
+                    <label for="PayStatus">0 未支付 1 部分支付 2 支付完成</label>
+                    <input type="text" class="form-control" id="PayStatus" onkeyup="OnlyNum(this)" placeholder="0 未支付 1 部分支付 2 支付完成">
+                </div>
+                <div class="form-group">
+                    <label for="Remark">备注</label>
+                    <input type="text" class="form-control" id="Remark" placeholder="备注">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="btnClose()">关闭</button>
+                <button type="button" class="btn btn-primary" id="btnComfirm" onclick="btnAddClick()">确定</button>
+            </div>
+        </div>
+    </form>
+</div>
+<input type="hidden" id="hiddenId" value="0" />
+<script>
+    function btnClose() {
+        $('#DivAdd').modal("hide");
+        $("#hiddenId").val('0');
+        $('#ProjectId').val('');
+  $('#ProjectName').val('');
+  $('#CusMemberId').val('');
+  $('#CusCompanyId').val('');
+  $('#Guid').val('');
+  $('#CreateBy').val('');
+  $('#ModifyBy').val('');
+  $('#NeedPayDate').val('');
+  $('#RelPayDate').val('');
+  $('#NeedPayMoeny').val('');
+  $('#RelPayMoeny').val('');
+  $('#PayWay').val('');
+  $('#PayVouchers').val('');
+  $('#PayStatus').val('');
+  $('#Remark').val('');
+
+    }
+    function btnAddClick() {
+        var ID = $("#hiddenId").val();
+        var Data = {};
+        Data.Id = ID;
+
+        var ProjectId = $("#ProjectId").val();//
+        if (ProjectId == "") { layer.msg("请输入", { icon: 2 }); return; }
+        Data.ProjectId = ProjectId;
+        var ProjectName = $("#ProjectName").val();//
+        if (ProjectName == "") { layer.msg("请输入", { icon: 2 }); return; }
+        Data.ProjectName = ProjectName;
+        var CusMemberId = $("#CusMemberId").val();//客户名称
+        if (CusMemberId == "") { layer.msg("请输入客户名称", { icon: 2 }); return; }
+        Data.CusMemberId = CusMemberId;
+        var CusCompanyId = $("#CusCompanyId").val();//
+        if (CusCompanyId == "") { layer.msg("请输入", { icon: 2 }); return; }
+        Data.CusCompanyId = CusCompanyId;
+        var Guid = $("#Guid").val();//
+        if (Guid == "") { layer.msg("请输入", { icon: 2 }); return; }
+        Data.Guid = Guid;
+        var CreateBy = $("#CreateBy").val();//
+        if (CreateBy == "") { layer.msg("请输入", { icon: 2 }); return; }
+        Data.CreateBy = CreateBy;
+        var ModifyBy = $("#ModifyBy").val();//需支付
+        if (ModifyBy == "") { layer.msg("请输入需支付", { icon: 2 }); return; }
+        Data.ModifyBy = ModifyBy;
+        var NeedPayDate = $("#NeedPayDate").val();//支付时间
+        if (NeedPayDate == "") { layer.msg("请输入支付时间", { icon: 2 }); return; }
+        Data.NeedPayDate = NeedPayDate;
+        var RelPayDate = $("#RelPayDate").val();//实际支付时间
+        if (RelPayDate == "") { layer.msg("请输入实际支付时间", { icon: 2 }); return; }
+        Data.RelPayDate = RelPayDate;
+        var NeedPayMoeny = $("#NeedPayMoeny").val();//需支付金额
+        if (NeedPayMoeny == "") { layer.msg("请输入需支付金额", { icon: 2 }); return; }
+        Data.NeedPayMoeny = NeedPayMoeny;
+        var RelPayMoeny = $("#RelPayMoeny").val();//实际支付金额
+        if (RelPayMoeny == "") { layer.msg("请输入实际支付金额", { icon: 2 }); return; }
+        Data.RelPayMoeny = RelPayMoeny;
+        var PayWay = $("#PayWay").val();//支付方式
+        if (PayWay == "") { layer.msg("请输入支付方式", { icon: 2 }); return; }
+        Data.PayWay = PayWay;
+        var PayVouchers = $("#PayVouchers").val();//支付凭证
+        if (PayVouchers == "") { layer.msg("请输入支付凭证", { icon: 2 }); return; }
+        Data.PayVouchers = PayVouchers;
+        var PayStatus = $("#PayStatus").val();//0 未支付 1 部分支付 2 支付完成
+        if (PayStatus == "") { layer.msg("请输入0 未支付 1 部分支付 2 支付完成", { icon: 2 }); return; }
+        Data.PayStatus = PayStatus;
+        var Remark = $("#Remark").val();//备注
+        if (Remark == "") { layer.msg("请输入备注", { icon: 2 }); return; }
+        Data.Remark = Remark;
+        var url = "@Url.Action("PayVoucherAdd")";
+        ajaxGet.post(Data, url, function (data) { AddDataSuccess(data); }, function (data) { ExceptionDeal(data); })
+    }
+    function AddDataSuccess(json) {
+        if (json.IsSuccess) {
+            layer.msg(json.Message, { icon: 1 });
+            btnClose();
+            Search();
+        }
+    }
+</script>

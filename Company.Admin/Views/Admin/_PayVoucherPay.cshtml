@@ -1,0 +1,236 @@
+﻿<div class="modal fade" id="DivPay" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none">
+    <form id="commentFormPay" class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="btnPayClose()"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">账单支付</h4>
+            </div>
+            <div class="modal-body" style="overflow-y:auto;max-height:500px">
+                <span class="label label-warning" id="bErrorInfo" style="display:none;"></span>
+                <div class="form-group row">
+                    <div class="col-sm-2 require">
+                        <label for="ProjectName">账单周期</label>
+                    </div>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="Pay_Content" placeholder="账单周期">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-2">
+                        <label for="NeedPayDate">支付金额</label>
+                    </div>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="Pay_Money" onkeyup="NumAndPoint(this)" placeholder="支付金额">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-2">
+                        <label for="NeedPayDate">付款方式</label>
+                    </div>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="Pay_Way" placeholder="支付方式：微信,支付宝,转账" value="">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-2">
+                        <label for="NeedPayDate">支付方</label>
+                    </div>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="Pay_Fu" placeholder="支付方">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-2">
+                        <label for="NeedPayDate">支付时间</label>
+                    </div>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="Pay_FuTime" onfocus="WdatePicker()" placeholder="支付时间">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-2">
+                        <label for="NeedPayDate">支付凭证</label>
+                    </div>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control imgview" id="Pay_PingZheng" placeholder="支付凭证">
+                    </div>
+                    <input type="file" style="display:none;" name="file" id="file_upload_pz" value="" accept="image/jpg,image/jpeg,image/png" />
+                    <a class="col-sm-2 control-label " id="upload_pz"><i class="fa fa-upload"></i> 上传</a>
+
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-2">
+                        <label for="NeedPayDate">收款方</label>
+                    </div>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="Pay_Shou" placeholder="收款方">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-2">
+                        <label for="NeedPayDate">备注</label>
+                    </div>
+                    <div class="col-sm-6">
+                        <textarea id="Pay_Remark" placeholder="备注" class="form-control"></textarea>
+                    </div>
+                </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="btnPayClose()">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="btnPayOk()">确定</button>
+                </div>
+            </div>
+</form>
+    @*<div class="ibox-content billContent" style="display:none;">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>需支付时间</th>
+                    <th>账期</th>
+                    <th>需支付金额</th>
+                </tr>
+                <button type="button" class="close" onclick="$('.billContent').hide();"><span aria-hidden="true">&times;</span></button>
+            </thead>
+            <tbody>
+                <tr v-cloak v-for="item in BillData">
+                    <td>{{item.NeedPayDate | FormatDate}}</td>
+
+                    <td> {{item.BillContent}}</td>
+
+                    <td>{{item.NeedPayMoeny}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>*@
+</div>
+<input type="hidden" id="payId" value="0" /> 
+<script>
+    var upload = new UploadImages();
+    upload.FileObj = $('#file_upload_pz');
+    upload.EditObj = $('#upload_pz');
+    upload.Success = function (src) {
+        //console.log(src + '');
+        layer.msg("上传成功", { icon: 1 });
+        $('#Pay_PingZheng').val(src);
+        //upload.EditObj.parent().find('input').val( src);
+    };
+    upload.Init();
+    function btnPayClose() {
+        $('#DivPay').modal("hide");
+        $('#payId').val(0);
+    }
+    function btnPayOk() {
+        var Data = {};
+        var Pay_Money = $('#Pay_Money').val();
+        if (Pay_Money == 0) { layer.msg("支付金额不能为0", { icon: 2 }); return; }
+        Data.Money = Pay_Money;
+        var Pay_Way = $('#Pay_Way').val();
+        if (Pay_Way == "") { layer.msg("支付方式不能为空", { icon: 2 }); return; }
+        Data.Way = Pay_Way;
+        var Pay_Fu = $('#Pay_Fu').val();
+        if (Pay_Fu == "") { layer.msg("付款方不能为空", { icon: 2 }); return; }
+        Data.Fu = Pay_Fu;
+        var Pay_FuTime = $('#Pay_FuTime').val();
+        if (Pay_FuTime == "") { layer.msg("付款时间不能为空", { icon: 2 }); return; }
+        Data.FuTime = Pay_FuTime;
+        var Pay_PingZheng = $('#Pay_PingZheng').val();
+        if (Pay_PingZheng == "") { layer.msg("支付凭证不能为空", { icon: 2 }); return; }
+        Data.PingZheng = Pay_PingZheng;
+        var Pay_Shou = $('#Pay_Shou').val();
+        if (Pay_Shou == "") { layer.msg("支付方式不能为空", { icon: 2 }); return; }
+        Data.Shou = Pay_Shou;
+        var Pay_Remark = $('#Pay_Remark').val();
+        Data.Remark = Pay_Remark;
+        Data.PayId = $('#payId').val();
+           var url = "@Url.Action("BillPay")";
+        ajaxGet.post(Data, url, function (data) {
+            if (data.IsSuccess) {
+                layer.msg(data.Message, { icon: 1 });
+                btnPayClose();
+                setTimeout(function () { Search(); }, 1000);
+            }
+            else {
+                layer.msg(data.Message, { icon: 2 });
+            }
+        }, function (data) { ExceptionDeal(data); });
+    }
+    @*var v = new Vue({
+        el: "#DivPay",
+        data: {
+            BillData: [],
+            Preview: false
+        },
+        created: function () {
+
+        },
+        watch: {
+
+        },
+        methods: {
+            btnConfirm: function () {
+                var $this = this;
+                @*if (checkVoucher()) {
+                    if (!$this.Preview) { layer.msg("生成之前必须预览账单", { icon: 2 }); return; }
+                    var Data = {};
+                    var ProjectIdSel = $('#ProjectIdSel').val();
+                    Data.ProjectId = ProjectIdSel;
+                    var PayDate = $('#PayDate').val();
+                    Data.StartDate = PayDate;
+                    var BillDate = $('#BillDate').val();
+                    Data.BillDate = BillDate;
+                    var PayPeriodCreate = $('#PayPeriodCreate').val();
+                    Data.PayWay = PayPeriodCreate;
+                    var PayMoeny = $('#PayMoeny').val();
+                    Data.Money = PayMoeny;
+                    var PayPeriod = $('#PayPeriod').val();
+                    Data.PayPeriod = PayPeriod;
+                    var url = "@Url.Action("PayVoucherCreate")";
+                    ajaxGet.post(Data, url, function (data) {
+                        if (data.IsSuccess) {
+                            layer.msg("新增成功", { icon: 1 });
+                            btnCreateClose();
+                            setTimeout(function () { Search(); }, 1000);
+                        }
+                        else {
+                            layer.msg("新增失败", { icon: 2 });
+                        }
+                        //console.log(data)
+                        //$this.BillData = data;
+                        //$this.Preview = true;
+                        //$('.billContent').show();
+                        //layer.open($('.billContent'));
+                        //console.log($this.BillData)
+                    }, function (data) { ExceptionDeal(data); })
+                }
+
+            },
+        },
+        filters: {
+            FormatDate: function (value) {
+                if (!isNullOrEmpty(value)) {
+                    return ChangeDt(value);
+                }
+            }
+        }
+    });*@
+    @*$('#ProjectIdSel').change(function () {
+        var url = "@Url.Action("ProjectManageGetOne")";
+        ajaxGet.post({ id: $(this).val() }, url, function (data) {
+            console.log(data);
+            var data = data.Data;
+            $('#PayMoeny').val(data.Money);
+            $('#PayPeriodCreate').val(data.PayWay);
+        }, function (data) { ExceptionDeal(data); })
+    });
+    function btnCreateClose() {
+        $('#DivCreate').modal("hide");
+    }
+    function btnAddClick() {
+        var ID = $("#hiddenId").val();
+
+        var url = "@Url.Action("PayVoucherAdd")";
+        ajaxGet.post(Data, url, function (data) { AddDataSuccess(data); }, function (data) { ExceptionDeal(data); })
+    }*@
+ 
+   
+</script>

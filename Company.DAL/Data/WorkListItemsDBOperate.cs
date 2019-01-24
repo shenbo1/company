@@ -87,7 +87,7 @@ namespace Company.DAL.Data
             var param = new DynamicParameters();
             totalcount = 0;
             Pager pager = new Pager() { TableName = TableName + " A", Offset = query.Offset, PageSize = query.Limit, ColName = "A.[ID]" };
-            pager.Columns = @"A.[Id],A.[ProjectId],C.Name ProjectName,A.[WorkId],B.Name WorkName,D.Infos Name,A.[Level],A.[Status],A.[UserId],A.[UserName],A.[StartDate],A.[EndDate],A.[RelStartDate],A.[RelEndDate],A.[Infos],a.[DayCount],a.[Type]";
+            pager.Columns = @"A.[Id],A.[ProjectId],C.Name ProjectName,A.[WorkId],B.Name WorkName,D.Infos Name,A.[Level],A.[Status],A.[UserId],A.[UserName],A.[StartDate],A.[EndDate],A.[RelStartDate],A.[RelEndDate],A.[Infos],a.[DayCount],a.[Type],a.[CreateDate]";
             pager.WhereStr += " and A.[IsDeleted]=0 and a.CompanyId=@CompanyId";
             pager.JoinSql = "left join WorkList (nolock) B on a.[workId]=B.[ID]";
             pager.JoinSql += "left join ProjectManage (nolock) C on a.[ProjectId]=C.[ID]";

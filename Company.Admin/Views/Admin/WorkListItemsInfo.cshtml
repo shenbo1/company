@@ -569,7 +569,17 @@
                         return '<a class="status">' + value + "</a>";
                     },
                     events: operateEvents
-                },  
+                }, 
+                {
+                    field: 'CreateDate',
+                    title: '创建时间',
+                    align: 'center',
+                    valign: 'middle',
+                    sortable: true,
+                    formatter: function (value, row, index) {
+                        return ChangeDt(value);
+                    }
+                }, 
                 //{
                 //    field: 'Status',
                 //    title: '项目状态',

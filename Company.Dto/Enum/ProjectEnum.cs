@@ -10,13 +10,15 @@ namespace Company.Dto
     public enum ProjectPayWayEnum
     {
         [Description("年付")]
-        Year,
-        [Description("季付")]
-        Season,
+        Year = 12,
+        [Description("半年付")]
+        HalfYear = 6,
+        [Description("季付")] 
+        Season = 3,
         [Description("月付")]
-        Month,
+        Month = 1,
         [Description("未知")]
-        UnKnown
+        UnKnown = 0 
     }
     public enum ProjectStatusEnum
     {

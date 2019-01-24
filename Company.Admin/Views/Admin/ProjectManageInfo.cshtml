@@ -163,35 +163,36 @@
                 //        return ChangeDt(value);
                 //    }
                 //}, 
+                //{
+                //    field: 'PayWayTxt',
+                //    title: '支付方式',
+                //    align: 'center',
+                //    valign: 'middle'
+                //}, {
+                //    field: 'PayDate',
+                //    title: '支付时间',
+                //    align: 'center',
+                //    valign: 'middle',
+                //    sortable: true,
+                //    formatter: function (value, row, index) {
+                //        var str = '-';
+                //        var flag = false;
+                //        if (!isNullOrEmpty(value)) {
+                //            var date = new Date(parseInt(value.replace("/Date(", "").replace(")/", ""), 10));
+                //            if (date < new Date()) { flag = true; }
+                //            str = ChangeDt(value);
+                //        }
+                //        return '<a class="editTime ' + (flag ? "text-danger" : "") + ' ">' + str + '</a>';
+                //    },
+                //    events: operateEvents
+                //}, {
+                //    field: 'Money',
+                //    title: '金额',
+                //    align: 'center',
+                //    valign: 'middle',
+                //    sortable: true,
+                //},
                 {
-                    field: 'PayWayTxt',
-                    title: '支付方式',
-                    align: 'center',
-                    valign: 'middle'
-                }, {
-                    field: 'PayDate',
-                    title: '支付时间',
-                    align: 'center',
-                    valign: 'middle',
-                    sortable: true,
-                    formatter: function (value, row, index) {
-                        var str = '-';
-                        var flag = false;
-                        if (!isNullOrEmpty(value)) {
-                            var date = new Date(parseInt(value.replace("/Date(", "").replace(")/", ""), 10));
-                            if (date < new Date()) { flag = true; }
-                            str = ChangeDt(value);
-                        }
-                        return '<a class="editTime ' + (flag ? "text-danger" : "") + ' ">' + str + '</a>';
-                    },
-                    events: operateEvents
-                }, {
-                    field: 'Money',
-                    title: '金额',
-                    align: 'center',
-                    valign: 'middle',
-                    sortable: true,
-                }, {
                     field: 'Infos',
                     title: '项目简介',
                     align: 'center',

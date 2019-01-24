@@ -40,9 +40,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\AuditBussiness.cs" />
+    <Compile Include="Data\FileService.cs" />
     <Compile Include="Data\FinanceReportBLL.cs" />
     <Compile Include="Data\LogBussiness.cs" />
     <Compile Include="Data\MemberBussiness.cs" />
+    <Compile Include="Data\BillService.cs" />
     <Compile Include="Data\WorkItemsBLL.cs" />
     <Compile Include="Data\WorkListBLL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

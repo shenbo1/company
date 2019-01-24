@@ -12,6 +12,7 @@
     });
 })
 function UploadImages() {
+    this.UploadType = 1;
     this.MaxSize = 1024 * 5;
     this.MaxCount = 9;
     this.EditObj = $("#upload");//前端显示
@@ -105,27 +106,60 @@ function UploadImages() {
                     MyFont.AlertMobile("最多上传" + $this.MaxCount + "张");
                     return;
                 }
-                $.ajax({
-                    type: "post",
-                    data: { url: this.result },
-                    url: "/Upload/UploadImage",
-                    beforeSend: function () {
-                        Loading.Show();
-                    },
-                    success: function (json) {
-                        Loading.Hide();
-                        if (json.IsSuccess) {
-                            $this.Success(json.Message);
-                            //$this.ClearImg();
-                        } else {
-                            MyFont.AlertMobile("请上传正确的图片格式")
-                        }
-                    },
-                    error: function (data) {
+              
+                if ($this.UploadType === 1) {
+                    $.ajax({
+                        type: "post",
+                        data: { url: this.result },
+                        url: "/Upload/UploadImage",
+                        beforeSend: function () {
+                            Loading.Show();
+                        },
+                        success: function (json) {
+                            Loading.Hide();
+                            if (json.IsSuccess) {
+                                $this.Success(json.Message);
+                                //$this.ClearImg();
+                            } else {
+                                MyFont.AlertMobile("请上传正确的图片格式")
+                            }
+                        },
+                        error: function (data) {
 
-                    }
-                });
+                        }
+                    });
+                }
+                else {
+                    var formData = new FormData();
+                    formData.append('file', file);
+                     $.ajax({
+                        type: "post",
+                         data: formData,
+                         url: "/Upload/UploadFile",
+                         processData: false,
+                         contentType: false,
+                        beforeSend: function () {
+                            Loading.Show();
+                        },
+                        success: function (json) {
+                            Loading.Hide();
+                            if (json.IsSuccess) {
+                                $this.Success(json);
+                                //$this.ClearImg();
+                            } else {
+                                MyFont.AlertMobile(json.Message)
+                            }
+                        },
+                        error: function (data) {
+
+                        }
+                    });
+                }
             }
         });
     }
+}
+
+function UploadFiles() {
+
 }

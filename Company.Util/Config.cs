@@ -28,6 +28,7 @@ namespace Company.Util
         public static string eeeYoooName = ConfigurationManager.AppSettings["eeeYoooName"];
 
         public static string FirstRoute = ConfigurationManager.AppSettings["FirstRoute"];
+        public static string FileType = ConfigurationManager.AppSettings["FileType"];
 
     }
 }

@@ -94,7 +94,7 @@ namespace Company.DAL.Data
             using (SqlConnection con = new SqlConnection(ConfigSetting.DataConnection))
             {
                 con.Open();
-                var transaction = con.BeginTransaction();
+                var transaction = con.BeginTransaction();   
                 try
                 {
                     //清除之前记录

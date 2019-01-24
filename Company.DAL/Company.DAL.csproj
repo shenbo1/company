@@ -49,11 +49,14 @@
     <Compile Include="Data\AuditDetailDBOperate.cs" />
     <Compile Include="Data\AuditMainDBOperate.cs" />
     <Compile Include="Data\AuditStepDBOperate.cs" />
+    <Compile Include="Data\BillDBOperate.cs" />
+    <Compile Include="Data\BillDetailDBOperate.cs" />
     <Compile Include="Data\CompanyDepartMentDBOperate.cs" />
     <Compile Include="Data\CompanyInfoDBOperate.cs" />
     <Compile Include="Data\CompanyUserDBOperate.cs" />
     <Compile Include="Data\CustomerCompanyDBOperate.cs" />
     <Compile Include="Data\CustomerMemberDBOperate.cs" />
+    <Compile Include="Data\FileInfoDBOperate.cs" />
     <Compile Include="Data\FinanceConfigDBOperate.cs" />
     <Compile Include="Data\FinanceConfigPermissionDBOperate.cs" />
     <Compile Include="Data\FinanceReportDBOperate.cs" />

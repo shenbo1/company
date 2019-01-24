@@ -19,6 +19,7 @@ using Company.DAL;
 using Company.Dto;
 using Newtonsoft.Json;
 using Company.Dto.Enum;
+using Company.Dto.Request;
 
 namespace Company.Admin.Controllers
 {
@@ -1028,6 +1029,9 @@ namespace Company.Admin.Controllers
         #endregion
 
         #region 工单管理 
+        public ActionResult WorkItemFileAdd() {
+            return View();
+        }
         //主页
         public ActionResult WorkListInfo()
         {
@@ -1678,6 +1682,129 @@ namespace Company.Admin.Controllers
             return Json(result);
         }
 
+        #endregion
+
+        #region 支付管理 
+        //主页
+        public ActionResult PayVoucherInfo()
+        {
+            var user = CookieOperate.MemberCookie;
+            ViewBag.Project = ProjectManageDBOperate.GetList(user.CompanyId, 0).Select(a => new SelectListItem() { Value = a.Id.ToString(), Text = a.Name + "-" + a.FullName });
+            var payWay = CommonMethod.GetEnumItems<ProjectPayWayEnum>();
+            payWay.Remove("UnKnown");
+            ViewBag.PayWay = payWay.Select(a => new SelectListItem() { Value = a.Key, Text = a.Value });
+            var list = FinanceConfigDBOperate.GetList("Report", CookieOperate.MemberCookie.CompanyId);
+            ViewBag.ReportConfig = list.Select(a => new SelectListItem() { Value = a.Id.ToString(), Text = a.Value});
+            return View();
+        }   
+
+        public JsonResult PayVoucherPreview(PayVoucherCreateModel model)
+        {
+            var list = BillService.CreateBillDetail(model);
+
+            var result = new ResultInfo<List<BillDetail>>();
+            result.Data = list.Item2;
+            result.IsSuccess = true;
+            return Json(result);
+        }
+
+        public JsonResult PayVoucherCreate(PayVoucherCreateModel model)
+        {
+            var res = BillService.CreateBill(model);
+            var result = new ResultInfo();
+            result.IsSuccess = res;
+            return Json(result);
+        }
+
+        #endregion
+
+        #region 管理 
+        //主页
+        public ActionResult BillDetailInfo()
+        {
+            return View();
+        }
+        //主页请求的数据
+        public JsonResult BillDetailList(QueryBase query)
+        {
+            var totalcount = 0;
+            query.CompanyId = CookieOperate.MemberCookie.CompanyId;
+            var list = BillDetailDBOperate.GetPagerList(query, out totalcount);
+            var payWay = CommonMethod.GetIntEnumItems<ProjectPayWayEnum>();
+            var payVoucherEnum = CommonMethod.GetIntEnumItems<PayVoucherEnum>();
+            var reportConfig = FinanceConfigDBOperate.GetList("Report", CookieOperate.MemberCookie.CompanyId);
+
+            //var payWay = CommonMethod.GetEnumItems<ProjectPayWayEnum>();
+            foreach (var item in list)
+            {
+                var config = reportConfig.FirstOrDefault(a => a.Id == item.BillType);
+                if (config == null) { continue; }
+                item.BillTypeName = config.Value;
+                item.PayWayTxt = payWay.FirstOrDefault(a => a.Key == item.PayWay).Value;
+                item.PayStatusTxt = payVoucherEnum.FirstOrDefault(a => a.Key == item.PayStatus).Value;
+            }
+            PagerList<BillDetail> pagerList = new PagerList<BillDetail>();
+            pagerList.rows = list;
+            pagerList.total = totalcount;
+            return Json(pagerList);
+        }
+
+        //编辑和新增请求的数据
+        public JsonResult BillDetailAdd(BillDetail model)
+        {
+            ResultInfo info = new ResultInfo();
+            var flag = false;
+            var user = CookieOperate.MemberCookie;
+        
+            if (model.Id <= 0)
+            {
+                model.CreateBy = user.UserName;
+                model.CreateDate = DateTime.Now;
+                flag = BillDetailDBOperate.AddBillDetail(model);
+                info.IsSuccess = flag;
+                if (flag) { info.Message = "保存成功"; }
+            }
+            else
+            {
+                model.ModifyBy = user.UserName;
+                model.ModifyDate = DateTime.Now;
+                flag = BillDetailDBOperate.ModifyBillDetail(model);
+                info.IsSuccess = flag;
+                if (flag) { info.Message = "保存成功"; }
+            }
+            return Json(info);
+        }
+        //获取单个对象的数据
+        public JsonResult BillDetailGetOne(int id)
+        {
+            ResultInfo<BillDetail> result = new ResultInfo<BillDetail>();
+            result.Data = BillDetailDBOperate.GetModelById(id);
+            return Json(result);
+        }
+
+        public JsonResult BillPay(BillPayRequest request)
+        {
+            ResultInfo result = new ResultInfo();
+            var res = BillService.BillPay(request);
+            result.IsSuccess = res.Item1;
+            result.Message = res.Item2;
+            return Json(result);
+        }
+
+        public JsonResult GetFileByGuid(string guid) {
+            var list = FileInfoDBOperate.GetList(guid);
+            var result = new ResultInfo<List<Dto.FileInfo>>();
+            result.IsSuccess = true;
+            result.Data = list;
+            return Json(result);
+        }
+        public JsonResult SetFileByGuid(string Guid, string Type, string Data) {
+            var result = new ResultInfo();
+            var flag = FileInfoDBOperate.SetFile(Guid, Type, Data);
+            result.IsSuccess = flag;
+            result.Message = flag ? "保存成功" : "保存失败";
+            return Json(result);
+        }
         #endregion
     }
 }

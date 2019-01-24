@@ -45,6 +45,7 @@
     <Compile Include="Data\AuditDetail.cs" />
     <Compile Include="Data\AuditMain.cs" />
     <Compile Include="Data\AuditStep.cs" />
+    <Compile Include="Data\Bill.cs" />
     <Compile Include="Data\CompanyDepartMent.cs" />
     <Compile Include="Data\CompanyInfo.cs" />
     <Compile Include="Data\CompanyUser.cs" />
@@ -52,11 +53,14 @@
     <Compile Include="Data\CustomerCompany.cs" />
     <Compile Include="Data\CustomerMember.cs" />
     <Compile Include="Data\ExportModel.cs" />
+    <Compile Include="Data\FileInfo.cs" />
     <Compile Include="Data\FinanceConfigPermission.cs" />
     <Compile Include="Data\FinanceReport.cs" />
     <Compile Include="Data\HardWare.cs" />
     <Compile Include="Data\JobList.cs" />
     <Compile Include="Data\NewsInfo.cs" />
+    <Compile Include="Data\BillDetail.cs" />
+    <Compile Include="Data\PayVoucherCreateModel.cs" />
     <Compile Include="Data\PersonSetting.cs" />
     <Compile Include="Data\ProjectManage.cs" />
     <Compile Include="Data\RoleInfo.cs" />
@@ -80,6 +84,7 @@
     <Compile Include="Model\ZTreeModel.cs" />
     <Compile Include="Enum\ProjectEnum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Request\BillPayRequest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Company.WX\Company.WX.csproj">

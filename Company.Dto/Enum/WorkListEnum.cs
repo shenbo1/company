@@ -91,5 +91,13 @@ namespace Company.Dto
         [Description("已上线")]
         End
     }
-  
+    public enum PayVoucherEnum
+    {
+        [Description("未支付")]
+        NotPay = 1 ,
+        [Description("部分支付")]
+        PayPart = 2 ,
+        [Description("支付完成")]
+        PayAll = 3 
+    }
 }

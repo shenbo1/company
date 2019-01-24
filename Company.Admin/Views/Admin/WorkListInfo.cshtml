@@ -338,7 +338,7 @@
             sortable: true,
             sortOrder: "desc",
             sortName: "Id",
-            //showColumns: true, // 开启自定义列显示功能
+            showColumns: true, // 开启自定义列显示功能
             columns: [
                 {
                     field: 'Id',
@@ -438,6 +438,7 @@
                     align: 'center',
                     valign: 'middle',
                     sortable: true,
+                    visible: false,
                     formatter: function (value, row, index) {
                         var html = '';
                         if (isNullOrEmpty(value)) { html = '-'; }
@@ -455,6 +456,7 @@
                     align: 'center',
                     valign: 'middle',
                     sortable: true,
+                    visible: false,
                     formatter: function (value, row, index) {
                         var html = '';
                         if (isNullOrEmpty(value)) { html = '-'; }
@@ -471,6 +473,7 @@
                     title: '接单时间',
                     align: 'center',
                     valign: 'middle',
+                    visible: false,
                     sortable: true,
                     formatter: function (value, row, index) {
                         var html = '';
@@ -516,10 +519,12 @@
                 valign: 'middle',
                 formatter: function (value, row, index) {
                     var operate = '';
-                    //operate += ' <a class="btn btn-info btn-sm look"><i class="fa fa-folder"></i> 查看 </a>';
+                    operate += ' <button class="btn btn-success btn-sm files"><i class="fa fa-folder"></i> 文件管理 </button>';
+                    //operate += ' <button ><i class="fa fa-folder"></i> 文件管理 </button>';
                     //operate += ' <a class="btn btn-success btn-sm detail"><i class="fa fa-search"></i> 详细条目 </a>';
                     //operate += ' <a class="btn btn-white btn-sm edit"><i class="fa fa-pencil"></i> 编辑 </a>';
-                    operate += ' <a class="btn btn-danger btn-sm delete"><i class="fa fa-trash"></i> 删除 </a>';
+                    //operate += ' <button class="btn btn-white btn-sm filemanage"><i class="fa fa-folder"></i> 文件管理 </button>';
+                    operate += ' <button class="btn btn-danger btn-sm delete"><i class="fa fa-trash"></i> 删除 </button>';
                     return operate;
                 },
                 events: operateEvents
@@ -550,6 +555,18 @@
     var editWorkDiv = 0;
      //列事件
     window.operateEvents = {
+        'click .files': function (e, value, row, index) {
+            //GetInfo(row);
+            layer.open({
+                type: 2,
+                area: ['600px', '400px'],
+                fix: false, //不固定
+                maxmin: true,
+                shade: 0.4,
+                title: "文件管理-" + row.Name,
+                content: "WorkItemFileAdd?id=" + row.Guid + "&type=1"
+            });
+        },
         'click .edit': function (e, value, row, index) {
             GetInfo(row);
         },

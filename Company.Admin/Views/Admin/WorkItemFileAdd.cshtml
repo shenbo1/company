@@ -1,0 +1,118 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>_WorkItemFile</title>
+    <link href="/Content/css/bootstrap.min14ed.css?v=3.3.6" rel="stylesheet">
+    <link href="/Content/css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet">
+    <link href="/Content/css/plugins/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
+    <link href="/Content/css/animate.min.css" rel="stylesheet">
+    <link href="/Content/css/style.min862f.css?v=4.1.0" rel="stylesheet">
+</head>
+<body>
+    <div class="ibox-content">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>文件名称</th>
+                    <th>文件大小</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                @*<tr>
+                    <td>1</td>
+                    <td>张三</td>
+                    <td>男</td>
+                    <td>23</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>李四</td>
+                    <td>男</td>
+                    <td>27</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>王麻子</td>
+                    <td>男</td>
+                    <td>65</td>
+                </tr>*@
+            </tbody>
+        </table>
+        <div>
+            <div class="m-t-xs font-bold"><a id="upload" title="上传文档"><i class="fa fa-upload"></i> 上传文档</a></div>
+            <input type="file" style="display:none;" name="file" id="file_upload" value="" accept="*/" />
+        </div>
+        <div style="margin-top:15px;"></div>
+        <button class="btn btn-primary" onclick="save()" >保存</button>
+    </div>
+</body>
+<script src="/content/js/jquery.min.js?v=2.1.4"></script>
+<script src="/content/js/bootstrap.min.js?v=3.3.6"></script>
+<script src="/content/js/content.min.js?v=1.0.0"></script>
+<script src="/Content/js/ajax.js"></script>
+<script src="/Content/js/font.js"></script>
+<script src="~/Content/js/plugins/layer/layer.min.js"></script>
+<script src="/Content/js/My97DatePicker/WdatePicker.js"></script>
+<script src="/Content/js/UploadJs/upload.js?@DateTime.Now"></script>
+</html>
+<script>
+    var id = GetQueryString('id');
+    if (!isNullOrEmpty(id)) {
+        ajaxGet.post({ guid: id },"@Url.Action("GetFileByGuid")", function (data) {
+            if (data.IsSuccess) {
+                var json = data.Data;
+                for (var i = 0; i < json.length; i++) {
+                    createHtml(json[i]);
+                }
+            }
+        },function(){});
+    }
+         var upload = new UploadImages();
+        upload.MaxSize = 1024;
+        upload.UploadType = 2;
+        upload.Success = function (src) {
+            //console.log(src + '');
+            //console.log(src);
+            var data = src.Data;
+            createHtml(data);
+        };
+    upload.Init();
+
+    function createHtml(data) {
+        var html = '';
+        html += '<tr class="tr_row" data-id="' + data.Guid + '">';
+        html += '<td><a download=""   href="' + data.FilePath + '">' + data.FileName + '</a></td>';
+        html += '<td>' + data.FileSize + '</td>';
+        html += '<td><a onclick="$(this).parents(\'tr\').remove();"> 删除</a>|<a download=""   href="' + data.FilePath + '">下载</a></td>';
+        html += '</tr>';
+        $('.table tbody').append(html);
+    }
+    function save() {
+        var data = new Array();
+        $('.tr_row').each(function () {
+            var data_id = $(this).attr('data-id');
+            data.push(data_id);
+        });
+        var jsonData = {};
+        jsonData.Guid = id;
+        jsonData.Type = GetQueryString('type');
+        jsonData.Data = data.join(',');
+        console.log(data);
+        ajaxGet.post(jsonData, "@Url.Action("SetFileByGuid")", function (data) {
+            if (data.IsSuccess) {
+                layer.msg(data.Message, { icon: 1 });
+                setTimeout(function () {
+                    parent.layer.closeAll();
+                }, 2000);
+            }
+        },function(){});
+    }
+</script>
