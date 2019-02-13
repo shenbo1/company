@@ -56,6 +56,7 @@ namespace Company.Dto
         /// 审核步骤
         /// </summary>
         public string AuditStep { get; set; }
+        public int IsCompany { get; set; }
         public List<CompanyDepartMent> ChildList { get; set; }
         #endregion
     }

@@ -64,6 +64,11 @@ namespace Company.DAL.Data
             string sql = string.Format(@"select [Id],[Name] from {0} (nolock) where CompanyId=@CompanyId and [IsDeleted]=0 ", TableName);
             return DBAccess.GetEntityList<WorkList>(sql, new { CompanyId = Id });
         }
+        public static List<WorkList> GetListByUserId(string UserId)
+        {
+            string sql = string.Format(@"select [Id],[Name] from {0} (nolock) where UserId like @UserId and [IsDeleted]=0 ", TableName);
+            return DBAccess.GetEntityList<WorkList>(sql, new { UserId = "%"+ UserId+"%" });
+        }
         public static List<WorkList> GetListByIds(int[] Id)
         {
             string sql = string.Format(@"select [Id]

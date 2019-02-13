@@ -1,7 +1,7 @@
 ﻿/*
 文件: UserCalendar.cs
 描述: UserCalendar类
-Copyright: 2018/7/9 10:29:45  by 沈波
+Copyright: 2019/1/31 17:29:30  by 沈波
 */
 using System;
 
@@ -48,7 +48,7 @@ namespace Company.Dto
         /// <summary>
         /// 用户编号
         /// </summary>
-        public int UserId { get; set; }
+        public string UserId { get; set; }
 
         /// <summary>
         /// 类型(表名)
@@ -85,6 +85,13 @@ namespace Company.Dto
         /// </summary>
         public string ModifyBy { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Title { get; set; }
+        public string UserName { get; set; }
+        public int IsDeleted { get; set; }
+        public string Description { get; set; }
         #endregion
     }
 }

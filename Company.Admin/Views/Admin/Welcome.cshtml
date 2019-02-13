@@ -31,272 +31,121 @@
         [v-cloak] {
             display: none !important;
         }
+        #tips {
+            position: absolute;
+            background-color: #fff;
+            color: inherit;
+            padding: 4px 6px;
+            border: 1px solid #1ab394;
+            border-radius:1px;
+            font-size: .85em;
+        }
     </style>
 </head>
 
 <body class="gray-bg">
     <div class="wrapper wrapper-content" id="main">
         <div class="row animated fadeInDown">
-            <div class="col-sm-6">
+            <div class="col-sm-3">
                 <div class="ibox float-e-margins">
-                    <div class="ibox-title">
-                        <h5>员工工单</h5>
-                        <div class="ibox-tools">
-                            <a class="collapse-link">
-                                <i class="fa fa-chevron-up"></i>
-                            </a>
-                            <a class="close-link">
-                                <i class="fa fa-times"></i>
-                            </a>
-                        </div>
-                    </div>
                     <div class="ibox-content">
-                        <div class="row">
-                            <div class="col-sm-6" v-cloak v-for="item in UserDayCount">
-                                <div class="contact-box">
-                                    <div class="col-sm-6">
-                                        <div class="text-center">
-                                            <h3><strong>{{item.Name}}</strong></h3>
-                                            <div class="m-t-xs">{{item.DepartMent}}</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <p><a v-on:click="GetDetail(item,0)">本周：{{item.One}}</a></p>
-                                        <p><a v-on:click="GetDetail(item,1)">下周：{{item.Two}}</a></p>
-                                        <p><a v-on:click="GetDetail(item,2)">下下周：{{item.Three}}</a></p>
-                                    </div>
-                                    <div class="clearfix"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6">
-                <div class="ibox float-e-margins">
-                    <div class="ibox-title">
-                        <h5>更新内容</h5>
-                        <div class="ibox-tools">
-                            <a class="collapse-link">
-                                <i class="fa fa-chevron-up"></i>
-                            </a>
-                            @*<a class="dropdown-toggle" data-toggle="dropdown" href="calendar.html#">
-                                    <i class="fa fa-wrench"></i>
-                                </a>
-                                <ul class="dropdown-menu dropdown-user">
-                                    <li>
-                                        <a href="calendar.html#">选项1</a>
-                                    </li>
-                                    <li>
-                                        <a href="calendar.html#">选项2</a>
-                                    </li>
-                                </ul>*@
-                            <a class="close-link">
-                                <i class="fa fa-times"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="ibox-content">
-                        <div id="vertical-timeline" class="vertical-container light-timeline">
-                            <div class="vertical-timeline-block">
-                                <div class="vertical-timeline-icon navy-bg">
-                                    <i class="fa fa-briefcase"></i>
-                                </div>
-                                <div class="vertical-timeline-content">
-                                    <h2>新需求-杨总</h2>
-                                    <p>
-                                        <a href="~/Upload/doc/eeeYooo ECS.docx">点击此处下载附件-eeeYooo ECS</a>
-                                    </p>
-                                    <span class="vertical-date">
-                                        <br>
-                                        <small> 2018-8-11</small>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="vertical-timeline-block">
-                                <div class="vertical-timeline-icon navy-bg">
-                                    <i class="fa fa-briefcase"></i>
-                                </div>
-                                <div class="vertical-timeline-content">
-                                    <h2>个人中心</h2>
-                                    <p>
-                                        1.添加扫描二维码功能-绑定微信(ok)
-                                    </p>
-                                    <span class="vertical-date">
-                                        <br>
-                                        <small> 2018-8-2</small>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="vertical-timeline-block">
-                                <div class="vertical-timeline-icon navy-bg">
-                                    <i class="fa fa-briefcase"></i>
-                                </div>
-                                <div class="vertical-timeline-content">
-                                    <h2>首页增加所有员工工单预览功能</h2>
-                                    <p>
-                                        1.点击耗时可查看列表 (ok)
-                                    </p>
-                                    <h2>工单列表</h2>
-                                    <p>
-                                        1.编辑工单内容，只可垂直拖动 (ok)
-                                    </p>
-                                    <p>
-                                        2.编辑工单内容，增加按钮，计数bug (ok)
-                                    </p>
-                                    <p>
-                                        3.点击项目,页面下拉问题 (ok)
-                                    </p>
-                                    <p>
-                                        4.可根据客户名称,客户公司名称搜索公司 (ok)
-                                    </p>
-                                    <h2>工单明细列表</h2>
-                                    <p>
-                                        1.导入明细,工单条目不存在不允许导入 (ok)
-                                    </p>
-                                    <span class="vertical-date">
-                                        <br>
-                                        <small> 2018-8-1</small>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="vertical-timeline-block">
-                                <div class="vertical-timeline-icon navy-bg">
-                                    <i class="fa fa-briefcase"></i>
-                                </div>
-                                <div class="vertical-timeline-content">
-                                    <h2>首页增加所有员工工单预览功能</h2>
-                                    <p>
-                                        1.所有在职员工工单统计面板(ok)
-                                    </p>
-                                    <span class="vertical-date">
-                                        <br>
-                                        <small> 2018-7-31</small>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="vertical-timeline-block">
-                                <div class="vertical-timeline-icon navy-bg">
-                                    <i class="fa fa-briefcase"></i>
-                                </div>
-                                <div class="vertical-timeline-content">
-                                    <h2>工单列表</h2>
-                                    <p>
-                                        1.工单内容 可编辑 可排序 可删除(没安排工单) (ok)
-                                    </p>
-                                    <p>
-                                        2.项目 下拉框，可搜索 (ok)
-                                    </p>
-                                    <p>
-                                        3.点击编号 去明细  (ok)
-                                    </p>
-                                    <p>
-                                        4.导入和新增工单名称不能相同(ok)
-                                    </p>
-                                    <p>
-                                        5.不限制消费者还是管理员（ok）
-                                    </p>
-                                    <span class="vertical-date">
-                                        <br>
-                                        <small> 2018-7-30</small>
-                                    </span>
-                                </div>
-                                <div class="vertical-timeline-content">
-                                    <h2>
-                                        工单明细管理
-                                    </h2>
-                                    <p>
-                                        1.工单名称 下拉框 可搜索 (ok)
-                                    </p>
-                                    <p>
-                                        2.人员禁用后过滤 (ok)
-                                    </p>
-                                    <span class="vertical-date">
-                                        <br>
-                                        <small> 2018-7-30</small>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
                         <div id='external-events'>
-                            @*<p>可拖动的活动</p>
-                                <div class='external-event navy-bg'>确定活动目标</div>
-                                <div class='external-event navy-bg'>各部门职责及分工</div>
-                                <div class='external-event navy-bg'>案例分享</div>
-                                <div class='external-event navy-bg'>xxx</div>
-                                <p class="m-t">
-                                    <input type='checkbox' id='drop-remove' class="i-checks" checked />
-                                    <label for='drop-remove'>移动后删除</label>
-                                </p>*@
+                            @Html.DropDownList("MemberSel", (IEnumerable<SelectListItem>)ViewBag.UserList,
+         new Dictionary<string, object>() {
+                                { "class", "show-tick form-control" }
+         }
+     )
+                            @*<button type="button" class="btn btn-primary btn-sm"
+                v-on:click="checkMember(item,'search')"
+                style="margin:5px" v-cloak v-for="item in UserList">
+            <i class="fa fa-check" v-if="item.Checked"></i>
+            <span>{{item.Name}}</span>
+        </button>
+        <input type="hidden" id="checkMember" />*@
+                        </div>
+                    </div>
+                    <div class="ibox-title">
+                        <h5>我的面板</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                            <a class="dropdown-toggle" data-toggle="dropdown" >
+                                <i class="fa fa-wrench"></i>
+                            </a>
+                            @*<ul class="dropdown-menu dropdown-user">
+                                <li>
+                                    <a href="calendar.html#">选项1</a>
+                                </li>
+                                <li>
+                                    <a href="calendar.html#">选项2</a>
+                                </li>
+                            </ul>*@
+                            <a class="close-link">
+                                <i class="fa fa-times"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div id='external-events'>
+                            @*<p>我的工单</p>*@
+                            <div class='external-event navy-bg'
+                                 v-cloak v-for="item in WorkItemList"
+                                 :data-id="item.Id" :data-type="item.Type" :data-workName="item.WorkName"
+                                 @*v-on:mouseover="changeActive($event,item.WorkName)"
+                                 v-on:mouseout="removeActive($event)"*@>{{item.Name}}-{{item.Infos}}</div>
+                            @*<div class='external-event navy-bg'>各部门职责及分工</div>
+                            <div class='external-event navy-bg'>案例分享</div>
+                            <div class='external-event navy-bg'>xxx</div>*@
+                            @*<p class="m-t">
+                    <input type='checkbox' id='drop-remove' class="i-checks" checked />
+                    <label for='drop-remove'>移动后删除</label>
+                </p>*@
                         </div>
                     </div>
                 </div>
-                @*<div class="ibox float-e-margins">
-                        <div class="ibox-content">
-                            <h2>FullCalendar</h2> 这是一个jQuery插件，它提供了全尺寸，可拖动，使用Ajax的操作方式，并且可以使用自己的feed格式，如谷歌日历。
-                            <p>
-                                <a href="http://arshaw.com/fullcalendar/" target="_blank">FullCalendar开发文档</a>
-                            </p>
-                        </div>
-                    </div>*@
+                <div class="ibox float-e-margins">
+                    <div class="ibox-content">
+                        @*<h2>FullCalendar</h2> 、*@
+                        只显示所选中人已分配的并未进日历的工单
+                        @*<p>
+                            <a href="http://arshaw.com/fullcalendar/" target="_blank">FullCalendar开发文档</a>
+                        </p>*@
+                    </div>
+                </div>
             </div>
             <div class="col-sm-9">
-                @*<div class="ibox float-e-margins">
-                        <div class="ibox-title">
-                            <h5>FullCalendar示例 </h5>
-                            <div class="ibox-tools">
-                                <a class="collapse-link">
-                                    <i class="fa fa-chevron-up"></i>
-                                </a>
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="calendar.html#">
-                                    <i class="fa fa-wrench"></i>
-                                </a>
-                                <ul class="dropdown-menu dropdown-user">
-                                    <li>
-                                        <a href="calendar.html#">选项1</a>
-                                    </li>
-                                    <li>
-                                        <a href="calendar.html#">选项2</a>
-                                    </li>
-                                </ul>
-                                <a class="close-link">
-                                    <i class="fa fa-times"></i>
-                                </a>
-                            </div>
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>我的工单日历 </h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                            <a class="dropdown-toggle" data-toggle="dropdown" >
+                                <i class="fa fa-wrench"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-user">
+                                @*<li>
+                                    <a href="calendar.html#">选项1</a>
+                                </li>
+                                <li>
+                                    <a href="calendar.html#">选项2</a>
+                                </li>*@
+                            </ul>
+                            <a class="close-link">
+                                <i class="fa fa-times"></i>
+                            </a>
                         </div>
-                        <div class="ibox-content">
-                            <div id="calendar"></div>
-                        </div>
-                    </div>*@
+                    </div>
+                    <div class="ibox-content">
+                        <div id="calendar"></div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="" id="div_daycount" style="display:none;margin:20px;width:650px;">
-            <div class="row" style="margin-bottom:20px;">
-                <b id="name_daycount" class="text-danger"></b>
-            </div>
-            <div class="row">
-                <table id="table" class="table table-bordered" data-height="400">
-                    <thead>
-                        <tr>
-                            <th  data-field="WorkName">工单名称</th>
-                            <th  data-field="Name">条目名称</th>
-                            <th  data-field="Infos">功能描述</th>
-                            <th  data-field="DayCount">工单耗时</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-cloak v-for="item in WorkItemList">
-                            <td>{{item.WorkName}}</td>
-                            <td>{{item.Name}}</td>
-                            <td>{{item.Infos}}</td>
-                            <td>{{item.DayCount}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
     </div>
+    <div id="tips"></div>
 
     <script src="/content/js/jquery.min.js?v=2.1.4"></script>
     <script src="/content/js/bootstrap.min.js?v=3.3.6"></script>
@@ -309,115 +158,227 @@
     <script src="/Content/js/plugins/layer/layer.min.js"></script>
     <script src="/Content/js/plugins/vue/vue.min.js"></script>
     <script>
-    var v = new Vue({
+        var v = new Vue({
         el: "#main",
-        data: {
-            UserDayCount: [],
-            WorkItemList:[]
+            data: {
+                UserList: [],
+                CheckedMember: "",
+                WorkItemList:[]
         },
         created: function () {
-            this.getUser();
+            this.getWorkItem();
         },
         watch: {
+            CheckedMember(val, oldval) {
+                var $this = this;
+                //console.log('val:' + val + ',old:' + oldval);
+                $('#checkMember').val(val);
+                Search();
+                $this.getDetail(val);
+            },
+            WorkItemList: function () {
+                this.$nextTick(function () {
+
+                    $("#external-events div.external-event").each(function () {
+                        var d = { title: $.trim($(this).text()), id: $(this).attr("data-id"), type: $(this).attr("data-type"), desc: $(this).attr("data-workName") };
+                        $(this).data("eventObject", d);
+                        $(this).draggable({ zIndex: 999, revert: true, revertDuration: 0 })
+                    });
+                })
+
+            }
         },
-         methods: {
+            methods: {
+                changeActive($event,desc) {
+                    $("#tips").text(desc);
+                    $('#tips').css('left', $event.pageX);
+                    $('#tips').css('top', $event.pageY);
+                    $('#tips').show();
+                    //console.log($event)
+                //$event.currentTarget.className = "active";
+            },
+            removeActive($event) {
+                //$event.currentTarget.className = "";
+            },
             getUser: function () {
                 var $this = this;
-                var url = "@Url.Action("GetAllUserDayCount")";
+                var url = "@Url.Action("GetMyUser")";
                 var Data = {};
                 ajaxGet.post(Data, url, function (json) {
                     if (json.IsSuccess) {
-                        $this.UserDayCount = json.Data;
-                        console.log($this.UserDayCount)
+                        //$this.UserList = json.Data;
+                        var addUser = [];
+                        for (var i = 0; i < json.Data.length; i++) {
+                            addUser.push({ Name: json.Data[i].Name, Checked: true, UserName: json.Data[i].UserName });
+                        }
+                        //console.log(addUser);
+                        $this.UserList = addUser;
                     }
                     else {
                     }
                 }, function (data) {
+                    ExceptionDeal(data);
                 })
-             },
-             GetDetail: function (item, type) {
-                 var $this = this;
-                 //console.log(item.UserName + type);
-                 var typetxt = '本周';
-                 if (type == 1) { typetxt = "下周"; }
-                 else if (type == 2) { typetxt = "下下周"; }
-                 $("#name_daycount").text(item.Name + "[" + typetxt + "]" + "工作内容");
-                  var url = "@Url.Action("WorkListItemsList")";
-                 var Data = {};
-                 Data.User = item.UserName+",";
-                 Data.Level = type;
-                 Data.Offset = 0;
-                 Data.Limit = 1000;
-                 ajaxGet.post(Data, url, function (json) {
-                     $this.WorkItemList = json.rows;
-                     //if (isNullOrEmpty(table)) {
-                     //    table = $("#table").bootstrapTable({
-                     //        data: json.rows,
-                     //        height: "380"
-                     //    });
-                     //}
-                     //else {
-                     //    table.refresh();
-                     //}
-                     
-                     layer.open({
-                         type: 1,
-                         shade: false,
-                         title: false, //不显示标题
-                         content: $("#div_daycount"), //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响
-                         area: ["700px", "480px"]
-                     });
-                     //if (json.IsSuccess) {
-                     //    console.log(json.Data);
-
-                     //}
-                     //else {
-                     //}
-                 }, function (data) {
-                 })
-                
-                
-             }
+            },
+            checkMember: function (item, type) {
+                item.Checked = !item.Checked;
+                var $this = this;
+                if (type == 'search') {
+                    if (item.Checked) {
+                        $this.CheckedMember += item.UserName + ",";
+                    }
+                    else {
+                        $this.CheckedMember = $this.CheckedMember.replace(item.UserName + ",", "");
+                    }
+                }
+            },
+            getWorkItem: function () {
+                var $this = this;
+                var url = "@Url.Action("getCalWorkItem")";
+                var Data = {};
+                Data.UserName = $('#MemberSel').val();
+                ajaxGet.post(Data, url, function (json) {
+                    if (json.IsSuccess) {
+                        //console.log(json);
+                        //for (var i = 0; i < json.Data; i++) {
+                        $this.WorkItemList = json.Data;
+                        //console.log($this.WorkItemList)
+                        //}
+                    }
+                    else {
+                    }
+                }, function (data) {
+                    ExceptionDeal(data);
+                })
+            }
         }
     });
+
+        function getLocalTime(nS) {
+            return new Date(parseInt(nS)).toLocaleString().replace(/:\d{1,2}$/, ' ');
+        }
+        var b = new Date();
+        var c = b.getDate();
+        var a = b.getMonth();
+        var e = b.getFullYear();
+
         $(document).ready(function () {
+            $('#MemberSel').change(function () {
+                $("#calendar").fullCalendar('refetchEvents');
+                v.getWorkItem();
+            });
+
             $(".i-checks").iCheck({ checkboxClass: "icheckbox_square-green", radioClass: "iradio_square-green", });
             $("#external-events div.external-event").each(function () {
-                var d = { title: $.trim($(this).text()) }; $(this).data("eventObject", d);
+                var d = { title: $.trim($(this).text()),id:$(this).attr("data-id") };
+                $(this).data("eventObject", d);
                 $(this).draggable({ zIndex: 999, revert: true, revertDuration: 0 })
             });
-            //var b = new Date();
-            //var c = b.getDate();
-            //var a = b.getMonth();
-            //var e = b.getFullYear();
-            //$("#calendar").fullCalendar(
-            //    {
-            //        header: { left: "prev,next", center: "title", right: "month,agendaWeek,agendaDay" },
-            //        editable: true,
-            //        droppable: true,
-            //        drop: function (g, h) {
-            //            var f = $(this).data("eventObject");
-            //            var d = $.extend({}, f);
-            //            d.start = g;
-            //            d.allDay = h; $("#calendar").fullCalendar("renderEvent", d, true);
-            //            if ($("#drop-remove").is(":checked")) {
-            //                $(this).remove()
-            //            }
-            //        }, events: [
-            //            { title: "长事件", start: new Date(e, a, c - 5), end: new Date(e, a, c - 2), },
-            //            { id: 999, title: "重复事件", start: new Date(e, a, c - 3, 16, 0), allDay: false, },
-            //            { id: 999, title: "重复事件", start: new Date(e, a, c + 4, 16, 0), allDay: false },
-            //            { title: "会议", start: new Date(e, a, c, 10, 30), end: new Date(e, a, c, 11, 30), allDay: false },
-            //            {
-            //                title: "午餐", start: new Date(e, a, c, 12, 0), end: new Date(e, a, c, 14, 0),
-            //                allDay: false
-            //            },
-            //            {
-            //                title: "生日", start: new Date(e, a, c + 1, 19, 0), end: new Date(e, a, c + 1, 22, 30), allDay: false
-            //            },
-            //            { title: "打开百度", start: new Date(e, a, 28), end: new Date(e, a, 29), url: "http://baidu.com/" }
-            //        ],
-            //    })
+           
+            $("#calendar").fullCalendar(
+                {
+                    header: { left: "prev,next", center: "title", right: "month,agendaWeek,agendaDay" },
+                    editable: true,
+                    droppable: true,
+                    drop: function (g, h) {
+                        //console.log(h);
+                        var f = $(this).data("eventObject");
+                        var d = $.extend({}, f);
+                        d.start = g;
+                        d.allDay = h;
+                        $("#calendar").fullCalendar("renderEvent", d, true);
+                        //if ($("#drop-remove").is(":checked")) {
+                        $(this).remove();
+                        var date = $.fullCalendar.formatDate(g, "yyyy-MM-dd");
+                        var id = f.id;
+                         var url = "@Url.Action("SetCalWorkItem")";
+                        var Data = {};
+                        Data.StartDate = date;
+                        Data.id = id;
+                        Data.Type = f.type;
+                        Data.IsModify = false;
+                        Data.userId = $("#MemberSel").val();
+                        ajaxGet.post(Data, url, function (json) {
+                            if (json.IsSuccess) {
+                                
+                            }
+                            else {
+                            }
+                        }, function (data) {
+                            ExceptionDeal(data);
+                        });
+                        //}
+                    },
+                    eventDrop: function (event, dayDelta, minuteDelta, allDay, revertFunc) {
+                        //拖动时间
+                        //console.log($.fullCalendar.formatDate(event.start, "yyyy-MM-dd"));
+                        //console.log(event);
+                          var url = "@Url.Action("SetCalWorkItem")";
+                        var Data = {};
+                        Data.StartDate = $.fullCalendar.formatDate(event.start, "yyyy-MM-dd");
+                        Data.id = event.id;
+                        Data.Type = event.type;
+                        Data.IsModify = true;
+                        Data.userId = $("#MemberSel").val();
+                        ajaxGet.post(Data, url, function (json) {
+                            if (json.IsSuccess) {
+                                
+                            }
+                            else {
+                            }
+                        }, function (data) {
+                            ExceptionDeal(data);
+                        });
+                    }
+                    , events: function (start, end, callback) {
+                        //console.log(getLocalTime(Date.parse(start)))
+                        //console.log(end)
+                        // start = start.getFullYear() + "-" + (start.getMonth() - 1) + "-" + start.getDate();
+                        //end = end.getFullYear() + "-" + (end.getMonth()  1) + "-" + end.getDate();
+                        ajaxGet.post({
+                            Start: getLocalTime(Date.parse(start)), End: getLocalTime(Date.parse(end)),
+                            UserName: $('#MemberSel').val()
+                        }, "/admin/MyCalendar", function (data) {
+                            var json = data.Data;
+                            var events = [];
+                            for (var i = 0; i < json.length; i++) {
+                                events.push({
+                                    id: json[i].PId,
+                                    type:json[i].Type,
+                                    desc: json[i].UserName+ '-'+ json[i].Description,
+                                    title: json[i].Title,
+                                    start: ChangeDt(json[i].StartDate),
+                                    end: ChangeDt(json[i].EndDate)
+                                });
+                            }
+                            callback(events);
+                        }, function () {
+                        })
+
+                    },
+                    //当点击某一个事件时触发此操作
+                    eventClick: function (calEvent, jsEvent, view) {
+                        //alert('Event: ' + calEvent.title);
+                        //alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
+                        //alert('View: ' + view.name);
+                        //// change the border color just for fun
+                        //$(this).css('border-color', 'red');
+                    },
+                    //当鼠标悬停在一个事件上触发此操作
+                    eventMouseover: function (event, jsEvent, view) {
+                        //fc-event-title
+                        //console.log('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
+                        $("#tips").text(event.desc);
+                        $('#tips').css('left', jsEvent.pageX);
+                        $('#tips').css('top', jsEvent.pageY);
+                        $('#tips').show();
+                        //layer.tips('下', '#' + event.id);
+                        //layer.msg('玩命提示中');
+                        //console.log(event);
+                        //console.log(jsEvent);
+                    },
+                    eventMouseout: function (event, jsEvent, view) { $('#tips').hide(); }
+                })
         });
     </script>
 </body>

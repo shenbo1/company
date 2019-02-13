@@ -1,9 +1,11 @@
 ﻿using Company.DAL.Common;
 using Company.Dto;
 using Company.Dto.Model;
+using Company.Util;
 using Dapper;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +15,7 @@ namespace Company.DAL.Data
     public class WorkListItemsDBOperate
     {
         const string TableName = "WorkListItems";
+        const string WorkDetailTableName = "WorkListDetail";
 
         #region 添加
         public static bool AddWorkListItems(WorkListItems model)
@@ -56,6 +59,12 @@ namespace Company.DAL.Data
         public static WorkListItems GetModelById(int Id)
         {
             string sql = string.Format(@"select * from {0} (nolock) where Id=@Id", TableName);
+            return DBAccess.GetEntityById<WorkListItems>(sql, Id);
+        }
+        public static WorkListItems GetDetailModelById(int Id) {
+            string sql = @"select a.Id,a.Name,a.Infos,b.Name WorkName from WorkListItems(nolock) a 
+left join WorkList(nolock) b on a.WorkId = b.Id
+where  a.id= @Id";
             return DBAccess.GetEntityById<WorkListItems>(sql, Id);
         }
         #endregion
@@ -180,7 +189,53 @@ namespace Company.DAL.Data
             string sql = @"select * from WorkListItems(nolock) where DetailGuid in @Guid and isDeleted=0;";
             return DBAccess.GetEntityList<WorkListItems>(sql, new { Guid =guid });
         }
+        public static bool ModifyItemList( int pid)
+        {
+            string sql = @"update WorkListItems set IsCal=1 where ID=@WorkId";
+            return DBAccess.ExecuteSqlWithEntity(sql, new { WorkId = pid });
+        }
+        #region 
+        public static bool AddWorkListItems(List<WorkListDetail> detail, List<WorkListItems> model)
+        {
+            using (SqlConnection con = new SqlConnection(ConfigSetting.DataConnection))
+            {
+                con.Open();
+                var transaction = con.BeginTransaction();
+                try
+                {
+                    string sql = string.Format("insert into {0}([CompanyId],[CompanyName],[ProjectId],[WorkId],[Name],[Level]," +
+                "[Status],[UserId],[UserName],[Infos],[CreateDate],[CreateBy],[IsDeleted],[DayCount],[Type],[DetailGuid])  " +
+                "values(@CompanyId,@CompanyName,@ProjectId,@WorkId,@Name,@Level,@Status,@UserId,@UserName,@Infos,getdate(),@CreateBy,0,@DayCount,@Type,@DetailGuid)",
+                TableName);
+                    string DetailSql = string.Format("insert into {0}([WorkId],[Infos],[RoleCode],[IsDeleted],[CreateDate],[CreateBy],[Guid]) " +
+                        " values(@WorkId,@Infos,@RoleCode,0,getdate(),@CreateBy,@Guid)", WorkDetailTableName);
+                    con.Execute(DetailSql, detail, transaction);
+                    con.Execute(sql, model, transaction);
+                    transaction.Commit();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    return false;
+                }
+            }
+            return false;
+        }
 
-        
+        #endregion
+
+        /// <summary>
+        /// 获取我的日历
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        public static List<WorkListItemCal> GetListByCal(string userName) {
+            string sql = @"
+select a.Id,a.Name,a.Infos,b.Name WorkName  from WorkListItems(nolock) a
+left join WorkList(nolock) b on a.WorkId = b.Id
+ where a.IsDeleted = 0 and a.ISCAL=0 and a.status = 'HasPei' AND a.UserId LIKE  @UserName";
+            return DBAccess.GetEntityList<WorkListItemCal>(sql, new { UserName = "%"+userName+"%" });
+        }
     }
 }

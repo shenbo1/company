@@ -78,6 +78,20 @@ namespace Company.Admin.Controllers
         }
         public ActionResult Welcome()
         {
+            var user = CookieOperate.MemberCookie;
+            var myUser = CompanyDepartMentDBOperate.GetModelById(user.RoleId);
+            var list = new List<CompanyUser>();
+            if (myUser != null && myUser.IsCompany == 0)
+            {
+                list = new List<CompanyUser>() {
+                     new CompanyUser(){ UserName = user.UserName,Name = user.Name}
+                };
+            }
+            else
+            {
+                list = CompanyUserDBOperate.GetUser(user.CompanyId);
+            }
+            ViewBag.UserList = list.Select(a => new SelectListItem() { Value = a.UserName, Text = a.Name });
             return View();
         }
 
@@ -1366,6 +1380,20 @@ namespace Company.Admin.Controllers
             return Json(info, "text/html");
         }
         /// <summary>
+        /// 添加工单
+        /// </summary>
+        /// <returns></returns>
+        public JsonResult WorkListInfoEdit(string str, int projectId)
+        {
+            ResultInfo result = new ResultInfo();
+            var list = JsonConvert.DeserializeObject<List<WorkListEdit>>(str);
+            var work = WorkListDBOperate.GetModelById(projectId);
+            var flag = WorkItemsBLL.WorkListInfoEdit(list, work);
+            result.IsSuccess = flag;
+            result.Message = flag ? "新增成功" : "新增失败";
+            return Json(result);
+        }
+        /// <summary>
         /// 工单处理情况
         /// </summary>
         /// <param name="ItemId"></param>
@@ -1806,5 +1834,87 @@ namespace Company.Admin.Controllers
             return Json(result);
         }
         #endregion
+
+        #region 我的工单
+        public ActionResult MyWorkItems() {
+            var user = CookieOperate.MemberCookie;
+            ViewBag.WorkList = WorkListDBOperate.GetListByUserId(user.UserName).Select(a => new SelectListItem() { Value = a.Id.ToString(), Text = a.Name });
+            ViewBag.UserId = user.UserName;
+            return View();
+        }
+        #endregion
+
+        #region 我的日历
+        public JsonResult MyCalendar(DateTime Start,DateTime End,string UserName) {
+            var result = new ResultInfo<List<UserCalendar>>();
+            var operate = CookieOperate.MemberCookie;
+            var data =  UserCalendarDBOperate.GetList(UserName, Start, End);
+            result.Data = data;
+            result.IsSuccess = true;
+            return Json(result);
+        }
+        public JsonResult getCalWorkItem(string UserName) {
+            var result = new ResultInfo<List<WorkListItemCal>>();
+            var list = WorkListItemsDBOperate.GetListByCal(UserName);
+            list.ForEach(a => a.Type = 1);
+            result.IsSuccess = true;
+            result.Data = list;
+            return Json(result);
+
+        }
+        public JsonResult SetCalWorkItem(DateTime StartDate, int id,int type,bool IsModify,string userId) {
+            var result = new ResultInfo();
+            if (!IsModify)//增加
+            {
+                if (type == 1) {
+                    var model = WorkListItemsDBOperate.GetDetailModelById(id);
+                    var user = CompanyUserDBOperate.GetModelByName(userId);
+                    UserCalendarDBOperate.AddUserCalendar(new UserCalendar() {
+                        StartDate = StartDate,
+                        EndDate = StartDate,
+                        Name = model.Name+'-'+model.Infos,
+                        UserId = userId,
+                        Type = type.ToString(),
+                        PId=id,
+                        Status = 0.ToString(),
+                        Title = model.Name + '-' + model.Infos,
+                        UserName = user.Name,
+                        IsDeleted = 0,
+                        CreateBy = CookieOperate.MemberCookie.UserName,
+                        Description = model.WorkName,
+                        CompanyId = CommonMethod.GetInt( Company.Util.ConfigSetting.eeeYoooId),
+                        CompanyName = Company.Util.ConfigSetting.eeeYoooName,
+                    });
+                    WorkListItemsDBOperate.ModifyItemList(id);
+                }
+            }
+            else {
+                UserCalendarDBOperate.UpdateDate(type, id, StartDate);
+            }
+            return Json(result);
+        }
+        #endregion
+
+        #region 获取我的用户
+        public JsonResult GetMyUser() {
+            var user = CookieOperate.MemberCookie;
+            var myUser = CompanyDepartMentDBOperate.GetModelById(user.RoleId);
+            var list = new List<CompanyUser>();
+            if (myUser != null && myUser.IsCompany == 0)
+            {
+                list = new List<CompanyUser>() {
+                     new CompanyUser(){ UserName = user.UserName,Name = user.Name}
+                };
+            }
+            else
+            {
+                list = CompanyUserDBOperate.GetUser(user.CompanyId);
+            }
+            var result = new ResultInfo<List<CompanyUser>>();
+            result.IsSuccess = true;
+            result.Data = list;
+            return Json(result);
+        }
+        #endregion 
     }
 }

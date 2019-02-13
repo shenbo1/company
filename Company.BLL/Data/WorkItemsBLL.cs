@@ -1,5 +1,6 @@
 ﻿using Company.DAL.Data;
 using Company.Dto;
+using Company.Dto.Data;
 using Company.Util;
 using System;
 using System.Collections.Generic;
@@ -175,6 +176,52 @@ namespace Company.BLL.Data
                 message = ex.Message;
             }
             return false;
+        }
+
+        public static bool WorkListInfoEdit(List<WorkListEdit> list,WorkList work) {
+            var operate = CookieOperate.MemberCookie;
+            var workDetail = new List<WorkListDetail>();
+            var workItem = new List<WorkListItems>();
+            var index = 1;
+
+            foreach (var item in list)
+            {
+                var workDetailModel = new WorkListDetail()
+                {
+                    WorkId = work.Guid,
+                    Index = index++,
+                    Infos = item.Name,
+                    RoleCode = item.Role,
+                    IsDeleted = 0,
+                    CreateBy = operate.UserName,
+                    Guid = Guid.NewGuid().ToString()
+                };
+                workDetail.Add(workDetailModel);
+                var infos = item.Infos.Split('\n');
+                foreach (var item1 in infos)
+                {
+                    var workItemModel = new WorkListItems()
+                    {
+                        CompanyId = operate.CompanyId,
+                        CompanyName = operate.CompanyName,
+                        ProjectId = work.ProjectId,
+                        WorkId = work.Id,
+                        Name = item.Name,
+                        Level = 999,
+                        Status = ItemStatus.HasPei.ToString(),
+                        UserId = string.Format("{0},", operate.UserName),
+                        UserName = string.Format("{0},", operate.Name),
+                        DayCount = 0,
+                        Infos = item1,
+                        DetailGuid = workDetailModel.Guid,
+                        CreateBy = operate.UserName,
+                        Type = ItemType.HouDuan.ToString()
+                    };
+                    workItem.Add(workItemModel);
+                }
+            }
+            
+            return WorkListItemsDBOperate.AddWorkListItems(workDetail, workItem);
         }
     }
 }

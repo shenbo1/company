@@ -116,4 +116,11 @@ namespace Company.Dto
         public string DetailGuid { get; set; }
         #endregion
     }
+    public class WorkListItemCal{
+        public int Id { get; set; }
+        public int Type { get; set; }
+        public string Name { get; set; }
+        public string Infos { get; set; }
+        public string WorkName { get; set; }
+    }
 }

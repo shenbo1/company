@@ -139,7 +139,28 @@ namespace Company.DAL.Data
             {
                 using (SqlConnection con = new SqlConnection(ConfigSetting.DataConnection))
                 {
-                    var model = con.Execute("UP_InsertPermission", param, null, null, CommandType.StoredProcedure);
+                    con.Open();
+                    var transaction = con.BeginTransaction();
+                    try
+                    {
+                        string sql = "delete from UserPermission where RoleID = @RoleId";
+                        string[] permission = PermissionIds.Split(',');
+                        string insertSQL = " INSERT INTO UserPermission VALUES(@MenuId,@RoleId)";
+                        con.Execute(sql, new { RoleId = RoleId }, transaction);
+                        foreach (var item in permission)
+                        {
+                            con.Execute(insertSQL, new[] { new { MenuId = item, RoleId = RoleId } }, transaction);
+                        }
+                        transaction.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        return false;
+                    }
+                  
+                    
+                    //var model = con.Execute("UP_InsertPermission", param, null, null, CommandType.StoredProcedure);
                     return true;
                 }
             }

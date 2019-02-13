@@ -1,0 +1,147 @@
+﻿<div class="modal fade" id="DivAdd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     style="display: none;width:100%;">
+    <form id="commentForm" class="modal-dialog" role="document" style="margin:0px;width:100%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close"  data-dismiss="modal" onclick="btnClose()"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">新增工单</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group row">
+                    <div class="formControls col-xs-8 col-sm-2">
+                        <label>工单名称</label>
+                    </div>
+                    <div class="formControls col-xs-8 col-sm-2">
+                        @Html.DropDownList("ProjectId", (IEnumerable<SelectListItem>)ViewBag.WorkList, 
+                                     new Dictionary<string, object>() {
+                                                            { "class", "selectpicker show-tick form-control col-sm-1" },
+                                                            { "data-live-search", "true" }
+                                     }
+                                 )
+                        @*<input type="text" class="form-control " id="name" value="" placeholder="工单名">*@
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="formControls col-xs-8 col-sm-2">
+                        <label>工单详情</label>
+                    </div>
+                </div>
+                <div id="rowcontent">
+                    <div class="form-group row detail">
+                        <div class="formControls col-xs-8 col-sm-2">
+                            <input type="text" class="form-control level" id="level1" value="" placeholder="如PC,手机端">
+                        </div>
+                        <div class="formControls col-xs-8 col-sm-2">
+                            <input type="text" class="form-control name" id="name1" value="" placeholder="工单名称">
+                        </div>
+                        <div class="formControls col-xs-8 col-sm-6">
+                            <textarea name="abstract" style=" resize: vertical;" class="textarea valid form-control" placeholder="工单内容,回车即另一条" id="info1"></textarea>
+                        </div>
+                        <div class="formControls col-xs-8 col-sm-2">
+                            <button onClick="add('','','');" class="btn btn-primary radius" type="button">添加</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                <div class="modal-footer">
+                    <div class="col-sm-4 col-sm-offset-2">
+                        <button type="button" class="btn btn-primary" id="btnComfirm" onclick="save()">确定</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="btnClose()">关闭</button>
+                    </div>
+                </div>
+            </div>
+    </form>
+</div>
+<script>
+    $(function () {
+      
+    })
+    function add(level, name, de) {
+        var flag = true;
+        $('.detail').each(function () {
+            var level = $(this).find('.level').val();
+            var name = $(this).find('.name').val();
+            var textarea = $(this).find('.textarea').val();
+            if (level == '') { layer.msg("工单角色不能为空", { icon: 2 }); flag = false; return; }
+            if (level.length > 10) { layer.msg("工单角色不能超过10字", { icon: 2 }); flag = false; return; }
+            if (name == '') { layer.msg("工单名称不能为空", { icon: 2 }); flag = false; return; }
+            if (name.length > 30) { layer.msg("工单名称不能超过30字", { icon: 2 }); flag = false; return; }
+            if (textarea == '') { layer.msg("工单内容不能为空", { icon: 2 }); flag = false; return; }
+        });
+        if (!flag) { return; }
+        var html = '';
+        html += ' <div class="row cl detail">';
+        html += ' <div class="formControls col-xs-8 col-sm-2" >';
+        html += '<input type="text" class="form-control level" value="' + level + '" placeholder="如PC,手机端" >';
+        html += '</div>';
+        html += ' <div class="formControls col-xs-8 col-sm-2">';
+        html += '<input type="text" class="form-control name" value="' + name + '" placeholder="工单名称">';
+        html += ' </div>';
+        html += ' <div class="formControls col-xs-8 col-sm-6">';
+        html += ' <textarea name="abstract" style=" resize: vertical;" class="form-control valid textarea" placeholder="工单内容,回车即另一条">' + de + '</textarea>';
+        html += ' </div>';
+        html += '  <div class="formControls col-xs-8 col-sm-2">';
+        html += '<button onClick="del(this);" class="btn btn-danger radius" type="button">删除</button>';
+        html += ' </div>';
+        html += ' </div>';
+        $('#rowcontent').append(html);
+    }
+    function del(cur) { $(cur).parents('.detail').remove(); }
+
+    var submit = false;
+    function save() {
+        if (submit) {
+            layer.msg("保存中...请耐心等待", { icon: 2 });
+            return;
+        }
+        //var names = $("#name").val();
+        //if (names == '') { layer.msg("工单名称不能为空", { icon: 2 }); return; }
+        //if (names.length > 30) { layer.msg("工单名称不能超过30字", { icon: 2 }); flag = false; return; }
+
+        var flag = true;
+        var Data = [];
+        $('.detail').each(function () {
+            var level = $(this).find('.level').val();
+            var name = $(this).find('.name').val();
+            var textarea = $(this).find('.textarea').val();
+            if (level == '') { layer.msg("工单角色不能为空", { icon: 2 }); flag = false; return; }
+            if (level.length > 10) { layer.msg("工单角色不能超过10字", { icon: 2 }); flag = false; return; }
+            if (name == '') { layer.msg("工单名称不能为空", { icon: 2 }); flag = false; return; }
+            if (name.length > 30) { layer.msg("工单名称不能超过30字", { icon: 2 }); flag = false; return; }
+            if (textarea == '') { layer.msg("工单内容不能为空", { icon: 2 }); flag = false; return; }
+            var obj = {
+                Role: $(this).find('.level').val(),
+                Name: $(this).find('.name').val(),
+                Infos: $(this).find('.textarea').val()
+            };
+            Data.push(obj);
+        });
+        if (!flag) { return; }
+        layer.msg("提交中...", { icon: 1 });
+        
+        //var index = layer.load(1, {
+        //    shade: [0.1, '#fff'] //0.1透明度的白色背景
+        //});
+        var url = "@Url.Action("WorkListInfoEdit")";
+        ajaxGet.post({ str: JSON.stringify(Data), projectId: $('#ProjectId').val() }, url, function (data) {
+            if (data.IsSuccess) {
+                layer.msg(data.Message, { icon: 1 });
+                setTimeout(function () {
+                    parent.window.location.reload();
+                }, 1500);
+            }
+            else {
+                layer.msg(data.Message, { icon: 2 });
+            }
+            // Search();
+        }, function (data) { ExceptionDeal(data); })
+        //console.log(Data);
+    }
+    function AddDataSuccess(json) {
+        if (json.IsSuccess) {
+            layer.msg(json.Message, { icon: 1 });
+            btnClose();
+            Search();
+        }
+    }
+</script>

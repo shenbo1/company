@@ -2277,6 +2277,9 @@
     <Content Include="Views\Admin\_PayVoucherCreate.cshtml" />
     <Content Include="Views\Admin\_PayVoucherPay.cshtml" />
     <Content Include="Views\Admin\WorkItemFileAdd.cshtml" />
+    <Content Include="Views\Admin\MyWorkItems.cshtml" />
+    <Content Include="Views\Admin\_MyWorkItemAdd.cshtml" />
+    <Content Include="Views\Admin\Welcome2.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
