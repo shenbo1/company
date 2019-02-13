@@ -79,7 +79,7 @@ namespace Company.Admin.Controllers
         public ActionResult Welcome()
         {
             var user = CookieOperate.MemberCookie;
-            var myUser = CompanyDepartMentDBOperate.GetModelById(user.RoleId);
+            var myUser = CompanyDepartMentDBOperate.GetModelById(user.DepartId);
             var list = new List<CompanyUser>();
             if (myUser != null && myUser.IsCompany == 0)
             {
